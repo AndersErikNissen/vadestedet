@@ -1,0 +1,22 @@
+# Folders
+/mu-plugins/
+/fonts/
+/database/
+/uploads/
+/upgrade/
+/upgrade-temp-backup/
+
+# Plugins
+/plugins/hello.php
+/plugins/akismet/
+/plugins/plugin-check/
+/plugins/query-monitor/
+/plugins/theme-check/
+
+# Themes
+/themes/twenty*/
+
+# Files
+.DS_Store
+db.php
+debug.log

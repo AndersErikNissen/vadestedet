@@ -1,0 +1,65 @@
+/* @@ GENERAL STYLING */
+.simple-theme-settings {
+  max-width: 720px;
+}
+
+.simple-theme-settings .form-table + h2 {
+  margin-top: 2em;
+}
+
+.simple-theme-settings .form-table td {
+  padding: 15px 20px;
+}
+
+.simple-theme-settings .form-table .regular-text {
+  width: 100%;
+}
+
+
+/* @@ STYLE TABLES */
+.simple-theme-settings .form-table {
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.simple-theme-settings .form-table th {
+  padding: 20px;
+}
+
+.simple-theme-settings .form-table tr + tr {
+  border-top: 1px solid #f1f1f1;
+}
+
+
+/* @@ STYLE FIELDSET */
+.sts-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.sts-field-group legend {
+  display: none;
+}
+
+
+/* @@ PREVIEW AN INSERTED SVG */
+.sts-svg-preview {
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.sts-svg-preview span {
+  display: block;
+  font-weight: 700;
+}
+
+.sts-svg-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 200px;
+}
