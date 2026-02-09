@@ -155,12 +155,6 @@ function acfgg_group( $relation, $name, $section, $fields, $location, $menu_orde
 }
 
 
-// @@ GENERATE FIELDS FOR OPTIONS-PAGE
-function acfgg_option_sections() {
-
-}
-
-
 // @@ CREATE ALL SECTIONS
 function acfgg_sections() {
   // ## text and image
@@ -178,21 +172,6 @@ function acfgg_sections() {
       acfgg_location( [ 'page' ] ),
     ], 
   );
-
-  // ## text and image 2
-  $relation = 'section_text_and_image_2_';
-
-  acfgg_group( 
-    $relation, 
-    'Sektion: Tekst & billede 2', 
-    'text-and-image',
-    array_merge(
-      acfgg_block( 'text', $relation ),
-      acfgg_block( 'image', $relation ),
-    ), [
-      acfgg_location( [ 'post' ] ),
-      acfgg_location( [ 'page' ] ),
-  ] );
 }
 
 add_action('acf/init', 'acfgg_sections');
