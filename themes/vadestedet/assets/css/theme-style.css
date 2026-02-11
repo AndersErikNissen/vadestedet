@@ -385,10 +385,10 @@
     display: block;
     height: 0;
     width: 100%;
-    padding-top: calc(100% * var(--ratio-mobile, 1));
+    padding-top: calc(var(--ratio-mobile, 1) * 100%);
   }
 
-  .ratio-container-img {
+  .ratio-container-item {
     display: block;
     position: absolute;
     top: 0;
@@ -401,7 +401,7 @@
 
   @media (min-width: 980px) {
     .ratio-container::before {
-      padding-top: calc(100% * var(--ratio-desktop, var(--ratio-mobile, 1)));
+      padding-top: calc(var(--ratio-desktop, var(--ratio-mobile, 1)) * 100%);
     }
   }
 

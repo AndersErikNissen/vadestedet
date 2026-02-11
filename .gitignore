@@ -5,6 +5,7 @@
 /uploads/
 /upgrade/
 /upgrade-temp-backup/
+/languages/
 
 # Plugins
 /plugins/hello.php
@@ -12,6 +13,7 @@
 /plugins/plugin-check/
 /plugins/query-monitor/
 /plugins/theme-check/
+/plugins/polylang/
 
 # Themes
 /themes/twenty*/

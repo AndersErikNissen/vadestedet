@@ -11,6 +11,29 @@
 // @@ EXIT IF ACCESSED DIRECTLY
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+// @@ THE PLUGIN PATH
+define( 'STS_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+
+// 1. Load the Polylang registration logic
+require_once STS_PLUGIN_PATH . 'includes/polylang-strings.php';
+
+// 2. Load the Admin Menu/Database logic
+// require_once MY_PLUGIN_PATH . 'includes/admin-settings.php';
+
+// 3. Load Frontend helper functions
+// require_once MY_PLUGIN_PATH . 'includes/frontend-display.php';
+
+
+// Register these strings so they show up in Languages > String translations
+add_action('init', function() {
+    if ( function_exists('pll_register_string') ) {
+        // Syntax: pll_register_string( $context, $string_to_translate, $group, $multiline )
+        pll_register_string('Opening Hours Monday', 'Monday', 'Business Info');
+        pll_register_string('Opening Hours Tuesday', 'Tuesday', 'Business Info');
+        // ... repeat for all days
+    }
+});
+
 
 // @@ CREATE THE ADMIN MENU PAGE
 add_action( 'admin_menu', function() {

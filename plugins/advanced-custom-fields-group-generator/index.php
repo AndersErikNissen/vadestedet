@@ -9,24 +9,93 @@
 
 
 // @@ HIDE ACF FROM BACKEND
-add_filter( 'acf/settings/show_admin', '__return_false' );
+// add_filter( 'acf/settings/show_admin', '__return_false' );
 
 
-// @@ OPTIONS-PAGE REDIRECT
-add_action( 'template_redirect', function() {
-  if ( is_page( 'indstillinger' ) || is_page( 'options' ) ) {
-    wp_redirect( home_url() );
-    exit();
+// @@ ADD CSS TO WYSIWYG
+add_action( 'after_setup_theme', function() {
+  add_editor_style( plugin_dir_url( __FILE__ ) . 'css/acfgg-editor.css' );
+});
+
+
+// @@ CLEAN UP WYSIWYG TOOLBAR
+add_filter( 'acf/fields/wysiwyg/toolbars', function ( $toolbars ) {
+  // ## remove full (the standard toolbar) entirely
+  unset( $toolbars['Full'] );
+
+  // ## replace with your own
+  $toolbars['Full'] = [];
+  $toolbars['Full'][1] = [
+    'bold',
+    'italic',
+    'strikethrough',
+    'link',
+    'bullist',
+    'numlist',
+    'blockquote',
+    'alignleft',
+    'aligncenter',
+    'alignright',
+    'undo',
+    'redo'
+  ];
+
+  return $toolbars;
+}, 1 );
+
+
+// @@ EDIT THE TINYMCE BLOCK OPTIONS
+add_filter( 'tiny_mce_before_init', function( $init_array ) {
+  $init_array['block_formats'] = 'Paragraph=p; Heading 2=h2; Heading 3=h3; Heading 4=h4';
+  return $init_array;
+});
+
+
+// @@ HIDE CURRENT POST FROM RELATIONSHIP FIELDS
+add_filter('acf/fields/relationship/query', function( $args, $field, $post_id ) {
+  // ## adds the current post's ID to the 'post__not_in' array, to exclude it from the query
+  $args[ 'post__not_in' ] = array( $post_id );
+  return $args;
+}, 10, 3);
+
+
+// @@ SYNC IMAGE FIELD TO FEATURED IMAGE
+function sync_acf_list_to_featured_image( $post_id, $field_names ) {
+  $new_thumb_id = null;
+
+  // ## look for the first matching field in the list
+  foreach ( $field_names as $field_name ) {
+    $value = get_field($field_name, $post_id);
+    
+    if ( $value ) {
+      $new_thumb_id = is_array( $value ) ? $value[ 'ID' ] : $value;
+      break;
+    }
   }
-} );
 
+  $current_thumb_id = get_post_thumbnail_id( $post_id );
 
-// @@ OPTIONS-PAGE NOINDEX
-add_action( 'wp_head', function() {
-  if ( is_page( 'indstillinger' ) || is_page( 'options' ) ) : ?>
-    <meta name="robots" content="noindex, nofollow" />
-  <? endif;
-} );
+  if ( $new_thumb_id !== $current_thumb_id ) {
+    if ( $new_thumb_id ) {
+      update_post_meta( $post_id, '_thumbnail_id', $new_thumb_id );
+    } else {
+      delete_post_meta( $post_id, '_thumbnail_id' );
+    };
+  };
+}
+
+add_action('acf/save_post', function( $post_id ) {
+  // ## bail if this is an autosave or a revision
+  if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+  if ( wp_is_post_revision( $post_id ) ) return;
+
+  // ## first matching field wins
+  $fields_to_check = [
+    'section_event_information_image_block_image_desktop'
+  ];
+
+  sync_acf_list_to_featured_image( $post_id, $fields_to_check );
+}, 20);
 
 
 // @@ GENERATE UNIQUE KEY
@@ -59,50 +128,89 @@ function acfgg_accordion( $relation, $name, $instructions = '', $open = 0 ):arra
 
 
 // @@ GENERATE BLOCK
-function acfgg_block( $type, $relation ):array {
-  $block = [];
+function acfgg_block( $relation, $type, $count = '' ):array {
+  $block_relation = $relation . $type . '_block' . $count . '_';
 
-  switch ( $type ) {
-    case 'text':
-      $block[] = acfgg_accordion( $relation . 'tab_', 'Tekst indhold' );
+  if ( $type === 'text' ) {
+    return [
+      acfgg_accordion( $block_relation . 'tab_', 'Tekst indhold'                     ),
+      acfgg_field(     $block_relation,          'Overskrift', 'heading', 'text'     ),
+      acfgg_field(     $block_relation,          'Tekst',      'text',    'textarea' ),
+      acfgg_field(     $block_relation,          'Knap',       'button',  'link'     )
+    ];
+  };
 
-      $block[] = acfgg_field( $relation, 'Overskrift', 'heading', 'text'     );
-      $block[] = acfgg_field( $relation, 'Tekst',      'text',    'textarea' );
-      $block[] = acfgg_field( $relation, 'Knap',       'button',  'link'     );
-      break;
-    
-    case 'image':
-      $image_ratio_args = [
-        'choices' => [
-          'default'     => 'Original',
-          '4:5'         => 'Portræt',
-          '1:1'         => 'Kvadratisk',
-          '16:9'        => 'Landskab',
-          '4:1.5'       => 'Banner'
-        ],
-        'default_value' => 'default'
-      ];
+  if ( $type === 'image' ) {
+    $image_ratio_args = [
+      'choices' => [
+        'default'     => 'Original',
+        '4:5'         => 'Portræt',
+        '1:1'         => 'Kvadratisk',
+        '16:9'        => 'Landskab',
+        '4:1.5'       => 'Banner'
+      ],
+      'default_value' => 'default'
+    ];
 
-      $image_first_args = [
-        'choices'  => [
+    return [
+      acfgg_accordion( $block_relation . 'tab_', 'Billede opsætning'                                                                      ),
+      acfgg_field(     $block_relation,          'Vælg billede (Computer)',      'image_desktop',       'image', [ 
+        'wrapper' => [
+          'width' => '50'
+        ] 
+      ]                                                                                                                                   ),
+      acfgg_field(     $block_relation,          'Vælg billede (Mobile)',        'image_mobile',        'image', [ 
+        'wrapper' => [
+          'width' => '50'
+        ] 
+      ]                                                                                                                                   ),
+      acfgg_field(     $block_relation,          'Vælg billedformat (Computer)', 'image_ratio_desktop', 'button_group', $image_ratio_args ),
+      acfgg_field(     $block_relation,          'Vælg billedformat (Mobil)',    'image_ratio_mobile',  'button_group', $image_ratio_args ),  
+      acfgg_field(     $block_relation,          'Vis billede først på',         'image_first',         'button_group',                  [
+        'choices'          => [
           'default'        => 'Ingen',
           'desktop'        => 'Computer',
           'mobile'         => 'Mobil',
           'desktop/mobile' => 'Computer & Mobil',
         ],
-        'default_value'    => 'default'
-      ];
-
-      $block[] = acfgg_accordion( $relation . 'tab_', 'Billede opsætning' );
-
-      $block[] = acfgg_field( $relation, 'Vælg billede',                  'image',               'image'                                               );
-      $block[] = acfgg_field( $relation, 'Vælg billedformat (Computer)',  'image_ratio_desktop', 'button_group', $image_ratio_args );
-      $block[] = acfgg_field( $relation, 'Vælg billedformat (Mobil)',     'image_ratio_mobile',  'button_group', $image_ratio_args );  
-      $block[] = acfgg_field( $relation, 'Vis billede først på',          'image_first',         'button_group', $image_first_args );
-      break;
+        'default_value'    => 'default'                                                                                                     
+      ]                                                                                                                                   )
+    ];
   };
 
-  return $block;
+  if ( $type === 'post_description' ) {
+    return [
+      acfgg_accordion( $block_relation . 'tab_', 'Beskrivelse'                                        ),
+      acfgg_field(     $block_relation,          'Overskrift',       'heading',           'text'      ),
+      acfgg_field(     $block_relation,          'Kort beskrivelse', 'short_description', 'textarea'  ),
+      acfgg_field(     $block_relation,          'Beskrivelse',      'description',       'wysiwyg', [
+        'tabs'         => 'visual',
+        'media_upload' => 1,
+        'delay'        => 0                                                                  
+      ]                                                                                               ),
+      acfgg_field(     $block_relation,          'Knap',             'button',            'link'      )
+    ];
+  };
+
+  if ( $type === 'date' ) {
+    return [
+      acfgg_accordion( $block_relation . 'tab_', 'Dato og tidspunkt'                                ),
+      acfgg_field(     $block_relation,          'Sæt dato',            'date',       'date_picker' ),
+      acfgg_field(     $block_relation,          'Sæt start tidspunkt', 'start_time', 'time_picker' ),
+      acfgg_field(     $block_relation,          'Sæt slut tidspunkt',  'end_time',   'time_picker' ),
+    ];
+  };
+
+  if ( $type === 'event_relationship' ) {
+    return [
+      acfgg_accordion( $block_relation . 'tab_', 'Relation(er)',             'Relevant hvis dette event har en relation til 1 eller flere andre events'                   ),
+      acfgg_field(     $block_relation,          'Vælg relaterede event(s)', 'event_relationship',                                                      'relationship', [
+        'post_type' => 'event',
+        'filters'   => '',
+        'elements'  => [ 'featured_image' ]
+      ]                                                                                                                                                                   )
+    ];
+  }
 }
 
 // @@ GENERATE LOCATION
@@ -125,6 +233,11 @@ function acfgg_location( $locations ):array {
       'operator' => '==',
       'value'    => 'page',
     ],
+    'event' => [
+      'param'    => 'post_type',
+      'operator' => '==',
+      'value'    => 'event',
+    ],
   ];
 
   foreach( $locations as $location ) {
@@ -142,7 +255,7 @@ function acfgg_location( $locations ):array {
 // @@ GENERATE GROUP
 function acfgg_group( $relation, $name, $section, $fields, $location, $menu_order = 9 ) {
   acf_add_local_field_group( [
-    'key'        => acfgg_key( $relation, $name, 'group_' ),
+    'key'        => acfgg_key( $relation, $name, '_group_' ),
     'title'      => $name,
     'acfgg' => [ // Custom key, used only by this plugin
       'relation' => $relation,
@@ -155,14 +268,26 @@ function acfgg_group( $relation, $name, $section, $fields, $location, $menu_orde
 }
 
 
-// @@ GENERATE FIELDS FOR OPTIONS-PAGE
-function acfgg_option_sections() {
-
-}
-
-
 // @@ CREATE ALL SECTIONS
 function acfgg_sections() {
+  // ## event (cpt)
+  $relation = 'section_event_information_';
+  
+  acfgg_group( 
+    $relation, 
+    'Section: Event information', 
+    'event-information',
+    array_merge(
+      acfgg_block( $relation, 'post_description'   ), 
+      acfgg_block( $relation, 'image'              ),
+      acfgg_block( $relation, 'date'               ),
+      acfgg_block( $relation, 'event_relationship' )
+    ), [
+      acfgg_location( [ 'event' ] )
+    ]
+  );
+
+
   // ## text and image
   $relation = 'section_text_and_image_';
 
@@ -171,28 +296,13 @@ function acfgg_sections() {
     'Sektion: Tekst & billede', 
     'text-and-image',
     array_merge(
-      acfgg_block( 'text',  $relation ),
-      acfgg_block( 'image', $relation ),
+      acfgg_block( $relation, 'text'  ),
+      acfgg_block( $relation, 'image' )
     ), [
       acfgg_location( [ 'post' ] ),
-      acfgg_location( [ 'page' ] ),
-    ], 
+      acfgg_location( [ 'page' ] )
+    ]
   );
-
-  // ## text and image 2
-  $relation = 'section_text_and_image_2_';
-
-  acfgg_group( 
-    $relation, 
-    'Sektion: Tekst & billede 2', 
-    'text-and-image',
-    array_merge(
-      acfgg_block( 'text', $relation ),
-      acfgg_block( 'image', $relation ),
-    ), [
-      acfgg_location( [ 'post' ] ),
-      acfgg_location( [ 'page' ] ),
-  ] );
 }
 
 add_action('acf/init', 'acfgg_sections');
