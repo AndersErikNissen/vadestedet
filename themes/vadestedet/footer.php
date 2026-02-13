@@ -1,8 +1,8 @@
     </main>
 
     <?php 
-    $logo = sts_option( 'footer.logo' ); 
-    $description = sts_option( 'footer.description' );
+    $logo = get_sts_option( 'footer.logo' ); 
+    $description = get_sts_option( 'footer.description' );
     ?>
 
     <footer class="the-footer">

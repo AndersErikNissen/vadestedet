@@ -26,6 +26,7 @@ add_filter( 'acf/fields/wysiwyg/toolbars', function ( $toolbars ) {
   // ## replace with your own
   $toolbars['Full'] = [];
   $toolbars['Full'][1] = [
+    'formatselect',
     'bold',
     'italic',
     'strikethrough',
@@ -91,7 +92,7 @@ add_action('acf/save_post', function( $post_id ) {
 
   // ## first matching field wins
   $fields_to_check = [
-    'section_event_information_image_block_image_desktop'
+    'section_event_information_post_description_block_image'
   ];
 
   sync_acf_list_to_featured_image( $post_id, $fields_to_check );
@@ -166,8 +167,8 @@ function acfgg_block( $relation, $type, $count = '' ):array {
       ]                                                                                                                                   ),
       acfgg_field(     $block_relation,          'Vælg billedformat (Computer)', 'image_ratio_desktop', 'button_group', $image_ratio_args ),
       acfgg_field(     $block_relation,          'Vælg billedformat (Mobil)',    'image_ratio_mobile',  'button_group', $image_ratio_args ),  
-      acfgg_field(     $block_relation,          'Vis billede først på',         'image_first',         'button_group',                  [
-        'choices'          => [
+      acfgg_field(     $block_relation,          'Vis billede først på',         'image_first',         'button_group', [
+        'choices' => [
           'default'        => 'Ingen',
           'desktop'        => 'Computer',
           'mobile'         => 'Mobil',
@@ -180,35 +181,56 @@ function acfgg_block( $relation, $type, $count = '' ):array {
 
   if ( $type === 'post_description' ) {
     return [
-      acfgg_accordion( $block_relation . 'tab_', 'Beskrivelse'                                        ),
-      acfgg_field(     $block_relation,          'Overskrift',       'heading',           'text'      ),
-      acfgg_field(     $block_relation,          'Kort beskrivelse', 'short_description', 'textarea'  ),
+      acfgg_accordion( $block_relation . 'tab_', 'Beskrivelse'                                         ),
+      acfgg_field(     $block_relation,          'Overskrift',       'heading',           'text', [
+        'required' => true
+      ]                                                                                                ),
+      acfgg_field(     $block_relation,          'Kort beskrivelse', 'short_description', 'textarea', [
+        'required'     => true
+      ]                                                                                                ),
+      acfgg_field(     $block_relation,          'Billede',          'image',             'image'      ),
       acfgg_field(     $block_relation,          'Beskrivelse',      'description',       'wysiwyg', [
         'tabs'         => 'visual',
         'media_upload' => 1,
-        'delay'        => 0                                                                  
-      ]                                                                                               ),
-      acfgg_field(     $block_relation,          'Knap',             'button',            'link'      )
+        'delay'        => 0,
+        'required'     => true                                                             
+      ]                                                                                                ),
+      acfgg_field(     $block_relation,          'Knap',             'button',            'link'       )
     ];
   };
 
-  if ( $type === 'date' ) {
+  if ( $type === 'event_information' ) {
     return [
-      acfgg_accordion( $block_relation . 'tab_', 'Dato og tidspunkt'                                ),
-      acfgg_field(     $block_relation,          'Sæt dato',            'date',       'date_picker' ),
-      acfgg_field(     $block_relation,          'Sæt start tidspunkt', 'start_time', 'time_picker' ),
-      acfgg_field(     $block_relation,          'Sæt slut tidspunkt',  'end_time',   'time_picker' ),
+      acfgg_accordion( $block_relation . 'tab_', 'Event information'                                   ),
+      acfgg_field(     $block_relation,          'Event navn',          'event_name', 'text', [
+        'required' => true
+      ]                                                                                                ),
+      acfgg_field(     $block_relation,          'Event dato',          'date',       'date_picker', [
+        'display_format' => 'd/m/Y',
+        'return_format'  => 'Ymd',
+        'required' => true
+      ]                                                                                                ),
+      acfgg_field(     $block_relation,          'Sæt start tidspunkt', 'start_time', 'time_picker', [
+        'display_format' => 'H:i:s',
+        'return_format'  => 'H:i:s',
+        'required'       => true
+      ]                                                                                                ),
+      acfgg_field(     $block_relation,          'Sæt slut tidspunkt',  'end_time',   'time_picker', [
+        'display_format' => 'H:i:s',
+        'return_format'  => 'H:i:s',
+        'required'       => true
+      ]                                                                                                )
     ];
   };
 
   if ( $type === 'event_relationship' ) {
     return [
-      acfgg_accordion( $block_relation . 'tab_', 'Relation(er)',             'Relevant hvis dette event har en relation til 1 eller flere andre events'                   ),
-      acfgg_field(     $block_relation,          'Vælg relaterede event(s)', 'event_relationship',                                                      'relationship', [
+      acfgg_accordion( $block_relation . 'tab_', 'Relation(er)',             'Relevant hvis dette event har en relation til 1 eller flere events'                  ),
+      acfgg_field(     $block_relation,          'Vælg relaterede event(s)', 'event_relationship',                                                'relationship', [
         'post_type' => 'event',
         'filters'   => '',
         'elements'  => [ 'featured_image' ]
-      ]                                                                                                                                                                   )
+      ]                                                                                                                                                            )
     ];
   }
 }
@@ -279,8 +301,7 @@ function acfgg_sections() {
     'event-information',
     array_merge(
       acfgg_block( $relation, 'post_description'   ), 
-      acfgg_block( $relation, 'image'              ),
-      acfgg_block( $relation, 'date'               ),
+      acfgg_block( $relation, 'event_information'  ),
       acfgg_block( $relation, 'event_relationship' )
     ), [
       acfgg_location( [ 'event' ] )

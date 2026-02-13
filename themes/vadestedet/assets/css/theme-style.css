@@ -1,4 +1,4 @@
-@layer normalize, typography, base, layout, sections, components, utility;
+@layer normalize, typography, base, spacing, rte, layout, sections, components, utility;
 
 /* @@ ROOT VARIABLES */
 :root {
@@ -148,12 +148,12 @@
 
   h1,
   .h1 {
-    font-size: 4rem;
+    font-size: 3.5rem;
   }
 
   h2,
   .h2 {
-    font-size: 3.5rem;
+    font-size: 2.5rem;
   }
 
   h3,
@@ -173,6 +173,16 @@
 
   h6 {
     font-size: 1rem;
+  }
+
+  .l1 {
+    font-size: 2rem;
+  }
+
+  .alt-text {
+    padding-top: 0.5rem;
+    opacity: 0.5;
+    font-style: italic;
   }
 }
 
@@ -236,6 +246,110 @@
 }
 
 
+/* @@ SPACING */
+@layer spacing {
+  /* ## padding */
+  .py-1 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .py-3 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+
+  /* ## margin */
+  .mt-2 {
+    margin-top: 2rem;
+  }
+}
+
+
+/* @@ RTE */
+@layer rte {
+  .rte > * + * {
+      margin-top: 1rem;
+  }
+
+  .rte h2 { 
+    margin-top: 4rem; 
+    margin-bottom: 1.5rem;
+  }
+
+  .rte h3 { 
+    margin-top: 2.5rem; 
+  }
+
+  .rte figure,
+  .rte blockquote,
+  .rte img {
+    margin: 2rem 0;
+  }
+
+  .rte p { 
+    line-height: 1.6; 
+  }
+
+  .rte ul {
+    list-style-type: disc; 
+  }
+
+  .rte ol {
+    list-style-type: decimal;
+  }
+
+  .rte ul,
+  .rte ol {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+  }
+
+  .rte ul ul, 
+  .rte ol ol, 
+  .rte ul ol, 
+  .rte ol ul {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .rte ul ul {
+    list-style-type: circle;
+  }
+
+  .rte li + li {
+    margin-top: 0.5rem;
+    line-height: 1.6;
+  }
+
+  .rte img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .rte figure {
+    text-align: center;
+  }
+
+  .rte figcaption {
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  .rte blockquote {
+    border-left: 4px solid var(--color-black);
+    padding: 1rem 0 1rem 2rem;
+    font-style: italic;
+  }
+}
+
+
 /* @@ LAYOUT */
 @layer layout {
   /* ## wrapper */
@@ -256,6 +370,14 @@
 
   .spaced\:row {
     justify-content: space-between;
+  }
+
+  .auto\:row-item {
+    flex: 0 0 auto;
+  }
+
+  .fill\:row-item {
+    flex: 1 0 auto;
   }
 
 
@@ -290,11 +412,19 @@
   }
 
   @media (min-width: 980px) {
-    .desktop\:clmns-6\/12 {
+    .laptop\:clmns-4\/12 {
+      grid-column: auto / span 4;
+    }
+
+    .laptop\:clmns-6\/12 {
       grid-column: auto / span 6;
     }
 
-    .desktop\:clmns-first {
+    .laptop\:clmns-8\/12 {
+      grid-column: auto / span 8;
+    }
+
+    .laptop\:clmns-first {
       grid-column-start: 1;
       grid-row-start: 1;
     }

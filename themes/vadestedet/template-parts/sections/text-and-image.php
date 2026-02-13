@@ -4,14 +4,12 @@ $relation = $args[ 'relation' ] ?? null;
 if ( empty( $relation ) ) return;
 
 
-// @@ TEXT BLOCK
+// @@ BLOCKS
 $block_relation = $relation . 'text_block_';
 $heading        = get_field( $block_relation . 'heading'              );
 $text           = get_field( $block_relation . 'text'                 );
 $button         = get_field( $block_relation . 'button'               );
 
-
-// @@ IMAGE BLOCK
 $block_relation = $relation . 'image_block_';
 $images         = [
   'desktop' => get_field( $block_relation . 'image_desktop' ),
@@ -24,7 +22,7 @@ $image_ratios   = [
 $image_first    = get_field( $block_relation . 'image_first'          );
 
 
-// ## option: set the image container as the first element in the grid
+// @@ OPTION: SET THE IMAGE CONTAINER AS THE FIRST ELEMENT IN THE GRID
 $image_first_classes = "";
 if ( $image_first ) {
   if ( str_contains( $image_first, 'mobile' ) ) {
@@ -32,7 +30,7 @@ if ( $image_first ) {
   }
   
   if ( str_contains( $image_first, 'desktop' ) ) {
-    $image_first_classes .= " desktop:clmns-first";
+    $image_first_classes .= " laptop:clmns-first";
   } 
 }; ?>
 
@@ -63,7 +61,7 @@ if ( $image_first ) {
     <?php endif; ?>
 
     <?php if ( $images[ 'desktop' ] ) : ?>
-      <div class="clmns-12/12 desktop:clmns-6/12<?= esc_attr( $image_first_classes ); ?>">
+      <div class="clmns-12/12 laptop:clmns-6/12<?= esc_attr( $image_first_classes ); ?>">
         <div class="top:sticky">
           <?php render_acf_img( $images[ 'desktop' ], $images[ 'mobile' ], $image_ratios, '1/2' ); ?>
         </div>

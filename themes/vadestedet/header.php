@@ -14,7 +14,7 @@
     <header class="the-header">
       <div class="pw:wrapper spaced:row">
         <div class="the-header-logo contain">
-          <?php $logo = sts_option( 'header.logo' ); if ( $logo ) : ?>    
+          <?php $logo = get_sts_option( 'header.logo' ); if ( $logo ) : ?>    
             <?= $logo; ?>
           <?php else : ?>
             <!-- PLACEHOLDER -->

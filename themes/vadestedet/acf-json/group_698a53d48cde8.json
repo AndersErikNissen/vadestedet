@@ -37,7 +37,7 @@
                 "class": "",
                 "id": ""
             },
-            "display_format": "H:i",
+            "display_format": "H:i:s",
             "return_format": "H:i:s",
             "allow_in_bindings": 0
         },
@@ -137,5 +137,5 @@
     "description": "",
     "show_in_rest": 0,
     "display_title": "",
-    "modified": 1770833298
+    "modified": 1770930558
 }

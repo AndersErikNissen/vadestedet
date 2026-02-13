@@ -16,7 +16,7 @@ add_action( 'init', function() {
         'singular_name' => __( 'Event', 'textdomain' ),
       ),
       'public'       => true,
-      'has_archive'  => false,
+      'has_archive'  => true,
       'show_ui'      => true,
       'show_in_menu' => true,
       'show_in_rest' => false,

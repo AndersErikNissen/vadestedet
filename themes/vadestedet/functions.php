@@ -74,4 +74,9 @@ add_action( 'after_setup_theme', function() {
   add_image_size( 'tablet-landscape', 1024 );
   add_image_size( 'laptop',           1440 );
   add_image_size( 'xlarge',           1920 );
+
+  // ## for schema.org
+  add_image_size('schema_1x1', 1200, 1200, true);
+  add_image_size('schema_4x3', 1200, 900, true);
+  add_image_size('schema_16x9', 1200, 675, true);
 } );
