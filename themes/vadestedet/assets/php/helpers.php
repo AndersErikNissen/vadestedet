@@ -46,7 +46,7 @@ function render_acf_img( $desktop_img, $mobile_img = null, $ratios = [ 'desktop'
   $style_vars = "--ratio-desktop:{$desktop_data['inverse_ratio']};--ratio-mobile:{$mobile_data['inverse_ratio']};";
 
   echo '<div class="ratio-container" style="' . esc_attr( $style_vars ) . '">';
-    echo '<picture>';
+    echo '<picture class="ratio-container-item">';
       echo sprintf(
         '<source media="(max-width: 979px)" srcset="%s" sizes="%spx">',
         wp_get_attachment_image_srcset( $mobile_img[ 'id' ], 'full' ),
@@ -63,6 +63,55 @@ function render_acf_img( $desktop_img, $mobile_img = null, $ratios = [ 'desktop'
     echo '</picture>';
   echo '</div>';
 };
+
+
+// @@ RENDER BADGES
+function render_badges( $badges ) {
+  if ( ! is_array( $badges ) || is_array( $badges ) && empty( $badges ) ) {
+    return;
+  }
+
+  echo '<div class="badges">';
+    foreach( $badges as $badge ) {
+      echo '<span class="badge">' . $badge . '</span>';
+    }
+  echo '</div>';
+}
+
+
+// @@ RENDER BTN VIA LINK
+function render_btn( $link, $class = 'btn' ) {
+  if ( ! is_array( $link ) || empty( $link['url'] ) ) {
+    return;
+  }
+
+  printf(
+    '<a class="%s" href="%s" target="%s">%s</a>',
+    esc_attr( $class ),
+    esc_url( $link[ 'url' ] ),
+    esc_attr( $link[ 'target' ] ?: '_self' ),
+    esc_html( $link[ 'title' ] )
+  );
+}
+
+
+// @@ GET LOCALIZED DATE FROM ACF FIELD
+function get_localized_acf_date( $acf_date, $format = 'j F, Y' ) {
+  if ( ! $acf_date ) return '';
+
+  $date_obj = DateTime::createFromFormat('Ymd', $acf_date);
+  
+  // ## return raw if format is wrong
+  if ( ! $date_obj ) return $acf_date; 
+
+  return date_i18n( $format, $date_obj->getTimestamp() );
+}
+
+
+// @@ GET LOCALIZED THEME STRING 
+function get_theme_string( $string ) {
+  return function_exists( 'pll__' ) ? pll__( $string ) : $string; 
+}
 
 
 // @@ GET AN ICON FROM THE CATALOGUE

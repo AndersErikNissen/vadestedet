@@ -1,4 +1,4 @@
-@layer normalize, typography, base, spacing, rte, layout, sections, components, utility;
+@layer normalize, typography, base, spacing, rte, layout, blocks, sections, components, utility;
 
 /* @@ ROOT VARIABLES */
 :root {
@@ -175,10 +175,18 @@
     font-size: 1rem;
   }
 
+
+  /* ## labels */
   .l1 {
     font-size: 2rem;
   }
 
+  .l2 {
+    font-size: 1.25rem;
+  }
+
+
+  /* ## miscellaneous */
   .alt-text {
     padding-top: 0.5rem;
     opacity: 0.5;
@@ -249,9 +257,22 @@
 /* @@ SPACING */
 @layer spacing {
   /* ## padding */
+  .pt-2 {
+    padding-top: 2rem;
+  }
+
+  .pb-2 {
+    padding-bottom: 2rem;
+  }
+
   .py-1 {
     padding-top: 1rem;
     padding-bottom: 1rem;
+  }
+
+  .py-2 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
   }
 
   .py-3 {
@@ -263,6 +284,10 @@
   /* ## margin */
   .mt-2 {
     margin-top: 2rem;
+  }
+
+  .mb-1 {
+    margin-bottom: 1rem;
   }
 }
 
@@ -352,6 +377,16 @@
 
 /* @@ LAYOUT */
 @layer layout {
+  /* ## blocks */
+  .block {
+    display: block;
+  }
+
+  .inline-block {
+    display: inline-block;
+  }
+
+
   /* ## wrapper */
   .pw\:wrapper {
     padding: 0 var(--pw-spacing);
@@ -432,6 +467,17 @@
 }
 
 
+/* @@ BLOCKS */
+@layer blocks {
+  /* ## card */
+  .block-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem
+  }
+}
+
+
 /* @@ SECTIONS */
 @layer sections {
   .section {
@@ -442,6 +488,42 @@
 
 /* @@ COMPONENTS */
 @layer components {
+  /* ## badges */
+  .badges {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    z-index: 1;
+    padding: 0.5rem;
+  }
+
+  .badge {
+    display: block;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    color: var(--color-white);
+    background-color: var(--color-black);
+  }
+
+
+  /* ## buttons */
+  .btn {
+    display: inline-flex;
+    border-radius: 0.25rem;
+    color: var(--color-white);
+    background-color: var(--color-black);
+    padding: 0.75rem 1.25rem;
+  }
+
+  .txt-btn {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+
+
   /* ## modal */
   .modal {
     position: fixed;

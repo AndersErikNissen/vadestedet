@@ -21,3 +21,4 @@ require_once STS_PLUGIN_PATH . 'includes/fields-config.php';
 require_once STS_PLUGIN_PATH . 'includes/helpers.php';
 require_once STS_PLUGIN_PATH . 'includes/admin-page.php';
 require_once STS_PLUGIN_PATH . 'includes/polylang-bridge.php';
+require_once STS_PLUGIN_PATH . 'includes/polylang-strings.php';

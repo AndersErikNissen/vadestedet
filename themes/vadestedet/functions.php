@@ -1,6 +1,6 @@
 <?php
 // @@ INCLUDES
-include get_theme_file_path( '/assets/php/utility.php' );
+include get_theme_file_path( '/assets/php/helpers.php' );
 
 
 /* @@ HIDE ADMIN-BAR */

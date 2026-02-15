@@ -37,7 +37,7 @@ if ( $image_first ) {
 <section class="section-text-and-image section">
   <div class="grid pw:wrapper">
     <?php if ( $heading || $text || $button ) : ?>
-      <div class="clmns-12/12 desktop:clmns-6/12">
+      <div class="clmns-12/12 laptop:clmns-6/12">
         <div class="top:sticky">
           <?php if ( $heading ) : ?> 
             <h2 class="h2">

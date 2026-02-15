@@ -18,6 +18,9 @@ if ( have_posts() ) {
       }
     }
 
+    if ( get_post_type() === 'event' ) {
+      get_template_part( 'template-parts/sections/next-events' );
+    }
   }
 
 }
