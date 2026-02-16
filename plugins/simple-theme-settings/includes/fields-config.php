@@ -110,8 +110,26 @@ function sts_get_fields_definition() {
   $archive = [
     [
       'group'  => 'archive',
-      'key'		 => 'archive_event',
+      'key'		 => 'event',
       'label'	 => 'Event',
+      'type'	 => 'group',
+      'fields' => [
+        [
+          'key'   => 'heading',
+          'label' => 'Overskrift',
+          'type'  => 'text',
+        ],
+        [
+          'key'   => 'description',
+          'label' => 'Beskrivelse',
+          'type'  => 'textarea',
+        ]
+      ]
+    ],
+    [
+      'group'  => 'archive',
+      'key'		 => 'post',
+      'label'	 => 'Indlæg',
       'type'	 => 'group',
       'fields' => [
         [
@@ -130,16 +148,3 @@ function sts_get_fields_definition() {
 
   return array_merge( $company, $contact, $header, $footer, $ui, $archive );
 }
-
-// ## the group format
-// [
-// 	'group' 			=> '...',
-// 	'key'					=> '...',
-// 	'label'				=> '...',
-// 	'type'				=>'group',
-// 	'fields' => [
-// 		[
-// 			...
-// 		],
-// 	],
-// ],

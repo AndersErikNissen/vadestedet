@@ -40,7 +40,7 @@ if ( $next_events_query->have_posts() ) : ?>
     <div class="grid">
       <?php while ( $next_events_query->have_posts() ) {
         $next_events_query->the_post();
-        get_template_part( 'template-parts/blocks/card', null, [ 'class' => 'clmns-6/12' ] );
+        get_template_part( 'template-parts/blocks/card', null, [ 'class' => 'clmns-12/12 laptop:clmns-6/12' ] );
       }; ?>
     </div>
   </div>

@@ -1,9 +1,6 @@
 <?php
-/**
- * STS Admin Page & Settings Logic
- */
-
 if ( ! defined( 'ABSPATH' ) ) exit;
+
 
 // @@ 1. CREATE THE ADMIN MENU PAGE
 add_action( 'admin_menu', function() {
@@ -17,6 +14,7 @@ add_action( 'admin_menu', function() {
     60
   );
 });
+
 
 // @@ 2. REGISTER SETTINGS
 function sts_get_sections_definition() {
@@ -62,6 +60,7 @@ add_action( 'admin_init', function() {
   };
 });
 
+
 // @@ 3. UNIVERSAL SANITIZER
 function sts_sanitize_options( $input ) {
   if ( ! is_array( $input ) ) return [];
@@ -83,10 +82,8 @@ function sts_sanitize_options( $input ) {
 
 // ## helper to handle the actual cleaning of strings
 function sts_process_single_value( $key, $value ) {
-  $result = sanitize_text_field( $value );
-
-  // ## allow svg for anything with "logo" in the key
-  if ( ! empty($key) && strpos( $key, 'logo' ) !== false ) {
+  // ## allow svg if "logo" is in the key
+  if ( strpos( $key, 'logo' ) !== false ) {
     $allowed_tags = [
       'svg' => [ 'xmlns' => true, 'viewbox' => true, 'width' => true, 'height' => true, 'fill' => true, 'stroke' => true, 'class' => true, 'id' => true, 'role' => true, 'aria-hidden' => true ],
       'path' => [ 'd' => true, 'fill' => true, 'stroke' => true ],
@@ -95,12 +92,13 @@ function sts_process_single_value( $key, $value ) {
       'defs' => [], 'use' => [ 'xlink:href' => true, 'href' => true ],
       'rect' => [ 'x' => true, 'y' => true, 'width' => true, 'height' => true, 'fill' => true ],
     ];
-
-    $result = wp_kses( $value, $allowed_tags );
+    return wp_kses( $value, $allowed_tags );
   }
 
-  return $result;
+  // ## default for textareas and other fields
+  return wp_kses_post( $value );
 }
+
 
 // @@ 4. RENDER PAGE
 function sts_render_options_page() { ?>
@@ -116,30 +114,37 @@ function sts_render_options_page() { ?>
   </section>
 <?php }
 
+
 // @@ 5. RENDER FIELDS 
 function sts_render_field( $field ) {
-  $options = get_option( 'sts_options', [] );
-  $group = $field[ 'group' ] ?? '';
-  $key = $field[ 'key' ] ?? '';
+  $options     = get_option( 'sts_options', [] );
+  $group       = $field[ 'group' ] ?? '';
+  $parent_key  = $field[ 'key' ] ?? '';
   $placeholder = $field[ 'placeholder' ] ?? '';
 
-  // ## handle nested groups
+
+  // ## nested groups (e.g., footer > social_links > facebook)
   if ( isset( $field[ 'type' ] ) && $field[ 'type' ] === 'group' ) {
     echo '<fieldset class="sts-field-group">';
     echo '<legend style="font-weight:bold; padding:0 5px;">' . esc_html( $field['label'] ) . '</legend>';
 
     foreach ( $field['fields'] as $sub ) {
       $sub_key = $sub[ 'key' ];
-      $value = $options[ $group ][ $key ][ $sub_key ] ?? '';
 
-      echo '<div style="margin-bottom:8px;">';
-        echo '<label style="display:block; font-size:12px;">' . esc_html($sub['label']) . '</label>';
+      
+      // ## accessing the nested value: [section][parent_field][child_field]
+      $value = $options[ $group ][ $parent_key ][ $sub_key ] ?? '';
+
+      echo '<div>';
+        echo '<label style="display:block; font-weight:600; font-size:12px; margin-bottom:4px;">' . esc_html($sub['label']) . '</label>';
+        
         if ( $sub[ 'type' ] === 'textarea' ) {
           printf(
-            '<textarea class="regular-text" name="sts_options[%s][%s]" rows="5" placeholder="%s">%s</textarea>',
+            '<textarea class="large-text" name="sts_options[%s][%s][%s]" rows="4" placeholder="%s">%s</textarea>',
             esc_attr( $group ), 
+            esc_attr( $parent_key ), 
             esc_attr( $sub_key ),
-            esc_attr( $sub[ 'placeholder' ] ),
+            esc_attr( $sub[ 'placeholder' ] ?? ''),
             esc_textarea( $value )
           );
         } else {
@@ -147,7 +152,7 @@ function sts_render_field( $field ) {
             '<input type="%s" name="sts_options[%s][%s][%s]" value="%s" placeholder="%s" class="regular-text">',
             esc_attr( $sub[ 'type' ] ?? 'text' ),
             esc_attr( $group ),
-            esc_attr( $key ),
+            esc_attr( $parent_key ),
             esc_attr( $sub_key ),
             esc_attr( $value ),
             esc_attr( $sub[ 'placeholder' ] ?? '' )
@@ -159,21 +164,23 @@ function sts_render_field( $field ) {
     return;
   }
 
-  // @@ STANDARD FIELDS (TEXTAREA / TEXT)
-  $value = $options[ $group ][ $key ] ?? '';
+
+  // ## standard top-level fields
+  $value = $options[ $group ][ $parent_key ] ?? '';
 
   if ( isset( $field[ 'type' ] ) && $field[ 'type' ] === 'textarea' ) {
     printf(
-      '<textarea class="regular-text" name="sts_options[%s][%s]" rows="5" placeholder="%s">%s</textarea>',
-      esc_attr( $group ), esc_attr( $key ), esc_attr( $placeholder ), esc_textarea( $value )
+      '<textarea class="large-text" name="sts_options[%s][%s]" rows="5" placeholder="%s">%s</textarea>',
+      esc_attr( $group ), esc_attr( $parent_key ), esc_attr( $placeholder ), esc_textarea( $value )
     );
   } else {
     printf(
       '<input type="%s" name="sts_options[%s][%s]" value="%s" class="regular-text" placeholder="%s">',
-      esc_attr( $field[ 'type' ] ?? 'text' ), esc_attr( $group ), esc_attr( $key ), esc_attr( $value ), esc_attr( $placeholder )
+      esc_attr( $field[ 'type' ] ?? 'text' ), esc_attr( $group ), esc_attr( $parent_key ), esc_attr( $value ), esc_attr( $placeholder )
     );
   }
 }
+
 
 // @@ 6. ENQUEUE ASSETS
 add_action( 'admin_enqueue_scripts', function( $hook ) {

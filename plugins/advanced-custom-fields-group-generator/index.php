@@ -292,6 +292,21 @@ function acfgg_group( $relation, $name, $section, $fields, $location, $menu_orde
 
 // @@ CREATE ALL SECTIONS
 function acfgg_sections() {
+  // ## post
+  $relation = 'section_post_information_';
+  
+  acfgg_group( 
+    $relation, 
+    'Section: Event information', 
+    'event-information',
+    array_merge(
+      acfgg_block( $relation, 'post_description' ), 
+    ), [
+      acfgg_location( [ 'post' ] )
+    ]
+  );
+
+
   // ## event (cpt)
   $relation = 'section_event_information_';
   

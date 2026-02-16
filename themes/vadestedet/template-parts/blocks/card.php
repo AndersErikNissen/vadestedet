@@ -1,14 +1,13 @@
 <?php
-$relation = '';
+$post_type = get_post_type();
+$relation = 'section_' . $post_type . '_information_';
 $class = $args[ 'class' ] ?? '';
 $image_size = $args[ 'image_size' ] ?? '1/2'; 
-$post_type = get_post_type();
 $badges = [];
 
 
 // @@ EVENT BASED MODIFIER(S)
 if ( $post_type === 'event' ) {
-  $relation = 'section_event_information_';
   $raw_date = get_field( $relation . 'event_information_block_date', false, false );
   $badges[] = get_localized_acf_date( $raw_date );
 }

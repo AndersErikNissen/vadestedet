@@ -20,6 +20,8 @@ add_action( 'init', function() use ( $register_strings ) {
 
   $general_strings = [
     'Se alle',
+    'Tidligere side',
+    'Næste side',
   ];
 
   

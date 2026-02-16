@@ -488,6 +488,24 @@
 
 /* @@ COMPONENTS */
 @layer components {
+  /* ## pagination */
+  .pagination {
+    margin-top: 4rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .pagination .current {
+    font-weight: 700;
+  }
+
+  .pagination a {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+
+
   /* ## badges */
   .badges {
     position: absolute;
