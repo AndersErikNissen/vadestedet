@@ -11,7 +11,11 @@
   <body <?php body_class( 'the-body' ); ?>>
     <?php wp_body_open(); ?>
 
-    <header class="the-header">
+    <?php if ( is_front_page() ) : ?>
+      <div class="toggle-the-header-see-through"></div>
+    <?php endif; ?>
+
+    <header class="the-header<?php if ( is_front_page() ) echo ' see-through'; ?>">
       <div class="pw:wrapper spaced:row">
         <div class="the-header-logo contain">
           <?php $logo = sts_option( 'header.logo' ); if ( $logo ) : ?>    

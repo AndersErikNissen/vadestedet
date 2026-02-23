@@ -117,14 +117,13 @@ function acfgg_field( $relation, $label, $name, $type, $args = [] ):array {
 
 
 // @@ GENERATE ACCORDION
-function acfgg_accordion( $relation, $name, $instructions = '', $open = 0 ):array {
-  return [
+function acfgg_accordion( $relation, $name, $args = [] ):array {
+  return array_merge( [
     'key'   => acfgg_key( $relation, $name ),
     'label' => $name,
     'type'  => 'accordion',
-    'open'  => $open,
-    'instructions' => $instructions,
-  ];
+    'open'  => 0,
+  ], $args);
 }
 
 
@@ -225,14 +224,77 @@ function acfgg_block( $relation, $type, $count = '' ):array {
 
   if ( $type === 'event_relationship' ) {
     return [
-      acfgg_accordion( $block_relation . 'tab_', 'Relation(er)',             'Relevant hvis dette event har en relation til 1 eller flere events'                  ),
+      acfgg_accordion( $block_relation . 'tab_', 'Relation(er)',             [ 'instructions' => 'Relevant hvis dette event har en relation til 1 eller flere events' ] ),
       acfgg_field(     $block_relation,          'Vælg relaterede event(s)', 'event_relationship',                                                'relationship', [
         'post_type' => 'event',
         'filters'   => '',
         'elements'  => [ 'featured_image' ]
-      ]                                                                                                                                                            )
+      ]                                                                                                                                                                 )
     ];
-  }
+  };
+
+  if ( $type === 'carousel' ) {
+    $return_array = [];
+
+    $return_array[] = acfgg_accordion( $block_relation . 'tab_', 'Carousel' );
+    
+    $sub_field_relation = $block_relation . 'sub_field_';
+    $sub_fields = [];
+
+    $previous_keys = [];
+
+    for ( $i = 1; $i <= 8; $i++ ) {
+      $sub_field_relation_extention = $sub_field_relation . $i . '_';
+      
+      $heading       = acfgg_field( $sub_field_relation_extention, 'Overskrift',              'heading',       'text'                                        );
+      $description   = acfgg_field( $sub_field_relation_extention, 'Tekst',                   'text',          'textarea'                                    );
+      $button        = acfgg_field( $sub_field_relation_extention, 'Knap',                    'button',        'link'                                        );
+      $image_desktop = acfgg_field( $sub_field_relation_extention, 'Vælg billede (Computer)', 'image_desktop', 'image', [ 'wrapper' => [ 'width' => '50' ] ] );
+      $image_mobile  = acfgg_field( $sub_field_relation_extention, 'Vælg billede (Mobile)',   'image_mobile',  'image', [ 'wrapper' => [ 'width' => '50' ] ] );
+
+      $keys = [
+        $heading[ 'key' ],
+        $description[ 'key' ],
+        $button[ 'key' ],
+        $image_desktop[ 'key' ],
+        $image_mobile[ 'key' ],
+      ];
+
+      $conditional_logic = [];
+
+      if ( $i !== 1 ) {
+        $logic_keys = array_merge( $keys, $previous_keys );
+
+        foreach ( $logic_keys as $key ) {
+          $conditional_logic[] = [
+            [
+              'field' => $key,
+              'operator' => '!=empty'
+            ]
+          ];
+        }
+      }
+
+      $tab = acfgg_accordion( $sub_field_relation_extention . 'tab_', '(' . $i . ') Element', [
+        'conditional_logic' => $conditional_logic
+      ] );
+
+      $sub_fields[] = $tab;
+      $sub_fields[] = $heading;
+      $sub_fields[] = $description;
+      $sub_fields[] = $button;
+      $sub_fields[] = $image_desktop;
+      $sub_fields[] = $image_mobile;
+
+      $previous_keys = $keys;
+    };
+
+    $return_array[] = acfgg_field( $block_relation, 'Carousel elementer', 'elements', 'group', [
+      'sub_fields' => $sub_fields,
+    ] );
+
+    return $return_array;
+  };
 }
 
 // @@ GENERATE LOCATION
@@ -298,7 +360,7 @@ function acfgg_sections() {
   acfgg_group( 
     $relation, 
     'Section: Event information', 
-    'event-information',
+    'post-description',
     array_merge(
       acfgg_block( $relation, 'post_description' ), 
     ), [
@@ -313,13 +375,28 @@ function acfgg_sections() {
   acfgg_group( 
     $relation, 
     'Section: Event information', 
-    'event-information',
+    'post-description',
     array_merge(
       acfgg_block( $relation, 'post_description'   ), 
       acfgg_block( $relation, 'event_information'  ),
       acfgg_block( $relation, 'event_relationship' )
     ), [
       acfgg_location( [ 'event' ] )
+    ]
+  );
+
+
+  // ## carousel
+  $relation = 'section_carousel_';
+
+  acfgg_group( 
+    $relation, 
+    'Sektion: Carousel', 
+    'carousel',
+    array_merge(
+      acfgg_block( $relation, 'carousel'  )
+    ), [
+      acfgg_location( [ 'frontpage' ] )
     ]
   );
 

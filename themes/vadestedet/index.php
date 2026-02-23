@@ -1,27 +1,8 @@
-<?php 
-get_header(); 
-
-$post_type = get_post_type();
-$heading = sts_option( 'archive.' . $post_type . '.heading' ) ?? false;
-$description = sts_option( 'archive.' . $post_type . '.description' ) ?? false; ?>
+<?php get_header(); ?>
 
 <section class="section-index section">
   <div class="pw:wrapper">
-    <?php if ( $heading || $description ) : ?>
-      <div class="pb-2">
-        <?php if ( $heading ) : ?>
-          <h1 class="h1 mb-1">
-            <?= $heading; ?>
-          </h1>
-        <?php endif; ?>
-
-        <?php if ( $description ) : ?>
-          <p class="l1">
-            <?= $description; ?>
-          </p>
-        <?php endif; ?>
-      </div>
-    <?php endif; ?>
+    <?php get_template_part( 'template-parts/snippets/archive-header' ); ?>
 
     <?php if ( have_posts() ) : 
       $links = paginate_links( array(
@@ -43,9 +24,8 @@ $description = sts_option( 'archive.' . $post_type . '.description' ) ?? false; 
       <?php endif; ?>
 
     <?php else : ?>
-      <div>
-        <p></p>
-        <!-- INGEN POSTS... -->
+      <div class="py-2">
+        <p class="h4"><?= get_theme_string( 'Vi kunne desværre ikke finde nogen resultater' ); ?></p>
       </div>
     <?php endif; ?>
   </div>

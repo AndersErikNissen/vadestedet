@@ -10,6 +10,29 @@ function sts_get_fields_definition() {
       'translate' => false
     ],
     [
+      'group'       => 'company',
+      'key'		      => 'price_range',
+      'label'       => 'Pris niveau', 
+      'type' 	      => 'text',
+      'placeholder' => 'Brug $, $$, eller $$$...',
+      'translate'   => false
+    ],
+    [
+      'group'       => 'company',
+      'key'		      => 'storefront_image',
+      'label'       => 'Billede af facaden', 
+      'type' 	      => 'text',
+      'placeholder' => 'Indsæt medie URL...',
+      'translate'   => false
+    ],
+    [
+      'group'     => 'company',
+      'key'		    => 'telephone',
+      'label'     => 'Telefonnummer', 
+      'type' 	    => 'text',
+      'translate' => false
+    ],
+    [
       'group'     => 'company',
       'key'		    => 'address',
       'label'     => 'Adresse', 
@@ -36,6 +59,14 @@ function sts_get_fields_definition() {
       'label'     => 'Kommune', 
       'type' 	    => 'text',
       'translate' => false
+    ],
+    [
+      'group'       => 'company',
+      'key'		      => 'logo',
+      'label'       => 'Logo', 
+      'type' 	      => 'text',
+      'placeholder' => 'Indsæt medie URL...',
+      'translate'   => false
     ]
   ];
 
@@ -146,5 +177,26 @@ function sts_get_fields_definition() {
     ]
   ];
 
-  return array_merge( $company, $contact, $header, $footer, $ui, $archive );
+  $hours = [
+    [
+      'group'  => 'hours',
+      'key'		 => 'monday',
+      'label'	 => 'Mandag',
+      'type'	 => 'group',
+      'fields' => [
+        [
+          'key'   => 'heading',
+          'label' => 'Overskrift',
+          'type'  => 'text',
+        ],
+        [
+          'key'   => 'description',
+          'label' => 'Beskrivelse',
+          'type'  => 'textarea',
+        ]
+      ]
+    ]
+  ];
+
+  return array_merge( $company, $contact, $hours, $header, $footer, $ui, $archive );
 }

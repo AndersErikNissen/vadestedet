@@ -20,13 +20,13 @@ $args = [
   ]
 ];
 
-if ( $is_event ) {
+if ( $is_event && is_single() ) {
   $args[ 'post__not_in' ] = [ get_the_ID() ];
 }
 
 $next_events_query = new WP_Query( $args );
 
-if ( $next_events_query->have_posts() ) : ?>
+if ( ! $next_events_query->have_posts() ) return;  ?>
 
 <section class="section-next-events section">
   <div class="pw:wrapper">
@@ -46,4 +46,4 @@ if ( $next_events_query->have_posts() ) : ?>
   </div>
 </section>
 
-<?php wp_reset_postdata(); endif;
+<?php wp_reset_postdata(); 

@@ -22,6 +22,7 @@ add_action( 'init', function() use ( $register_strings ) {
     'Se alle',
     'Tidligere side',
     'Næste side',
+    'Vi kunne desværre ikke finde nogen resultater'
   ];
 
   
