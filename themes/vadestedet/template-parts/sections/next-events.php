@@ -26,7 +26,10 @@ if ( $is_event && is_single() ) {
 
 $next_events_query = new WP_Query( $args );
 
-if ( ! $next_events_query->have_posts() ) return;  ?>
+if ( ! $next_events_query->have_posts() ) return; 
+
+$posts_found = $next_events_query->found_posts ?? 2;
+$desktop_clmns_class = 12 / min( $posts_found, 4 ); ?>
 
 <section class="section-next-events section">
   <div class="pw:wrapper">
@@ -40,7 +43,7 @@ if ( ! $next_events_query->have_posts() ) return;  ?>
     <div class="grid">
       <?php while ( $next_events_query->have_posts() ) {
         $next_events_query->the_post();
-        get_template_part( 'template-parts/blocks/card', null, [ 'class' => 'clmns-12/12 laptop:clmns-6/12' ] );
+        get_template_part( 'template-parts/blocks/card', null, [ 'class' => "clmns-12/12 laptop:clmns-{$desktop_clmns_class}/12" ] );
       }; ?>
     </div>
   </div>

@@ -17,9 +17,13 @@ if ( have_posts() ) {
         get_template_part( $path, null, [ 'relation' => $acfgg[ 'relation' ] ] );
       }
     }
-  
-  }
-  
+
+  } 
+
 }
+
+get_template_part( 'template-parts/sections/next-events', null, [ 'post_count' => 4 ] );
+
+get_template_part( 'template-parts/snippets/schema', null, [ 'type' => 'company' ] );
 
 get_footer();

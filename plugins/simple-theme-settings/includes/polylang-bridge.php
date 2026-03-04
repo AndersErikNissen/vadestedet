@@ -4,7 +4,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 // @@ STS POLYLANG BRIDGE
 add_action('init', function() {
-  // ## only proceed if polylang is active
   if ( ! function_exists('pll_register_string') ) return;
 
   $options  = get_option( 'sts_options', [] );
@@ -14,33 +13,58 @@ add_action('init', function() {
   if ( empty( $fields ) ) return;
 
   foreach ( $fields as $field ) {
-    // ## skip if the field is explicitly marked as non-translatable
     if ( isset( $field[ 'translate' ] ) && $field[ 'translate' ] === false ) {
       continue;
     }
 
-    $group_id = $field[ 'group' ] ?? 'general';
+    $group_id     = $field[ 'group' ] ?? 'general';
     $section_name = $sections[ $group_id ] ?? ucfirst( $group_id );
-    $context = 'STS: ' . $section_name;
+    $context      = 'STS: ' . $section_name;
 
-    // ## handle nested groups
-    if ( isset( $field[ 'type' ] ) && $field[ 'type' ] === 'group' && ! empty( $field[ 'fields' ] ) ) {
-      foreach ( $field[ 'fields' ] as $sub_field ) {
-          $val = $options[ $group_id ][ $field[ 'key' ] ][ $sub_field[ 'key' ] ] ?? '';
-          
-          // ## only register if value exists and isn't a logo
-          if ( ! empty( $val ) ) {
-            pll_register_string( $field[ 'label' ] . ': ' . $sub_field[ 'label' ], $val, $context, true );
+    // ## 1. HANDLE REPEATERS (Dynamic rows)
+    if ( isset( $field[ 'type' ] ) && $field[ 'type' ] === 'repeater' ) {
+      $repeater_data = $options[ $group_id ][ $field[ 'key' ] ] ?? [];
+      
+      if ( ! empty( $repeater_data ) && is_array( $repeater_data ) ) {
+        foreach ( $repeater_data as $row_index => $row_values ) {
+          foreach ( $field[ 'fields' ] as $sub_field ) {
+            // ## skip sub-fields marked as non-translatable
+            if ( isset( $sub_field[ 'translate' ] ) && $sub_field[ 'translate' ] === false ) {
+              continue;
+            }
+
+            $val = $row_values[ $sub_field[ 'key' ] ] ?? '';
+            
+            if ( ! empty( $val ) && is_string( $val ) ) {
+              $name = $field['label'] . ' [' . $row_index . ']: ' . $sub_field['label'];
+              pll_register_string( $name, $val, $context, true );
+            }
           }
+        }
       }
     } 
-    // ## handle standard fields (text, textarea, email, etc.)
-    else {
-        $val = $options[ $group_id ][ $field[ 'key' ] ] ?? '';
 
-        if ( ! empty( $val ) ) {
-          pll_register_string( $field[ 'label' ], $val, $context, true );
+    // ## 2. HANDLE NESTED GROUPS (Fixed children)
+    elseif ( isset( $field[ 'type' ] ) && $field[ 'type' ] === 'group' && ! empty( $field[ 'fields' ] ) ) {
+      foreach ( $field[ 'fields' ] as $sub_field ) {
+        // ## skip sub-fields marked as non-translatable
+        if ( isset( $sub_field[ 'translate' ] ) && $sub_field[ 'translate' ] === false ) {
+          continue;
         }
+
+        $val = $options[ $group_id ][ $field[ 'key' ] ][ $sub_field[ 'key' ] ] ?? '';
+        if ( ! empty( $val ) && is_string( $val ) ) {
+          pll_register_string( $field[ 'label' ] . ': ' . $sub_field[ 'label' ], $val, $context, true );
+        }
+      }
+    } 
+
+    // ## 3. HANDLE STANDARD FIELDS
+    else {
+      $val = $options[ $group_id ][ $field[ 'key' ] ] ?? '';
+      if ( ! empty( $val ) && is_string( $val ) ) {
+        pll_register_string( $field[ 'label' ], $val, $context, true );
+      }
     }
   }
 });

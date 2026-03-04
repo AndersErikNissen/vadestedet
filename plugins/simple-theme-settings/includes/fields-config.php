@@ -11,18 +11,33 @@ function sts_get_fields_definition() {
     ],
     [
       'group'       => 'company',
-      'key'		      => 'price_range',
-      'label'       => 'Pris niveau', 
+      'key'		      => 'storefront_image',
+      'label'       => 'Facadebillede', 
       'type' 	      => 'text',
-      'placeholder' => 'Brug $, $$, eller $$$...',
+      'placeholder' => 'Indsæt medie URL...',
       'translate'   => false
     ],
     [
       'group'       => 'company',
-      'key'		      => 'storefront_image',
-      'label'       => 'Billede af facaden', 
+      'key'		      => 'reservation_url',
+      'label'       => 'Reservations link', 
       'type' 	      => 'text',
-      'placeholder' => 'Indsæt medie URL...',
+      'placeholder' => 'Indsæt reservations URL...',
+      'translate'   => false
+    ],
+    [
+      'group'       => 'company',
+      'key'		      => 'amenity',
+      'label'       => 'Særlige faciliteter', 
+      'type' 	      => 'text',
+      'description' => 'Beskriv en særlig ting ved caféen (f.eks. "Brætspilsbibliotek" eller "Spilvejledning"). Dette hjælper Google med at vise din café til de rigtige kunder.'
+    ],
+    [
+      'group'       => 'company',
+      'key'		      => 'price_range',
+      'label'       => 'Pris niveau', 
+      'type' 	      => 'text',
+      'placeholder' => 'Brug $, $$, eller $$$...',
       'translate'   => false
     ],
     [
@@ -76,7 +91,7 @@ function sts_get_fields_definition() {
       'key'					=> 'phone',
       'label'				=> 'Telefon nummer', 
       'type'				=> 'text', 
-      'description' => '(Vælg dit ønskede format, som f.eks. +45 9999 9999)',
+      'description' => 'Vælg dit ønskede format, som f.eks. +45 9999 9999',
       'translate'   => false
     ],
     [
@@ -185,18 +200,183 @@ function sts_get_fields_definition() {
       'type'	 => 'group',
       'fields' => [
         [
-          'key'   => 'heading',
-          'label' => 'Overskrift',
-          'type'  => 'text',
+          'key'   => 'open',
+          'label' => 'Åbeningstidspunkt',
+          'type'  => 'time',
         ],
+        [
+          'key'   => 'close',
+          'label' => 'Lukketidspunkt',
+          'type'  => 'time',
+        ]
+      ],
+      'translate'   => false
+    ],
+    [
+      'group'  => 'hours',
+      'key'		 => 'tuesday',
+      'label'	 => 'Tirsdag',
+      'type'	 => 'group',
+      'fields' => [
+        [
+          'key'   => 'open',
+          'label' => 'Åbeningstidspunkt',
+          'type'  => 'time',
+        ],
+        [
+          'key'   => 'close',
+          'label' => 'Lukketidspunkt',
+          'type'  => 'time',
+        ]
+      ],
+      'translate'   => false
+    ],
+    [
+      'group'  => 'hours',
+      'key'		 => 'wednesday',
+      'label'	 => 'Onsdag',
+      'type'	 => 'group',
+      'fields' => [
+        [
+          'key'   => 'open',
+          'label' => 'Åbeningstidspunkt',
+          'type'  => 'time',
+        ],
+        [
+          'key'   => 'close',
+          'label' => 'Lukketidspunkt',
+          'type'  => 'time',
+        ]
+      ],
+      'translate'   => false
+    ],
+    [
+      'group'  => 'hours',
+      'key'		 => 'thursday',
+      'label'	 => 'Torsdag',
+      'type'	 => 'group',
+      'fields' => [
+        [
+          'key'   => 'open',
+          'label' => 'Åbeningstidspunkt',
+          'type'  => 'time',
+        ],
+        [
+          'key'   => 'close',
+          'label' => 'Lukketidspunkt',
+          'type'  => 'time',
+        ]
+      ],
+      'translate'   => false
+    ],
+    [
+      'group'  => 'hours',
+      'key'		 => 'friday',
+      'label'	 => 'Fredag',
+      'type'	 => 'group',
+      'fields' => [
+        [
+          'key'   => 'open',
+          'label' => 'Åbeningstidspunkt',
+          'type'  => 'time',
+        ],
+        [
+          'key'   => 'close',
+          'label' => 'Lukketidspunkt',
+          'type'  => 'time',
+        ]
+      ],
+      'translate'   => false
+    ],
+    [
+      'group'  => 'hours',
+      'key'		 => 'saturday',
+      'label'	 => 'Lørdag',
+      'type'	 => 'group',
+      'fields' => [
+        [
+          'key'   => 'open',
+          'label' => 'Åbeningstidspunkt',
+          'type'  => 'time',
+        ],
+        [
+          'key'   => 'close',
+          'label' => 'Lukketidspunkt',
+          'type'  => 'time',
+        ]
+      ],
+      'translate'   => false
+    ],
+    [
+      'group'  => 'hours',
+      'key'		 => 'sunday',
+      'label'	 => 'Søndag',
+      'type'	 => 'group',
+      'fields' => [
+        [
+          'key'   => 'open',
+          'label' => 'Åbeningstidspunkt',
+          'type'  => 'time',
+        ],
+        [
+          'key'   => 'close',
+          'label' => 'Lukketidspunkt',
+          'type'  => 'time',
+        ]
+      ],
+      'translate'   => false
+    ],
+    [
+      'group'  => 'hours',
+      'key'    => 'special_hours',
+      'label'  => 'Specielle åbningstider',
+      'type'   => 'repeater',
+      'fields' => [
         [
           'key'   => 'description',
           'label' => 'Beskrivelse',
-          'type'  => 'textarea',
+          'type'  => 'text'
+        ],
+        [
+          'key'   => 'date',
+          'label' => 'Dato',
+          'type'  => 'date',
+          'translate'   => false
+        ],
+        [
+          'key'   => 'open',
+          'label' => 'Åbeningstidspunkt',
+          'type'  => 'time',
+          'translate'   => false
+        ],
+        [
+          'key'   => 'close',
+          'label' => 'Lukketidspunkt',
+          'type'  => 'time',
+          'translate'   => false
         ]
-      ]
+      ],
     ]
   ];
 
-  return array_merge( $company, $contact, $hours, $header, $footer, $ui, $archive );
+  $inject = [
+    [
+      'group'       => 'inject',
+      'key'         => 'head',
+      'label'       => 'Head scripts',
+      'type'        => 'textarea',
+      'placeholder' => 'Indsæt <script> eller <meta> tags...',
+      'translate'   => false,
+    ],
+    [
+      'group'       => 'inject',
+      'key'         => 'body',
+      'label'       => 'Body scripts',
+      'type'        => 'textarea',
+      'placeholder' => 'Indsæt <script> tags...',
+      'translate'   => false,
+    ],
+  ];
+
+  return array_merge( $company, $contact, $hours, $header, $footer, $ui, $archive, $inject );
 }

@@ -76,7 +76,19 @@ add_action( 'after_setup_theme', function() {
   add_image_size( 'xlarge',           1920 );
 
   // ## for schema.org
-  add_image_size('schema_1x1', 1200, 1200, true);
-  add_image_size('schema_4x3', 1200, 900, true);
-  add_image_size('schema_16x9', 1200, 675, true);
+  add_image_size('schema_1x1',  1200, 1200, true);
+  add_image_size('schema_4x3',  1200, 900,  true);
+  add_image_size('schema_16x9', 1200, 675,  true);
 } );
+
+
+// @@ INJECT SCRIPTS (VIA STS PLUGIN)
+add_action( 'wp_head', function() {
+  $inject = sts_option( 'inject.head' );
+  if ( ! empty( $inject ) ) echo $inject;
+});
+
+add_action( 'wp_body_open', function() {
+  $inject = sts_option( 'inject.body' );
+  if ( ! empty( $inject ) ) echo $inject;
+});

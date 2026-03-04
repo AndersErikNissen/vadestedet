@@ -187,7 +187,9 @@ function acfgg_block( $relation, $type, $count = '' ):array {
       acfgg_field(     $block_relation,          'Kort beskrivelse', 'short_description', 'textarea', [
         'required'     => true
       ]                                                                                                ),
-      acfgg_field(     $block_relation,          'Billede',          'image',             'image'      ),
+      acfgg_field(     $block_relation,          'Billede',          'image',             'image', [
+        'required'     => true
+      ]                                                                                                ),
       acfgg_field(     $block_relation,          'Beskrivelse',      'description',       'wysiwyg', [
         'tabs'         => 'visual',
         'media_upload' => 1,
@@ -295,6 +297,62 @@ function acfgg_block( $relation, $type, $count = '' ):array {
 
     return $return_array;
   };
+
+  if ( $type === 'faq' ) {
+    $return_array = [];
+
+    $return_array[] = acfgg_accordion( $block_relation . 'tab_', 'Tekst indhold'                 );
+    $return_array[] = acfgg_field(     $block_relation,          'Overskrift', 'heading', 'text' );
+    $return_array[] = acfgg_accordion( $block_relation . 'tab_', 'Spørgsmål og svar' );
+    
+    $sub_field_relation = $block_relation . 'sub_field_';
+    $sub_fields = [];
+
+    $previous_keys = [];
+
+    for ( $i = 1; $i <= 12; $i++ ) {
+      $sub_field_relation_extention = $sub_field_relation . $i . '_';
+      
+      $question = acfgg_field( $sub_field_relation_extention, 'Spørgsmål', 'question', 'text'     );
+      $answer   = acfgg_field( $sub_field_relation_extention, 'Svar',      'answer',   'textarea' );
+
+      $keys = [
+        $question[ 'key' ],
+        $answer[ 'key' ],
+      ];
+
+      $conditional_logic = [];
+
+      if ( $i !== 1 ) {
+        $logic_keys = array_merge( $keys, $previous_keys );
+
+        foreach ( $logic_keys as $key ) {
+          $conditional_logic[] = [
+            [
+              'field' => $key,
+              'operator' => '!=empty'
+            ]
+          ];
+        }
+      }
+
+      $tab = acfgg_accordion( $sub_field_relation_extention . 'tab_', '(' . $i . ') Element', [
+        'conditional_logic' => $conditional_logic
+      ] );
+
+      $sub_fields[] = $tab;
+      $sub_fields[] = $question;
+      $sub_fields[] = $answer;
+
+      $previous_keys = $keys;
+    };
+
+    $return_array[] = acfgg_field( $block_relation, 'Elementer', 'items', 'group', [
+      'sub_fields' => $sub_fields,
+    ] );
+
+    return $return_array;
+  };
 }
 
 // @@ GENERATE LOCATION
@@ -337,7 +395,7 @@ function acfgg_location( $locations ):array {
 
 
 // @@ GENERATE GROUP
-function acfgg_group( $relation, $name, $section, $fields, $location, $menu_order = 9 ) {
+function acfgg_group( $relation, $name, $section, $fields, $location, $menu_order = 1 ) {
   acf_add_local_field_group( [
     'key'        => acfgg_key( $relation, $name, '_group_' ),
     'title'      => $name,
@@ -398,6 +456,23 @@ function acfgg_sections() {
     ), [
       acfgg_location( [ 'frontpage' ] )
     ]
+  );
+
+
+  // ## FAQ
+  $relation = 'section_faq_';
+
+  acfgg_group( 
+    $relation, 
+    'Sektion: Ofte stillede spørgsmål', 
+    'faq',
+    array_merge(
+      acfgg_block( $relation, 'faq' )
+    ), [
+      acfgg_location( [ 'frontpage' ] ),
+      acfgg_location( [ 'page' ]      )
+    ],
+    99
   );
 
 

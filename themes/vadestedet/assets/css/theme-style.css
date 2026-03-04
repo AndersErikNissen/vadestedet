@@ -478,6 +478,10 @@
   }
 
   @media (min-width: 980px) {
+    .laptop\:clmns-3\/12 {
+      grid-column: auto / span 3;
+    }
+
     .laptop\:clmns-4\/12 {
       grid-column: auto / span 4;
     }
@@ -499,6 +503,43 @@
 
 /* @@ COMPONENTS */
 @layer components {
+  /* ## accordion */
+  .accordion,
+  .accordion__item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .accordion {
+    gap: 1rem;
+  }
+
+  .accordion__item {
+    gap: 0.5rem;
+  }
+
+  .accordion__header {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .accordion__drawer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.5s ease-out;
+  }
+
+  .accordion__item[data-is-open="true"] .accordion__drawer {
+    grid-template-rows: 1fr;
+  }
+
+  .accordion__content {
+    overflow: hidden;
+  }
+
+
   /* ## pagination */
   .pagination {
     margin-top: 4rem;

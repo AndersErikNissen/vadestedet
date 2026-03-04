@@ -32,7 +32,9 @@ if ( $image_first ) {
   if ( str_contains( $image_first, 'desktop' ) ) {
     $image_first_classes .= " laptop:clmns-first";
   } 
-}; ?>
+}; 
+
+if ( ! $heading && ! $text && ! $button && ! $images[ 'desktop' ] ) return; ?>
 
 <section class="section-text-and-image section">
   <div class="grid pw:wrapper">

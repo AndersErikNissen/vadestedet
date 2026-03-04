@@ -12,6 +12,34 @@ const OBSERVE = (callback, target, options = {}) => {
   OBSERVER.observe(target);
 }
 
+// @@ TOGGLE THE HEADER
+(function(d) {
+  const THE_HEADER = d.querySelector(".the-header");
+  const OBSERVER_ZONE = d.querySelector(".toggle-the-header-see-through");
+  const CLASS = "see-through";
+  const TRANSITION_CLASS = "transition-see-through";
+
+  if (!THE_HEADER || !OBSERVER_ZONE) return;
+
+  function callback() {
+    if (!THE_HEADER.classList.contains(TRANSITION_CLASS)) {
+      THE_HEADER.classList.add(TRANSITION_CLASS)
+    }
+
+    if (this.isIntersecting) {
+      if (!THE_HEADER.classList.contains(CLASS)) {
+        THE_HEADER.classList.add(CLASS);
+      } 
+    } else {
+      if (THE_HEADER.classList.contains(CLASS)) {
+        THE_HEADER.classList.remove(CLASS);        
+      } 
+    }
+  }
+
+  OBSERVE(callback, OBSERVER_ZONE);
+})(document);
+
 // @@ MODALS
 class Modal {
   state = {
@@ -286,63 +314,70 @@ const CAROUSELS = document.querySelectorAll(".carousel").forEach((element) => {
 });
 
 
-// @@ FAQ
-class FAQ {
+// @@ ACCORDION
+class Accordion {
   constructor({containerReference}) {
     this.container = containerReference;
 
-    // Register a FAQItem for each?
-    // Register a FAQItem for each?
-    // Register a FAQItem for each?
-    // Register a FAQItem for each?
-    this.items = this.container.querySelectorAll('.faq-item');
+    const itemElements = Array.from(this.container.querySelectorAll(".accordion__item"));
+    
+    this.items = itemElements.map((element) => new AccordionItem({
+      containerReference: element,
+      parentReference: this,
+    }));
+  }
 
-    this.state = {
-      items: {
-        open: false,
-      }
-    }
+  closeItemDrawers(excludedItem) {
+    this.items.forEach((item) => {
+      if (excludedItem && excludedItem !== item) {
+        item.closeDrawer();
+      };
+    });
   }
 }
 
-class FAQItem {
-  constructor({elementReference}) {
+class AccordionItem {
+  constructor({containerReference, parentReference}) {
+    this.container = containerReference;
+    
+    if (!this.container) return;
+    
+    this.parent = parentReference;
 
+    this.header = this.container.querySelector(".accordion__header");
+
+    if (this.header) {
+      this.header.addEventListener("click", () => this.toggleDrawer());
+    };
   }
 
-  #open() {
-
+  get isOpen() {
+    return this.container.getAttribute("data-is-open") === "true";
   }
-}
 
-const FAQ_GROUP_ELEMENTS = Array.from(document.querySelectorAll('.faq'));
-const FAQ_GROUPS = FAQ_GROUP_ELEMENTS.map((group) => new FAQ({containerReference: group}));
+  set isOpen(bool) {
+    this.container.setAttribute("data-is-open", bool.toString());
+  }
 
+  closeDrawer() {
+    this.isOpen = false;
+  }
 
-// @@ TOGGLE THE HEADER
-(function(d) {
-  const THE_HEADER = d.querySelector(".the-header");
-  const OBSERVER_ZONE = d.querySelector(".toggle-the-header-see-through");
-  const CLASS = "see-through";
-  const TRANSITION_CLASS = "transition-see-through";
+  openDrawer() {
+    this.isOpen = true;
+    this.parent.closeItemDrawers(this);
+  }
 
-  if (!THE_HEADER || !OBSERVER_ZONE) return;
-
-  function callback() {
-    if (!THE_HEADER.classList.contains(TRANSITION_CLASS)) {
-      THE_HEADER.classList.add(TRANSITION_CLASS)
-    }
-
-    if (this.isIntersecting) {
-      if (!THE_HEADER.classList.contains(CLASS)) {
-        THE_HEADER.classList.add(CLASS);
-      } 
+  toggleDrawer() {
+    if (this.isOpen) {
+      this.closeDrawer();
     } else {
-      if (THE_HEADER.classList.contains(CLASS)) {
-        THE_HEADER.classList.remove(CLASS);        
-      } 
+      this.openDrawer();
     }
   }
+}
 
-  OBSERVE(callback, OBSERVER_ZONE);
-})(document);
+const ACCORDION_ELEMENTS = Array.from(document.querySelectorAll(".accordion"));
+const ACCORDIONS = ACCORDION_ELEMENTS.map((element) => new Accordion({
+  containerReference: element,
+}));
