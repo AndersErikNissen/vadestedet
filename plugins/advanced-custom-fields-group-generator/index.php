@@ -9,7 +9,7 @@
 
 
 // @@ HIDE ACF FROM BACKEND
-// add_filter( 'acf/settings/show_admin', '__return_false' );
+add_filter( 'acf/settings/show_admin', '__return_false' );
 
 
 // @@ ADD CSS TO WYSIWYG
@@ -128,8 +128,8 @@ function acfgg_accordion( $relation, $name, $args = [] ):array {
 
 
 // @@ GENERATE BLOCK
-function acfgg_block( $relation, $type, $count = '' ):array {
-  $block_relation = $relation . $type . '_block' . $count . '_';
+function acfgg_block( $relation, $type ):array {
+  $block_relation = $relation . $type . '_block' . '_';
 
   if ( $type === 'text' ) {
     return [
@@ -197,6 +197,21 @@ function acfgg_block( $relation, $type, $count = '' ):array {
         'required'     => true                                                             
       ]                                                                                                ),
       acfgg_field(     $block_relation,          'Knap',             'button',            'link'       )
+    ];
+  };
+
+  if ( $type === 'page_description' ) {
+    return [
+      acfgg_accordion( $block_relation . 'tab_', 'Beskrivelse'                                         ),
+      acfgg_field(     $block_relation,          'Overskrift',       'heading',           'text', [
+        'required' => true
+      ]                                                                                                ),
+      acfgg_field(     $block_relation,          'Kort beskrivelse', 'short_description', 'textarea', [
+        'required'     => true
+      ]                                                                                                ),
+      acfgg_field(     $block_relation,          'Billede',          'image',             'image', [
+        'required'     => true
+      ]                                                                                                )
     ];
   };
 
@@ -353,6 +368,72 @@ function acfgg_block( $relation, $type, $count = '' ):array {
 
     return $return_array;
   };
+
+  if ( $type === 'menu' ) {
+    $return_array = [];
+
+    $return_array[] = acfgg_accordion( $block_relation . 'tab_', 'Tekst indhold'                                      );
+    $return_array[] = acfgg_field(     $block_relation,          'Overskrift',           'heading',       'text', [
+      'required' => true
+    ]                                                                                                                 );
+    $return_array[] = acfgg_accordion( $block_relation . 'tab_', 'Indstillinger'                                      );
+    $return_array[] = acfgg_field(     $block_relation,          'Sorteringsrækkefølge', 'sorting_order', 'number', [
+      'default' => 8,
+      'instructions' => 'Angiv et tal for at styre rækkefølgen menuen vises i. Lavere tal vises først (f.eks. vil 1 blive vist før 2 og 3).'
+    ]                                                                                                                 );
+    $return_array[] = acfgg_accordion( $block_relation . 'tab_', 'Menu punkter'                                       );
+    
+    $sub_field_relation = $block_relation . 'sub_field_';
+    $sub_fields = [];
+
+    $previous_keys = [];
+
+    for ( $i = 1; $i <= 20; $i++ ) {
+      $sub_field_relation_extention = $sub_field_relation . $i . '_';
+      
+      $name        = acfgg_field( $sub_field_relation_extention, 'Navn',        'name',        'text'     );
+      $description = acfgg_field( $sub_field_relation_extention, 'Beskrivelse', 'description', 'textarea' );
+      $price       = acfgg_field( $sub_field_relation_extention, 'Pris',        'price',       'text'     );
+
+      $keys = [
+        $name[ 'key' ],
+        $description[ 'key' ],
+        $price[ 'key' ],
+      ];
+
+      $conditional_logic = [];
+
+      if ( $i !== 1 ) {
+        $logic_keys = array_merge( $keys, $previous_keys );
+
+        foreach ( $logic_keys as $key ) {
+          $conditional_logic[] = [
+            [
+              'field' => $key,
+              'operator' => '!=empty'
+            ]
+          ];
+        }
+      }
+
+      $tab = acfgg_accordion( $sub_field_relation_extention . 'tab_', '(' . $i . ') Punkt', [
+        'conditional_logic' => $conditional_logic
+      ] );
+
+      $sub_fields[] = $tab;
+      $sub_fields[] = $name;
+      $sub_fields[] = $description;
+      $sub_fields[] = $price;
+
+      $previous_keys = $keys;
+    };
+
+    $return_array[] = acfgg_field( $block_relation, 'Punkter', 'items', 'group', [
+      'sub_fields' => $sub_fields,
+    ] );
+
+    return $return_array;
+  };
 }
 
 // @@ GENERATE LOCATION
@@ -379,6 +460,11 @@ function acfgg_location( $locations ):array {
       'param'    => 'post_type',
       'operator' => '==',
       'value'    => 'event',
+    ],
+    'menu' => [
+      'param'    => 'post_type',
+      'operator' => '==',
+      'value'    => 'menu',
     ],
   ];
 
@@ -417,7 +503,7 @@ function acfgg_sections() {
   
   acfgg_group( 
     $relation, 
-    'Section: Event information', 
+    'Indlægs information', 
     'post-description',
     array_merge(
       acfgg_block( $relation, 'post_description' ), 
@@ -432,7 +518,7 @@ function acfgg_sections() {
   
   acfgg_group( 
     $relation, 
-    'Section: Event information', 
+    'Event information', 
     'post-description',
     array_merge(
       acfgg_block( $relation, 'post_description'   ), 
@@ -440,6 +526,34 @@ function acfgg_sections() {
       acfgg_block( $relation, 'event_relationship' )
     ), [
       acfgg_location( [ 'event' ] )
+    ]
+  );
+
+
+  // ## menu (cpt)
+  $relation = 'section_menu_';
+  
+  acfgg_group( 
+    $relation, 
+    'Menu indhold', 
+    'menu',
+    acfgg_block( $relation, 'menu' ),
+    [
+      acfgg_location( [ 'menu' ] )
+    ]
+  );
+
+
+  // ## page
+  $relation = 'section_page_';
+  
+  acfgg_group( 
+    $relation, 
+    'Side indhold', 
+    'page_description',
+    acfgg_block( $relation, 'page_description' ),
+    [
+      acfgg_location( [ 'page' ] )
     ]
   );
 
@@ -487,7 +601,6 @@ function acfgg_sections() {
       acfgg_block( $relation, 'text'  ),
       acfgg_block( $relation, 'image' )
     ), [
-      acfgg_location( [ 'post' ] ),
       acfgg_location( [ 'page' ] )
     ]
   );

@@ -69,6 +69,12 @@ class Modal {
           ...(options?.classes || {}),
         } 
       };
+
+      this.modal.addEventListener("click", (e) => {
+        if (e.target === this.modal) {
+          this.close();
+        }
+      });
   
       this.btns = document.querySelectorAll(`[data-modal-toggle="${this.name}"]`) || [];
 

@@ -60,23 +60,23 @@ add_action( 'admin_init', function() {
 });
 
 // @@ 3. UNIVERSAL SANITIZER
-function sts_sanitize_options( $input ) {
+function sts_sanitize_options( $input, $parent_key = '' ) {
   if ( ! is_array( $input ) ) return [];
   $clean = [];
   foreach ( $input as $key => $value ) {
     if ( is_array( $value ) ) {
-      $clean[ $key ] = sts_sanitize_options( $value );
+      $clean[ $key ] = sts_sanitize_options( $value, $key );
     } else {
-      $clean[ $key ] = sts_process_single_value( (string) $key, $value );
+      $clean[ $key ] = sts_process_single_value( $key, $value, $parent_key );
     }
   }
   return $clean;
 }
 
-function sts_process_single_value( $key, $value ) {
+function sts_process_single_value( $key, $value, $parent_key = '' ) {
   $value = (string) $value;
   
-  if ( strpos( $key, 'inject' ) !== false ) {
+  if ( $parent_key === 'inject' ) {
     return wp_unslash( $value );
   }
 

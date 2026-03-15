@@ -119,12 +119,15 @@ if ( $type === 'company' ) {
   $special_opening_hours_schema = [];
 
   foreach ( $special_opening_hours as $special_opening_hour ) { 
+    $opens = $special_opening_hour[ 'open' ]   ?? '00:00';
+    $closes = $special_opening_hour[ 'close' ] ?? '00:00';
+
     $special_opening_hour_schema = [
       '@type'        => 'OpeningHoursSpecification',
       'validFrom'    => $special_opening_hour[ 'date' ],
       'validThrough' => $special_opening_hour[ 'date' ],
-      'opens'        => $special_opening_hour[ 'open' ],
-      'closes'       => $special_opening_hour[ 'close' ],
+      'opens'        => $opens,
+      'closes'       => $closes
     ];
 
     if ( function_exists( 'pll__' ) && ! empty( $special_opening_hour[ 'description' ] ?? '' ) ) {

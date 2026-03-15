@@ -82,7 +82,36 @@ function sts_get_fields_definition() {
       'type' 	      => 'text',
       'placeholder' => 'Indsæt medie URL...',
       'translate'   => false
-    ]
+    ],
+    [
+      'group'  => 'company',
+      'key'		 => 'some',
+      'label'	 => 'Sociale medier',
+      'type'	 => 'group',
+      'fields' => [
+        [
+          'key'   => 'facebook',
+          'label' => 'Facebook',
+          'type'  => 'text',
+        ],
+        [
+          'key'   => 'instagram',
+          'label' => 'Instagram',
+          'type'  => 'text',
+        ],
+        [
+          'key'   => 'linkedin',
+          'label' => 'LinkedIn',
+          'type'  => 'text',
+        ],
+        [
+          'key'   => 'twitter',
+          'label' => 'Twitter',
+          'type'  => 'text',
+        ],
+      ],
+      'translate'   => false
+    ],
   ];
 
   $contact = [
@@ -176,6 +205,24 @@ function sts_get_fields_definition() {
       'group'  => 'archive',
       'key'		 => 'post',
       'label'	 => 'Indlæg',
+      'type'	 => 'group',
+      'fields' => [
+        [
+          'key'   => 'heading',
+          'label' => 'Overskrift',
+          'type'  => 'text',
+        ],
+        [
+          'key'   => 'description',
+          'label' => 'Beskrivelse',
+          'type'  => 'textarea',
+        ]
+      ]
+    ],
+    [
+      'group'  => 'archive',
+      'key'		 => 'post',
+      'label'	 => 'Menu',
       'type'	 => 'group',
       'fields' => [
         [
@@ -344,15 +391,17 @@ function sts_get_fields_definition() {
           'translate'   => false
         ],
         [
-          'key'   => 'open',
-          'label' => 'Åbeningstidspunkt',
-          'type'  => 'time',
+          'key'         => 'open',
+          'label'       => 'Åbeningstidspunkt',
+          'type'        => 'time',
+          'description' => 'Vis som lukket: Sæt Åbningstidspunkt & Lukketidspunkt til --:-- eller 00:00',
           'translate'   => false
         ],
         [
-          'key'   => 'close',
-          'label' => 'Lukketidspunkt',
-          'type'  => 'time',
+          'key'         => 'close',
+          'label'       => 'Lukketidspunkt',
+          'type'        => 'time',
+          'description' => 'Vis som lukket: Sæt Åbningstidspunkt & Lukketidspunkt til --:-- eller 00:00',
           'translate'   => false
         ]
       ],
