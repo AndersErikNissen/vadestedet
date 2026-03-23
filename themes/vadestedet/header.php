@@ -29,24 +29,43 @@
               <path d="M0 221.165V2.98297H59.233V173.438H147.443V221.165H0Z" fill="currentColor" />
             </svg>
           <?php endif; ?>
-          <a class="cover" href="/"></a>
+          <a class="cover" href="<?= home_url(); ?>"></a>
         </div>
 
         <nav class="row">
+          <div class="the-header__select handheld:hidden">
+            <?php if ( function_exists( 'pll_the_languages' ) ) {
+              pll_the_languages( [ 
+                'dropdown'         => 1, 
+                'display_names_as' => 'slug'
+              ] ); 
+            }; ?>
+          </div>
+          
           <?php wp_nav_menu( [
             'menu'       => 'header',
             'menu_class' => 'handheld:hidden row',
             'container'  => 'ul'
           ] ); ?>
 
-          <button class="desktop:hidden icon:btn" data-modal-toggle="the-menu">
+          <?php 
+          $reservation_url = sts_option( 'company.reservation_url' );
+          if ( $reservation_url ) {
+            render_btn( [ 
+              'title'  => get_theme_string( 'Reserver bord' ),
+              'url'    => $reservation_url, 
+              'target' => '_blank' 
+            ] );
+          }; ?>
+
+          <button class="laptop:hidden icon:btn" data-modal-toggle="the-menu">
             <?= get_icon( 'hamburger' ); ?>
           </button> 
         </nav>
       </div>
     </header>
 
-    <div class="modal desktop:hidden" data-modal="the-menu">
+    <div class="modal laptop:hidden the-menu" data-modal="the-menu">
       <div class="modal-inner column">
         <div class="modal-header row">
           <button class="icon:btn" data-modal-toggle="the-menu">
@@ -60,6 +79,59 @@
             'container'  => 'ul',
             'menu_class' => 'h2 the-menu-menu',
           ] ); ?>
+
+          <div class="the-menu__footer">
+            <?php if ( function_exists( 'pll_the_languages' ) ) {
+              pll_the_languages( [ 
+                'dropdown'         => 1, 
+                'display_names_as' => 'slug'
+              ] ); 
+            }; 
+
+            $available_some = [ 'Facebook', 'Instagram', 'LinkedIn', 'Twitter' ];
+
+            $some_items = [];
+            foreach ( $available_some as $platform ) {
+              $field = sts_option( 'company.some.' . strtolower( $platform ) );
+              
+              if ( ! empty( $field ) ) {
+                  $some_items[] = [
+                    'name' => $platform,
+                    'url' => $field
+                  ];
+              }
+            }; 
+
+            if ( ! empty( $some_items ) ) {
+              echo '<ul class="row gap-1">';
+                foreach ( $some_items as $item ) {
+                  echo '<li>';
+                    echo '<a href="' . esc_url( $item[ 'url' ] ) . '">' . $item[ 'name' ] . '</a>';
+                  echo '</li>';
+                };
+              echo '</ul>';
+            }; 
+
+            $phone_number = sts_option( 'contact.phone' );
+            $email        = sts_option( 'contact.email' );
+            if ( $phone_number || $email ) {
+              echo '<ul class="row gap-1">';
+                if ( $phone_number ) {
+                  echo '<li>';
+                    echo '<a href="tel:' . esc_attr( $phone_number ) . '">' . esc_html( get_theme_string( 'Ring til os' ) ) . '</a>';
+                  echo '</li>';
+                }
+                  
+                if ( $email ) {
+                  echo '<li>';
+                    echo '<a href="mailto:' . esc_attr( $email ) . '">' . esc_html( get_theme_string( 'Send os en e-mail' ) ) . '</a>';
+                  echo '</li>';
+                }
+              echo '</ul>';
+            }
+            
+            ?>
+          </div>
         </div>
       </div>
     </div>

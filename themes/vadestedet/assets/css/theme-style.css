@@ -2,7 +2,7 @@
 
 /* @@ ROOT VARIABLES */
 :root {
-  --header-height: 64px;
+  --header-height: 81px;
   --pw-spacing: 0.75rem;
   
   /* ## colors */
@@ -15,7 +15,7 @@
 
 @media (min-width: 980px) {
   :root {
-    --header-height: 61px;
+    --header-height: 81px;
     --pw-spacing: 1.5rem;
   }
 }
@@ -100,6 +100,32 @@
   svg {
     /* Bug(Old Safari): SVG incorrect placement */
     -webkit-transform: translate(0px, 0px);
+  }
+
+  select {
+    /* Reset appearance */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    /* Reset box model */
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    background: none;
+
+    /* Reset typography */
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    color: inherit;
+
+    /* Misc */
+    cursor: pointer;
+    box-shadow: none;
   }
 }
 
@@ -239,6 +265,11 @@
     z-index: -1;
   }
 
+  .the-header__select select {
+    text-transform: capitalize;
+    display: inline-block;
+  }
+
 
   /* ## the menu */
   .the-menu-menu {
@@ -272,6 +303,17 @@
 
   .the-footer-menu {
     --gap: 0.2rem;
+  }
+
+
+  /* ## 404 page */
+  .section-404 .grid {
+    min-height: 75vh;
+  }
+
+  .section-404__content {
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -322,6 +364,10 @@
   }
 
   /* ## gap */
+  .gap-0\.5 {
+    --gap: 0.5rem;
+  }
+
   .gap-1 {
     --gap: 1rem;
   }
@@ -536,8 +582,23 @@
       grid-column-start: 1;
       grid-row-start: 1;
     }
+
+    .laptop\:start-clmn-3 {
+      grid-column-start: 3;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .desktop\:clmns-6\/12 {
+      grid-column: auto / span 6;
+    }
+
+    .desktop\:start-clmn-4 {
+      grid-column-start: 4;
+    }
   }
 }
+
 
 /* @@ COMPONENTS */
 @layer components {
@@ -726,7 +787,7 @@
 
   @media (min-width: 980px) {
     .ratio-container::before {
-      padding-top: calc(var(--ratio-desktop, var(--ratio-mobile, 1)) * 100%);
+      padding-top: calc(var(--ratio-laptop, var(--ratio-mobile, 1)) * 100%);
     }
   }
 
@@ -902,14 +963,8 @@
     }
   }
 
-  @media (min-width: 480px) and (max-width: 979px) {
-    .tablet\:hidden {
-      display: none;
-    }
-  }
-
   @media (min-width: 980px) {
-    .desktop\:hidden {
+    .laptop\:hidden {
       display: none;
     }
   }

@@ -43,7 +43,7 @@ function render_acf_img( $desktop_img, $mobile_img = null, $ratios = [ 'desktop'
 
 
   // ## build CSS variables
-  $style_vars = "--ratio-desktop:{$desktop_data['inverse_ratio']};--ratio-mobile:{$mobile_data['inverse_ratio']};";
+  $style_vars = "--ratio-laptop:{$desktop_data['inverse_ratio']};--ratio-mobile:{$mobile_data['inverse_ratio']};";
 
   echo '<div class="ratio-container" style="' . esc_attr( $style_vars ) . '">';
     echo '<picture class="ratio-container-item">';
@@ -89,7 +89,7 @@ function render_btn( $link, $class = 'btn' ) {
     '<a class="%s" href="%s" target="%s">%s</a>',
     esc_attr( $class ),
     esc_url( $link[ 'url' ] ),
-    esc_attr( $link[ 'target' ] ?: '_self' ),
+    esc_attr( isset( $link[ 'target' ] ) ? $link[ 'target' ] : '_self' ),
     esc_html( $link[ 'title' ] )
   );
 }

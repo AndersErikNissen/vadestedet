@@ -7,7 +7,6 @@
  * Author URI: https://aenders.dk
  */
 
-
 // @@ HIDE ACF FROM BACKEND
 add_filter( 'acf/settings/show_admin', '__return_false' );
 
@@ -202,40 +201,79 @@ function acfgg_block( $relation, $type ):array {
 
   if ( $type === 'page_description' ) {
     return [
-      acfgg_accordion( $block_relation . 'tab_', 'Beskrivelse'                                         ),
+      acfgg_accordion( $block_relation . 'tab_', 'Beskrivelse' ),
       acfgg_field(     $block_relation,          'Overskrift',       'heading',           'text', [
         'required' => true
-      ]                                                                                                ),
+      ] ),
       acfgg_field(     $block_relation,          'Kort beskrivelse', 'short_description', 'textarea', [
         'required'     => true
-      ]                                                                                                ),
-      acfgg_field(     $block_relation,          'Billede',          'image',             'image', [
-        'required'     => true
-      ]                                                                                                )
+      ] ),
+      acfgg_field(     $block_relation,          'Billede',          'image',             'image' ),
+      acfgg_field(     $block_relation,          'Indhold',          'content',           'wysiwyg', [
+        'tabs'         => 'visual',
+        'media_upload' => 1,
+        'delay'        => 0                                                        
+      ] ),
+      acfgg_accordion( $block_relation . 'tab_', 'SEO' ),
+      acfgg_field(     $block_relation,          'Side type',        'page_type',         'button_group', [
+        'choices' => [
+          'WebPage'     => 'Almindelig side',
+          'AboutPage'   => 'Om os side',
+          'ContactPage' => 'Kontakt side'
+        ],
+        'default_value' => 'WebPage',
+        'instructions'  => 'Kun relevant hvis denne side bruges som en Om / Kontakt os side.'
+      ] ),
     ];
   };
 
   if ( $type === 'event_information' ) {
     return [
-      acfgg_accordion( $block_relation . 'tab_', 'Event information'                                   ),
-      acfgg_field(     $block_relation,          'Event navn',          'event_name', 'text', [
+      acfgg_accordion( $block_relation . 'tab_', 'Event information' ),
+      acfgg_field(     $block_relation,          'Event navn',          'event_name',     'text', [
         'required' => true
-      ]                                                                                                ),
-      acfgg_field(     $block_relation,          'Event dato',          'date',       'date_picker', [
+      ] ),
+      acfgg_field(     $block_relation,          'Event dato',          'date',           'date_picker', [
         'display_format' => 'd/m/Y',
         'return_format'  => 'Ymd',
         'required' => true
-      ]                                                                                                ),
-      acfgg_field(     $block_relation,          'Sæt start tidspunkt', 'start_time', 'time_picker', [
+      ] ),
+      acfgg_field(     $block_relation,          'Sæt start tidspunkt', 'start_time',     'time_picker', [
         'display_format' => 'H:i:s',
         'return_format'  => 'H:i:s',
         'required'       => true
-      ]                                                                                                ),
-      acfgg_field(     $block_relation,          'Sæt slut tidspunkt',  'end_time',   'time_picker', [
+      ] ),
+      acfgg_field(     $block_relation,          'Sæt slut tidspunkt',  'end_time',       'time_picker', [
         'display_format' => 'H:i:s',
         'return_format'  => 'H:i:s',
         'required'       => true
-      ]                                                                                                )
+      ] ),
+      acfgg_field(     $block_relation,          'Billet pris',         'price',          'number', [
+        'instructions'  => 'Sæt prisen til 0, hvis eventet er gratis.',
+        'default_value' => '0'
+      ] ),
+      acfgg_field(     $block_relation,          'Billet status',       'ticket_status',  'button_group', [
+        'choices' => [
+          'InStock'        => 'På lager',
+          'SoldOut'        => 'Udsolgt',
+          'PreOrder'       => 'Forudbestil'
+        ],
+        'default_value'    => 'InStock'
+      ] ),
+      acfgg_field(     $block_relation,          'Bestillingslink',     'ticket_url',     'url' ),
+      acfgg_field(     $block_relation,          'Optrædende type',     'performer_type', 'button_group', [
+        'choices' => [
+          'default'         => 'Os selv',
+          'Person'          => 'Person',
+          'MusicGroup'      => 'Musikgruppe',
+          'PerformingGroup' => 'Optræder gruppe',
+          'Organization'    => 'Organisation'
+        ],
+        'default_value'    => 'default'
+      ] ),
+      acfgg_field(     $block_relation,          'Optrædende navn',     'performer_name',  'text', [
+        'instructions' => 'Udfyld kun dette felt, hvis det ikke er Vadestedet som eventet omhandler.'
+      ] ),
     ];
   };
 
@@ -246,7 +284,7 @@ function acfgg_block( $relation, $type ):array {
         'post_type' => 'event',
         'filters'   => '',
         'elements'  => [ 'featured_image' ]
-      ]                                                                                                                                                                 )
+      ]                                                                                                                                                           )
     ];
   };
 
@@ -446,6 +484,11 @@ function acfgg_location( $locations ):array {
       "operator" => "==",
       "value"    => "front_page"
     ],
+    'not_frontpage' => [
+      "param"    => "page_type",
+      "operator" => "!=",
+      "value"    => "front_page"
+    ],
     'post' => [
       'param'    => 'post_type',
       'operator' => '==',
@@ -481,7 +524,7 @@ function acfgg_location( $locations ):array {
 
 
 // @@ GENERATE GROUP
-function acfgg_group( $relation, $name, $section, $fields, $location, $menu_order = 1 ) {
+function acfgg_group( $relation, $name, $section, $fields, $location, $menu_order = 9 ) {
   acf_add_local_field_group( [
     'key'        => acfgg_key( $relation, $name, '_group_' ),
     'title'      => $name,
@@ -545,16 +588,17 @@ function acfgg_sections() {
 
 
   // ## page
-  $relation = 'section_page_';
+  $relation = 'section_page_information_';
   
   acfgg_group( 
     $relation, 
     'Side indhold', 
-    'page_description',
+    'page-description',
     acfgg_block( $relation, 'page_description' ),
     [
-      acfgg_location( [ 'page' ] )
-    ]
+      acfgg_location( [ 'page', 'not_frontpage' ] )
+    ],
+    0
   );
 
 
@@ -592,6 +636,22 @@ function acfgg_sections() {
 
   // ## text and image
   $relation = 'section_text_and_image_';
+
+  acfgg_group( 
+    $relation, 
+    'Sektion: Tekst & billede', 
+    'text-and-image',
+    array_merge(
+      acfgg_block( $relation, 'text'  ),
+      acfgg_block( $relation, 'image' )
+    ), [
+      acfgg_location( [ 'page' ] )
+    ]
+  );
+
+
+  // ## text and image 2
+  $relation = 'section_text_and_image_2_';
 
   acfgg_group( 
     $relation, 

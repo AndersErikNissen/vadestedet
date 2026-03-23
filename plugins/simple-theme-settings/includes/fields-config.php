@@ -221,7 +221,7 @@ function sts_get_fields_definition() {
     ],
     [
       'group'  => 'archive',
-      'key'		 => 'post',
+      'key'		 => 'menu',
       'label'	 => 'Menu',
       'type'	 => 'group',
       'fields' => [
@@ -237,6 +237,27 @@ function sts_get_fields_definition() {
         ]
       ]
     ]
+  ];
+
+  $pages = [
+    [
+      'group'  => 'page',
+      'key'		 => '404',
+      'label'	 => '404 side',
+      'type'	 => 'group',
+      'fields' => [
+        [
+          'key'   => 'heading',
+          'label' => 'Overskrift',
+          'type'  => 'text',
+        ],
+        [
+          'key'   => 'description',
+          'label' => 'Beskrivelse',
+          'type'  => 'textarea',
+        ]
+      ]
+    ],
   ];
 
   $hours = [
@@ -427,5 +448,18 @@ function sts_get_fields_definition() {
     ],
   ];
 
-  return array_merge( $company, $contact, $hours, $header, $footer, $ui, $archive, $inject );
+  // RADIO BTN
+  // [
+  //   'group'   => 'ui',
+  //   'key'     => 'button_style',
+  //   'label'   => 'Knap stil',
+  //   'type'    => 'radio',
+  //   'options' => [
+  //     'filled'   => 'Fyldt',
+  //     'outlined' => 'Omridset',
+  //     'ghost'    => 'Ghost',
+  //   ],
+  // ],
+
+  return array_merge( $company, $contact, $hours, $header, $footer, $ui, $pages, $archive, $inject );
 }

@@ -3,7 +3,62 @@
     <?php 
     $logo = sts_option( 'footer.logo' ); 
     $description = sts_option( 'footer.description' );
-    ?>
+
+
+    // ## get the social media links
+    $available_some = [ 'facebook', 'instagram', 'linkedin', 'twitter' ];
+
+    $some_links = [];
+
+    foreach ( $available_some as $platform ) {
+        $field = sts_option( 'company.some.' . $platform );
+        
+        if ( ! empty( $field ) ) {
+            $some_links[] = [
+              'name' => $platform,
+              'url'  =>  $field
+            ];
+        }
+    }
+
+
+    // ## create opening hours
+    $start_of_week = strtotime('monday this week');
+    $this_week = [];
+
+    for ( $i = 0; $i < 7; $i++ ) {
+      $day = strtotime("+$i days", $start_of_week);
+
+      $this_week[] = [
+        'name' => wp_date( 'l',  $day),
+        'type' => strtolower( date( 'l',  $day) ),
+        'date' => date( 'Y-m-d',  $day)
+      ];
+    }
+
+    $this_weeks_opening_hours = [];
+    $special_opening_hours_entries = sts_option( 'hours.special_hours' ) ?? [];
+
+    foreach ( $this_week as $weekday ) {
+      $hours_item = array_filter( $special_opening_hours_entries, fn( $entry ) => $entry[ 'date' ] === $weekday[ 'date' ] );
+      
+      if ( empty( $hours_item ) ) {
+        $hours_item = sts_option( 'hours.' . $weekday[ 'type' ] );
+      }
+
+      $open  = empty ( $hours_item[ 'open' ] )  ? '00:00' : $hours_item[ 'open' ];
+      $close = empty ( $hours_item[ 'close' ] ) ? '00:00' : $hours_item[ 'close' ];
+      $opening_hours =  $open . '-' . $close;
+      
+      if ( $open === '00:00' && $close === '00:00' ) {
+        $opening_hours =  get_theme_string( 'Lukket' );
+      }
+      
+      $this_weeks_opening_hours[] = [
+        'name'  => $weekday[ 'name' ],
+        'hours'  => $opening_hours
+      ];
+    } ?>
 
     <footer class="the-footer">
       <div class="pw:wrapper">
@@ -30,12 +85,43 @@
             <?php endif; ?>
           </div>
 
-          <?php wp_nav_menu( [
-            'menu'       => 'footer',
-            'container'  => 'ul',
-            'menu_class' => 'h5 the-footer-menu column'
-          ] ); ?>
+          <div>
+            <p class="h4 mb-1"><?= get_theme_string( 'Åbningstider' ); ?></p>
+            <ul class="column gap-0.5">
+              <?php foreach ( $this_weeks_opening_hours as $weekday ) : ?>
+                <li class="row spaced:row">
+                  <span><?= $weekday[ 'name' ]; ?></span>
+                  <span><?= $weekday[ 'hours' ]; ?></span>
+                </li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+
+          <?php if ( ! empty( $some_links ) ) : ?>
+            <div>
+              <ul class="column gap-0.5">
+                <?php foreach ( $some_links as $some ) : ?>
+                  <li>
+                    <a href="<?= esc_attr( $some[ 'url' ] ); ?>"><?= esc_html( $some[ 'name' ] ); ?></a>
+                  </li>
+                <?php endforeach; ?>
+              </ul>
+            </div>
+          <?php endif; ?>
+              
+          <div>
+            <p class="h4 mb-1"><?= get_theme_string( 'Virksomheden' ); ?></p>
+            <?php wp_nav_menu( [
+              'menu'       => 'footer',
+              'container'  => 'ul',
+              'menu_class' => 'h5 the-footer-menu column'
+            ] ); ?>
+          </div>
         </div>
+      </div>
+
+      <div class="pw:wrapper py-2">
+        <p><?= '© ' . date( 'Y' ) . ' ' . sts_option( 'company.name' ); ?></p>
       </div>
     </footer>
     

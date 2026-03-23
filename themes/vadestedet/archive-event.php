@@ -6,7 +6,7 @@ $current_date   = date( 'Ymd' );
 $posts_per_page = get_option( 'posts_per_page' ) ?? 12;
 $paged          = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 
-$args = [
+$future_query = new WP_Query( [
   'post_type'      => 'event',
   'posts_per_page' => $posts_per_page,
   'paged'          => $paged,
@@ -21,25 +21,23 @@ $args = [
       'type'    => 'NUMERIC',
     ]
   ]
-];
+] );
 
-$future_query = new WP_Query( $args ); ?>
+echo '<section class="section-events section">';
+  echo '<div class="pw:wrapper">';
+    get_template_part( 'template-parts/snippets/archive-header' );
 
-<section class="section-events section">
-  <div class="pw:wrapper">
-    <?php get_template_part( 'template-parts/snippets/archive-header' ); ?>
-
-    <?php if ( $future_query->have_posts() ) : ?>
-      <div class="grid">
-        <?php while ( $future_query->have_posts() ) {
+    if ( $future_query->have_posts() ) {
+      echo '<div class="grid">';
+        while ( $future_query->have_posts() ) {
           $future_query->the_post();
+
           get_template_part( 'template-parts/blocks/card', null, [ 
             'class' => 'clmns-12/12 laptop:clmns-6/12' 
           ] ); 
-        }; ?>
-      </div>
+        }
+      echo '</div>';
 
-      <?php 
       $links = paginate_links( array(
         'total'     => $future_query->max_num_pages,
         'current'   => $paged,
@@ -47,18 +45,28 @@ $future_query = new WP_Query( $args ); ?>
         'next_text' => get_theme_string( 'Næste side'     ),
       ) ); 
 
-      if ( $links ) : ?>
-        <nav class="pagination" aria-label="Pagination">
-          <?= $links; ?>
-        </nav>
-      <?php endif; ?>
+      if ( $links ) {
+        echo '<nav class="pagination" aria-label="Pagination">';
+          echo $links;
+        echo '</nav>';
+      } 
 
-    <?php wp_reset_postdata(); else : ?>
-      <div class="py-2">
-        <p class="h4"><?= get_theme_string( 'Vi kunne desværre ikke finde nogen resultater' ); ?></p>
-      </div>
-    <?php endif; ?>
-  </div>
-</section>
+      wp_reset_postdata();
+    } else {
+      echo '<div class="py-2">';
+        echo '<p class="h4">' . get_theme_string( 'Vi kunne desværre ikke finde nogen resultater' ) . '</p>';
+      echo '</div>';
+    }
+  echo '</div>';
+echo '</section>';
 
-<?php get_footer(); ?>
+sts_schema_graph( [
+    sts_schema_website(),
+    sts_schema_webpage(  
+      name:        sts_option( 'archive.event.heading' ), 
+      description: sts_option( 'archive.event.description' ),
+      is_archive:  true
+    )
+] );
+
+get_footer();

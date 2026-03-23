@@ -15,14 +15,23 @@ add_action( 'init', function() use ( $register_strings ) {
     'Event dato',
     'Event tidsramme',
     'Relaterede event(s)',
-    'Kommende event(s)'
+    'Kommende event(s)',
+    'Bestil billet',
+    'Pris',
+    'Gratis',
   ];
 
   $general_strings = [
     'Se alle',
     'Tidligere side',
     'Næste side',
-    'Vi kunne desværre ikke finde nogen resultater'
+    'Vi kunne desværre ikke finde nogen resultater',
+    'Reserver bord',
+    'Ring til os',
+    'Send os en e-mail',
+    'Lukket',
+    'Åbningstider',
+    'Virksomheden'
   ];
 
   

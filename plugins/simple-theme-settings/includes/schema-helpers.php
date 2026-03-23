@@ -162,7 +162,17 @@ function sts_schema_breadcrumb( ?int $post_id = null, bool $is_archive = false )
     $post_type_obj = get_post_type_object( $post_type );
     $has_archive   = $post_type_obj && $post_type_obj->has_archive;
 
-    if ( $has_archive ) {
+    // The built-in 'post' type uses a dedicated posts page instead of has_archive
+    $posts_page_id = (int) get_option( 'page_for_posts' );
+
+    if ( $post_type === 'post' && $posts_page_id ) {
+        $items[] = [
+            '@type'    => 'ListItem',
+            'position' => $position++,
+            'name'     => sts_option( 'archive.' . $post_type . '.heading' ),
+            'item'     => get_permalink( $posts_page_id ),
+        ];
+    } elseif ( $has_archive ) {
         $items[] = [
             '@type'    => 'ListItem',
             'position' => $position++,
@@ -173,7 +183,8 @@ function sts_schema_breadcrumb( ?int $post_id = null, bool $is_archive = false )
 
     // ## current single — skipped when we're on the archive itself
     if ( ! $is_archive ) {
-        $item_heading = get_field( "section_{$post_type}_information_post_description_block_heading", $post_id );
+        $description_type = $post_type === 'page' ? 'page' : 'post';
+        $item_heading = get_field( "section_{$post_type}_information_{$description_type}_description_block_heading", $post_id );
 
         $items[] = [
             '@type'    => 'ListItem',
@@ -189,6 +200,14 @@ function sts_schema_breadcrumb( ?int $post_id = null, bool $is_archive = false )
     ];
 }
 
+function sts_schema_website(): array {
+    return [
+        '@type' => 'WebSite',
+        '@id'   => home_url( '/#website' ),
+        'name'  => sts_option( 'company.name' ),
+        'url'   => home_url(),
+    ];
+}
 
 // ============================================================
 // 2. TYPE BUILDERS
@@ -239,13 +258,41 @@ function sts_schema_event( $post = null ): array {
             'name'    => sts_option( 'company.name' ),
             'address' => sts_schema_postal_address(),
         ],
-        'organizer' => sts_schema_organization(),
+        'organizer'           => sts_schema_organization(),
+        'offers'              => [
+            '@type'         => 'Offer',
+            'price'         => get_field( $info . 'price' ) ?? '0',
+            'priceCurrency' => 'DKK',
+            'availability'  => 'https://schema.org/' . get_field( $info . 'ticket_status' )
+        ]
     ];
 
+    // ## optional event information
+    $ticket_url = get_field( $info . 'ticket_url' );
+    if ( $ticket_url ) {
+        $schema[ 'offers' ][ 'url' ] = $ticket_url;
+    }
+
+    $performer_type = get_field( $info . 'performer_type', $post_id );
+    $performer_name = get_field( $info . 'performer_name', $post_id );
+
+    if ( $performer_type && $performer_name ) {
+        if ( $performer_type !== 'default' ) {
+            $schema['performer'] = [
+                '@type' => $performer_type,
+                'name'  => $performer_name,
+            ];
+        };
+    };
+    
+
     // ## add social media links
+    $available_some = [ 'facebook', 'instagram', 'linkedin', 'twitter' ];
+
     $some_links = [];
     foreach ( $available_some as $platform ) {
         $field = sts_option( 'company.some.' . $platform );
+        
         if ( ! empty( $field ) ) {
             $some_links[] = $field;
         }
@@ -274,7 +321,7 @@ function sts_schema_blog_posting( ?int $post_id = null ): array {
 
     return [
         '@type'         => 'BlogPosting',
-        'headline'      => get_field( 'section_post_information_post_description_heading', $post_id ),
+        'headline'      => get_field( 'section_post_information_post_description_block_heading', $post_id ),
         'author'        => sts_schema_organization(),
         'publisher'     => [
           '@id'         => home_url( '/#cafe' )
@@ -303,23 +350,32 @@ function sts_schema_blog_posting( ?int $post_id = null ): array {
  * @param string|null $subtype  Schema.org WebPage subtype. Defaults to 'WebPage'.
  * @param int|null    $post_id  Defaults to the current post.
  */
-function sts_schema_webpage( ?string $subtype = null, ?int $post_id = null ): array {
+function sts_schema_webpage( 
+    ?string $subtype     = null, 
+    ?int    $post_id     = null,
+    ?string $name        = null,
+    ?string $description = null,
+    ?bool   $is_archive  = false,
+): array {
     $post_id = $post_id ?? get_the_ID();
     $type    = $subtype ?? 'WebPage';
 
+    $locale = function_exists( 'pll_current_language' )
+        ? pll_current_language( 'locale' )
+        : 'da_DK';
+
     $schema = [
         '@type'         => $type,
-        'name'          => get_field( 'section_page_page_description_block_heading', $post_id ), 
-        'description'   => get_field( 'section_page_page_description_block_description', $post_id ),
+        'name'          => $name        ?? get_field( 'section_page_page_description_block_heading', $post_id ), 
+        'description'   => $description ?? get_field( 'section_page_page_description_block_description', $post_id ),
         'url'           => get_permalink( $post_id ),
         'datePublished' => get_the_date( 'c', $post_id ),
         'dateModified'  => get_the_modified_date( 'c', $post_id ),
-        'isPartOf'      => [
-          '@id' => home_url( '/#cafe' ),
-        ],
+        'isPartOf'      => [ '@id' => home_url( '/#website' ) ],
+        'inLanguage'    => str_replace( '_', '-', $locale ),
     ];
 
-    $breadcrumb = sts_schema_breadcrumb( $post_id );
+    $breadcrumb = sts_schema_breadcrumb( $post_id, $is_archive );
     if ( $breadcrumb ) {
         $schema['breadcrumb'] = $breadcrumb;
     }
@@ -333,6 +389,40 @@ function sts_schema_webpage( ?string $subtype = null, ?int $post_id = null ): ar
     return $schema;
 }
 
+function sts_schema_faqpage( ?int $post_id = null ):array {
+    $block_relation = 'section_faq_faq_block_';
+    $post_id        = $post_id ?? get_the_ID();
+    $items          = get_field( $block_relation . 'items', $post_id ) ?? null;
+    $entities       = [];
+
+    if ( empty( $items ) ) return [];
+
+    for ( $i = 1; $i <= 12; $i++ ) {
+        $question = $items[ $block_relation . "sub_field_{$i}_question" ] ?? null;
+        $answer   = $items[ $block_relation . "sub_field_{$i}_answer" ]   ?? null;
+
+        if ( ! $question || ! $answer ) continue;
+
+        $entities[] = [
+            '@type' => 'Question',
+            'name' => $question,
+            'acceptedAnswer' => [
+                '@type' => 'Answer',
+                'text' => $answer
+            ]
+        ];
+    }
+
+    if ( empty( $entities ) ) return [];
+
+    $schema = [
+        '@type'      => 'FAQPage',
+        'mainEntity' => $entities
+    ];
+
+    return $schema;
+}
+
 
 /**
  * Restaurant schema for the company / homepage context.
@@ -340,10 +430,6 @@ function sts_schema_webpage( ?string $subtype = null, ?int $post_id = null ): ar
  * Upcoming events are embedded automatically.
  */
 function sts_schema_restaurant(): array {
-    $locale = function_exists( 'pll_current_language' )
-        ? pll_current_language( 'locale' )
-        : 'da_DK';
-
     $upcoming_events = get_posts( [
         'post_type'      => 'event',
         'posts_per_page' => 10,
@@ -363,12 +449,10 @@ function sts_schema_restaurant(): array {
         'name'                             => sts_option( 'company.name' ),
         'image'                            => sts_option( 'company.storefront_image' ),
         '@id'                              => home_url( '/#cafe' ),
-        'inLanguage'                       => str_replace( '_', '-', $locale ),
         'url'                              => home_url(),
         'telephone'                        => sts_option( 'company.telephone' ),
         'priceRange'                       => sts_option( 'company.price_range' ),
         'address'                          => sts_schema_postal_address(),
-        'foundingDate'                     => '2026',
         'geo'                              => [
             '@type'     => 'GeoCoordinates',
             'latitude'  => 55.70745,
@@ -377,22 +461,17 @@ function sts_schema_restaurant(): array {
         'openingHoursSpecification'        => sts_schema_opening_hours(),
         'specialOpeningHoursSpecification' => sts_schema_special_opening_hours(),
         'events'                           => array_map( 'sts_schema_event', $upcoming_events ),
+        'hasMenu'                          => [ '@id' => home_url( '/#menu' ) ],
         'contactPoint' => [
-          '@type' => 'ContactPoint',
-          'contactType' => 'customer support',
-          'email' => sts_option( 'contact.email' ),
-          'availableLanguage' => [
-            'English',
-            'Danish',
-            'German'
-          ]
+          '@type'             => 'ContactPoint',
+          'contactType'       => 'customer support',
+          'email'             => sts_option( 'contact.email' ),
+          'availableLanguage' => [ 'English', 'Danish', 'German' ]
         ]
     ];
 
-
     // Optional fields — only added when values are configured.
     $optional = [
-        'menu'               => sts_option( 'company.menu_url' ),
         'acceptsReservations' => sts_option( 'company.reservation_url' ) ? true : null,
     ];
 
@@ -412,6 +491,65 @@ function sts_schema_restaurant(): array {
     }
 
     return $schema;
+}
+
+function sts_schema_menu( $query ) {
+    if ( ! $query->have_posts() ) return [];
+
+    $sections = [];
+
+    while ( $query->have_posts() ) {
+        $query->the_post();
+        
+        $block_relation = 'section_menu_menu_block_';
+        $acf_items = get_field( $block_relation . 'items' );
+        $items = [];
+
+        for ( $i = 1; $i <= 20; $i++ ) {
+            $prefix = $block_relation . 'sub_field_' . $i . '_';
+
+            $name        = $acf_items[ $prefix . 'name' ]        ?? null;
+            $description = $acf_items[ $prefix . 'description' ] ?? null;
+            $price       = $acf_items[ $prefix . 'price' ]       ?? null;
+
+            if ( ! $name || ! $price ) continue;
+
+            $item = [
+                '@type' => 'MenuItem',
+                'name' => $name,
+                'offers' => [
+                    '@type' => 'Offer',
+                    'price' => $price,
+                    'priceCurrency' => 'DKK'
+                ]
+            ];
+
+            if ( $description ) {
+                $item[ 'description' ] = $description;
+            }
+
+            $items[] = $item;
+        };
+
+        if ( ! empty( $items ) ) {
+            $sections[] = [
+                '@type' => 'MenuSection',
+                'name' => get_field( $block_relation . 'heading' ),
+                'hasMenuItem' => $items
+            ];
+        }
+    }
+
+    wp_reset_postdata();
+
+    if ( empty( $sections ) ) return [];
+
+    return [
+        '@id'            => home_url( '/#menu' ),
+        '@type'          => 'Menu',
+        'name'           => sts_option( 'archive.menu.heading' ),
+        'hasMenuSection' => $sections
+    ];
 }
 
 

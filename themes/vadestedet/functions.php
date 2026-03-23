@@ -92,3 +92,45 @@ add_action( 'wp_body_open', function() {
   $inject = sts_option( 'inject.body' );
   if ( ! empty( $inject ) ) echo $inject;
 });
+
+
+// @@ POLYLANG FIX FOR ARCHIVE-PAGE REDIRECTS
+if ( function_exists( 'pll_the_languages' ) ) {
+  add_filter( 'pll_translation_url', 'fix_archive_translation_url', 10, 2 );
+  
+  function fix_archive_translation_url( $url, $slug ) {
+      if ( is_post_type_archive() ) {
+          $post_type    = get_queried_object()->name;
+          $current_lang = pll_current_language();
+          $archive_link = get_post_type_archive_link( $post_type );
+  
+          if ( $archive_link && $current_lang ) {
+              // Swap the current language segment for the target language
+              return str_replace(
+                  '/' . $current_lang . '/',
+                  '/' . $slug . '/',
+                  $archive_link
+              );
+          }
+      }
+  
+      return $url;
+  }
+}
+
+
+// @@ REMOVE SEARCH PAGE
+function disable_wp_search( $query, $error = true ) {
+    if ( is_search() && ! is_admin() ) {
+        $query->is_search = false;
+        $query->query_vars['s'] = false;
+        $query->query['s'] = false;
+
+        if ( $error ) {
+            $query->is_404 = true;
+        }
+    }
+}
+
+add_action( 'parse_query', 'disable_wp_search' );
+add_filter( 'get_search_form', '__return_false' );

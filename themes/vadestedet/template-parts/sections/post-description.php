@@ -24,6 +24,12 @@ if ( $is_event ) {
     'start' => get_field( $block_relation . 'start_time' ),
     'end'   => get_field( $block_relation . 'end_time'   )
   ];
+  $price          = get_field( $block_relation . 'price' );
+  $ticket_url     = get_field( $block_relation . 'ticket_url' );
+  
+  if ( $price === '0' ) {
+    $price = get_theme_string( 'Gratis' );
+  }
   
   $block_relation     = $relation . 'event_relationship_block_';
   $event_relationship = get_field( $block_relation . 'event_relationship' );
@@ -49,6 +55,12 @@ if ( $is_event ) {
   
       <?php if ( $short_description ) : ?>
         <p class="mt-2 l1"><?= $short_description; ?></p>
+      <?php endif; ?>
+      
+      <?php if ( $button ) : ?>
+        <div class="mt-2">
+          <?php render_btn( $button ); ?> 
+        </div>
       <?php endif; ?>
     </div>
   </div>
@@ -79,9 +91,16 @@ if ( $is_event ) {
                 <span class="l2 block"><?= $dom_times[ 'start' ]->format( 'H:i' ) . '-' . $dom_times[ 'end' ]->format( 'H:i' ); ?></span>
               </li>
 
-              <?php if ( $button ) : ?>
+              <?php if ( $price ) : ?>
                 <li>
-                  <?php render_btn( $button ); ?> 
+                  <span><?= get_theme_string( 'Pris' ); ?></span>
+                  <span class="l2 block"><?= $price; ?></span>
+                </li>
+              <?php endif; ?>
+
+              <?php if ( $ticket_url ) : ?>
+                <li>
+                  <?php render_btn( [ 'title' => get_theme_string( 'Bestil billet' ), 'url' => $ticket_url ] ); ?> 
                 </li>
               <?php endif; ?>
             </ul>
@@ -113,6 +132,3 @@ if ( $is_event ) {
     </div>    
   </div>
 </section>
-
-<?php 
-echo get_template_part( 'template-parts/snippets/schema', null, [ 'type' => get_post_type() ] ); 

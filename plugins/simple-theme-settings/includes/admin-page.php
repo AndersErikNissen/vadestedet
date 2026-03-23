@@ -24,6 +24,7 @@ function sts_get_sections_definition() {
     'footer'     => 'Footer indhold',
     'ui'         => 'Brugerflade tekst',
     'archive'    => 'Arkiv sider',
+    'page'       => 'Sider',
     'inject'     => 'Indsæt scripts',
   ];
 }
@@ -128,6 +129,14 @@ function sts_render_repeater_row( $field, $index, $values ) {
           '<input type="checkbox" name="sts_options[%s][%s][%s][%s]" value="1" %s>',
           esc_attr( $group ), esc_attr( $parent_key ), esc_attr( $index ), esc_attr( $sub_key ), checked( 1, $val, false )
         );
+      } elseif ( $type === 'radio' ) {
+        foreach ( $sub['options'] as $opt_val => $opt_label ) {
+          printf(
+            '<label style="margin-right:12px;"><input type="radio" name="sts_options[%s][%s][%s][%s]" value="%s" %s> %s</label>',
+            esc_attr( $group ), esc_attr( $parent_key ), esc_attr( $index ), esc_attr( $sub_key ),
+            esc_attr( $opt_val ), checked( $val, $opt_val, false ), esc_html( $opt_label )
+          );
+        }
       } elseif ( $type === 'textarea' ) {
         printf(
           '<textarea name="sts_options[%s][%s][%s][%s]" class="large-text" rows="3">%s</textarea>',
@@ -193,6 +202,14 @@ function sts_render_field( $field ) {
         echo '<label class="sts-label">' . esc_html($sub['label']) . '</label>';
         if ( $sub['type'] === 'checkbox' ) {
           printf('<input type="checkbox" name="sts_options[%s][%s][%s]" value="1" %s>', esc_attr($group), esc_attr($parent_key), esc_attr($sub_key), checked(1, $value, false));
+        } elseif ( $sub['type'] === 'radio' ) {
+          foreach ( $sub['options'] as $opt_val => $opt_label ) {
+            printf(
+              '<label style="margin-right:12px;"><input type="radio" name="sts_options[%s][%s][%s]" value="%s" %s> %s</label>',
+              esc_attr( $group ), esc_attr( $parent_key ), esc_attr( $sub_key ),
+              esc_attr( $opt_val ), checked( $value, $opt_val, false ), esc_html( $opt_label )
+            );
+          } 
         } elseif ( $sub[ 'type' ] === 'textarea' ) {
           printf('<textarea class="large-text" name="sts_options[%s][%s][%s]" rows="4" placeholder="%s">%s</textarea>', esc_attr($group), esc_attr($parent_key), esc_attr($sub_key), esc_attr($sub['placeholder'] ?? ''), esc_textarea($value));
         } else {
@@ -216,6 +233,14 @@ function sts_render_field( $field ) {
 
   if ( $type === 'checkbox' ) {
     printf('<input type="checkbox" name="sts_options[%s][%s]" value="1" %s>', esc_attr($group), esc_attr($parent_key), checked(1, $value, false));
+  } elseif ( $type === 'radio' ) {
+    foreach ( $field['options'] as $opt_val => $opt_label ) {
+      printf(
+        '<label style="margin-right:12px;"><input type="radio" name="sts_options[%s][%s]" value="%s" %s> %s</label>',
+        esc_attr( $group ), esc_attr( $parent_key ),
+        esc_attr( $opt_val ), checked( $value, $opt_val, false ), esc_html( $opt_label )
+      );
+    }
   } elseif ( $type === 'textarea' ) {
     printf('<textarea class="large-text" name="sts_options[%s][%s]" rows="5" placeholder="%s">%s</textarea>', esc_attr($group), esc_attr($parent_key), esc_attr($placeholder), esc_textarea($value));
   } else {
