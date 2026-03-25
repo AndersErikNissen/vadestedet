@@ -1,0 +1,41 @@
+<?php
+// @@ NOTE: THESE ARE STRINGS THAT SHOULDN'T SHOW UP ON THE STS OPTIONS PAGE, BUT SHOULD STILL BE TRANSLATEABLE.
+
+$register_strings = function ( $name, $strings ) {
+  if ( ! function_exists( 'pll_register_string' ) ) return;
+
+  foreach( $strings as $string ) {
+    pll_register_string( $name, $string, 'Tema tekst' );  
+  };
+};
+
+add_action( 'init', function() use ( $register_strings ) {
+  // ## strings
+  $event_strings = [
+    'Event dato',
+    'Event tidsramme',
+    'Relaterede event(s)',
+    'Kommende event(s)',
+    'Bestil billet',
+    'Pris',
+    'Gratis',
+  ];
+
+  $general_strings = [
+    'Se alle',
+    'Tidligere side',
+    'Næste side',
+    'Vi kunne desværre ikke finde nogen resultater',
+    'Reserver bord',
+    'Ring til os',
+    'Send os en e-mail',
+    'Lukket',
+    'Åbningstider',
+    'Virksomheden'
+  ];
+
+  
+  // ## register strings
+  $register_strings( 'General', $general_strings );
+  $register_strings( 'Event', $event_strings );
+});

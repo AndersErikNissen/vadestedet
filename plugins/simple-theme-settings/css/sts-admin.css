@@ -15,6 +15,18 @@
   width: 100%;
 }
 
+.simple-theme-settings form .form-table .sts-label {
+  display: block; 
+  font-weight: 600; 
+  font-size: 0.75rem; 
+  margin: 0.4rem 0 !important;
+}
+
+.simple-theme-settings form .form-table .sts-description {
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
 
 /* @@ STYLE TABLES */
 .simple-theme-settings .form-table {
@@ -32,14 +44,24 @@
 
 
 /* @@ STYLE FIELDSET */
-.sts-field-group {
+.sts-field-group,
+.sts-repeater-row {
   display: flex;
   flex-direction: column;
   gap: 1em;
+  border: 1px solid #f6f6f6; 
+  margin-top: 0.25rem;
+  padding: 0.5rem 1rem 1rem; 
+  border-radius: 0.25rem;
 }
 
 .sts-field-group legend {
   display: none;
+}
+
+.sts-field-group > div + div,
+.sts-repeater-row > div + div {
+  margin-top: 0.75rem;
 }
 
 
@@ -62,4 +84,15 @@
   width: 100%;
   height: auto;
   max-width: 200px;
+}
+
+
+/* @@ REPEATER ROWS */
+.sts-repeater-rows-btns {
+  display: flex;
+  flex-direction: column;
+}
+
+.sts-repeater-row {
+  margin-bottom: 1rem;
 }

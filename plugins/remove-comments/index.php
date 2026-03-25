@@ -1,50 +1,57 @@
 <?php
-
 /**
- * Plugin Name: Remove WordPress Comment Feature
- * Description: Disables all the comment features.
- * Version: 1.0
+ * Plugin Name: Remove WordPress Comment Feature (Nuclear Option)
+ * Description: Disables every single trace of comments from the UI and Database logic.
+ * Version: 1.1
  * Author: AENDERS.DK
- * Author URI: https://aenders.dk
  */
 
-// CREDITS: https://help.one.com/hc/en-us/articles/20278284092433-How-can-I-disable-comments-in-WordPress
+// 1. Core Redirects and Meta Boxes
 add_action( 'admin_init', function () {
-  // Redirect any user trying to access comments page
   global $pagenow;
-    
-  if ( $pagenow === 'edit-comments.php' ) {
-    wp_safe_redirect(admin_url());
+  if ( $pagenow === 'edit-comments.php' || $pagenow === 'options-discussion.php' ) {
+    wp_safe_redirect( admin_url() );
     exit;
   }
 
-  // Remove comments metabox from dashboard
+  remove_submenu_page( 'options-general.php', 'options-discussion.php' );
   remove_meta_box( 'dashboard_recent_comments', 'dashboard', 'normal' );
 
-  // Disable support for comments and trackbacks in post types
-  foreach ( get_post_types() as $post_type) {
-    if (post_type_supports($post_type, 'comments')) {
-      remove_post_type_support($post_type, 'comments');
-      remove_post_type_support($post_type, 'trackbacks');
+  foreach ( get_post_types() as $post_type ) {
+    if ( post_type_supports( $post_type, 'comments' ) ) {
+      remove_post_type_support( $post_type, 'comments' );
+      remove_post_type_support( $post_type, 'trackbacks' );
     }
   }
 } );
 
-// Close comments on the front-end
+// 2. Disable Frontend Logic
 add_filter( 'comments_open', '__return_false', 20, 2 );
 add_filter( 'pings_open', '__return_false', 20, 2 );
- 
-// Hide existing comments
 add_filter( 'comments_array', '__return_empty_array', 10, 2 );
- 
-// Remove comments page in menu
+
+// 3. Clean Admin Menu
 add_action( 'admin_menu', function () {
-  remove_menu_page('edit-comments.php');
+  remove_menu_page( 'edit-comments.php' );
+  remove_submenu_page( 'options-general.php', 'options-discussion.php' );
 } );
- 
-// Remove comments links from admin bar
-add_action( 'init', function () {
-  if ( is_admin_bar_showing() ) {
-    remove_action('admin_bar_menu', 'wp_admin_bar_comments_menu', 60);
-  }
-} );
+
+// 4. Remove Admin Bar Link
+add_action( 'wp_before_admin_bar_render', function() {
+  global $wp_admin_bar;
+  $wp_admin_bar->remove_menu('comments');
+});
+
+// 5. Remove Columns from Post/Page Lists
+add_filter( 'manage_posts_columns', 'remove_comm_cols' );
+add_filter( 'manage_pages_columns', 'remove_comm_cols' );
+
+function remove_comm_cols( $columns ) {
+  unset( $columns['comments'] );
+  return $columns;
+}
+
+// 6. Hide Gutenberg Discussion Panel
+add_action( 'enqueue_block_editor_assets', function() {
+  wp_add_inline_script( 'wp-edit-post', 'wp.data.dispatch( "core/edit-post" ).removeEditorPanel( "discussion-panel" );' );
+});
