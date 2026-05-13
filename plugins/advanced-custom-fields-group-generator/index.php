@@ -139,6 +139,15 @@ function acfgg_block( $relation, $type ):array {
     ];
   };
 
+  if ( $type === 'banner' ) {
+    return [
+      acfgg_accordion( $block_relation . 'tab_', 'Tekst indhold'                     ),
+      acfgg_field(     $block_relation,          'Tekst', 'text', 'text', [
+        'instructions'  => 'Flere stykker tekst opdeles med //'
+      ] ),
+    ];
+  };
+
   if ( $type === 'image' ) {
     $image_ratio_args = [
       'choices' => [
@@ -472,6 +481,49 @@ function acfgg_block( $relation, $type ):array {
 
     return $return_array;
   };
+
+  if ( $type === 'option_1' ) {
+    return [
+      acfgg_accordion( $block_relation . 'tab_', 'Indstillinger'                     ),
+      acfgg_field(     $block_relation,          'Farvetema',      'color_theme',       'button_group', [
+        'choices' => [
+          'black-white'    => 'Sort på hvid',
+          'blue-brown'     => 'Blå på brun',
+          'brown-blue'     => 'Brun på blå',
+          'green-yellow'   => 'Grøn på gul',
+          'yellow-green'   => 'Gul på grøn',
+          'green-blue'     => 'Grøn på blå',
+        ],
+        'default_value' => 'black-white'
+      ] ),
+    ];
+  };
+
+  if ( $type === 'option_2' ) {
+    return [
+      acfgg_accordion( $block_relation . 'tab_', 'Indstillinger'                     ),
+      acfgg_field(     $block_relation,          'Layout',         'layout',            'button_group', [
+        'choices' => [
+          '1'  => 'Layout 1',
+          '2'  => 'Layout 2',
+          '3'  => 'Layout 3',
+        ],
+        'default_value' => '1',
+        'instructions'  => 'Det valgte layout ser forskelligt ud alt efter om et billede er valgt eller ej.'
+      ] ),
+      acfgg_field(     $block_relation,          'Farvetema',      'color_theme',       'button_group', [
+        'choices' => [
+          'black-white'    => 'Sort på hvid',
+          'blue-brown'     => 'Blå på brun',
+          'brown-blue'     => 'Brun på blå',
+          'green-yellow'   => 'Grøn på gul',
+          'yellow-green'   => 'Gul på grøn',
+          'green-blue'     => 'Grøn på blå',
+        ],
+        'default_value' => 'black-white'
+      ] ),
+    ];
+  };
 }
 
 // @@ GENERATE LOCATION
@@ -535,6 +587,7 @@ function acfgg_group( $relation, $name, $section, $fields, $location, $menu_orde
     'fields'     => $fields,
     'location'   => $location,
     'menu_order' => $menu_order,
+    // 'style'      => 'seamless',
   ] );
 }
 
@@ -587,6 +640,22 @@ function acfgg_sections() {
   );
 
 
+  // ## banner
+  $relation = 'section_banner_';
+
+  acfgg_group( 
+    $relation, 
+    'Sektion: Banner', 
+    'banner',
+    array_merge(
+      acfgg_block( $relation, 'banner' ),
+      acfgg_block( $relation, 'option_1' )
+    ), [
+      acfgg_location( [ 'frontpage', 'page' ] )
+    ],
+  );
+
+
   // ## page
   $relation = 'section_page_information_';
   
@@ -598,7 +667,7 @@ function acfgg_sections() {
     [
       acfgg_location( [ 'page', 'not_frontpage' ] )
     ],
-    0
+    5
   );
 
 
@@ -613,7 +682,8 @@ function acfgg_sections() {
       acfgg_block( $relation, 'carousel'  )
     ), [
       acfgg_location( [ 'frontpage' ] )
-    ]
+    ],
+    1
   );
 
 
@@ -642,11 +712,13 @@ function acfgg_sections() {
     'Sektion: Tekst & billede', 
     'text-and-image',
     array_merge(
-      acfgg_block( $relation, 'text'  ),
-      acfgg_block( $relation, 'image' )
+      acfgg_block( $relation, 'text' ),
+      acfgg_block( $relation, 'image' ),
+      acfgg_block( $relation, 'option_2' ),
     ), [
       acfgg_location( [ 'page' ] )
-    ]
+    ],
+    5
   );
 
 
@@ -658,11 +730,13 @@ function acfgg_sections() {
     'Sektion: Tekst & billede', 
     'text-and-image',
     array_merge(
-      acfgg_block( $relation, 'text'  ),
-      acfgg_block( $relation, 'image' )
+      acfgg_block( $relation, 'text' ),
+      acfgg_block( $relation, 'image' ),
+      acfgg_block( $relation, 'option_2' ),
     ), [
       acfgg_location( [ 'page' ] )
-    ]
+    ],
+    6
   );
 }
 

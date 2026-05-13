@@ -31,11 +31,20 @@ add_action( 'init', function() use ( $register_strings ) {
     'Send os en e-mail',
     'Lukket',
     'Åbningstider',
-    'Virksomheden'
+    'Virksomheden',
+    'Menu',
+    'Tilbage',
+    'Tilbage til arkiv',
+  ];
+    
+  $footer_strings = [
+    'Navigation',
+    'Om Vadestedet',
   ];
 
   
   // ## register strings
   $register_strings( 'General', $general_strings );
   $register_strings( 'Event', $event_strings );
+  $register_strings( 'Footer', $footer_strings );
 });

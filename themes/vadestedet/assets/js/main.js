@@ -15,13 +15,13 @@ const OBSERVE = (callback, target, options = {}) => {
 // @@ TOGGLE THE HEADER
 (function(d) {
   const THE_HEADER = d.querySelector(".the-header");
-  const OBSERVER_ZONE = d.querySelector(".toggle-the-header-see-through");
-  const CLASS = "see-through";
-  const TRANSITION_CLASS = "transition-see-through";
+  const OBSERVER_ZONE = d.querySelector(".observe-zone-the-header");
+  const CLASS = "animate";
+  const TRANSITION_CLASS = "allow-transition";
 
   if (!THE_HEADER || !OBSERVER_ZONE) return;
 
-  function callback() {
+  OBSERVE(() => {
     if (!THE_HEADER.classList.contains(TRANSITION_CLASS)) {
       THE_HEADER.classList.add(TRANSITION_CLASS)
     }
@@ -35,9 +35,7 @@ const OBSERVE = (callback, target, options = {}) => {
         THE_HEADER.classList.remove(CLASS);        
       } 
     }
-  }
-
-  OBSERVE(callback, OBSERVER_ZONE);
+  }, OBSERVER_ZONE);
 })(document);
 
 // @@ MODALS
@@ -386,4 +384,78 @@ class AccordionItem {
 const ACCORDION_ELEMENTS = Array.from(document.querySelectorAll(".accordion"));
 const ACCORDIONS = ACCORDION_ELEMENTS.map((element) => new Accordion({
   containerReference: element,
+}));
+
+class Banner {
+  constructor({banner}) {
+    if (!banner) return;
+
+    this.banner = banner;
+    this.track = this.banner.querySelector(".banner-track");
+    this.blueprint = this.banner.querySelector(".banner-blueprint");
+    
+    if (!this.track || !this.blueprint) return;
+    this.lastWindowWidth = window.innerWidth;
+
+    document.fonts.ready.then(this.update.bind(this));
+
+    window.addEventListener('resize', () => {
+      let windowWidth = window.innerWidth;
+
+      if (windowWidth !== this.lastWindowWidth) {
+        this.lastWindowWidth = windowWidth;
+        this.update();
+      }
+    });
+  }
+
+  get lastWindowWidth() {
+    return this._lastWindowWidth;
+  }
+
+  set lastWindowWidth(width) {
+    this._lastWindowWidth = width;
+  }
+
+  renderScrollTracks() {
+    let pixelsPerSecond = 20;
+    let contentWidth = this.blueprint.offsetWidth;
+    let copiesNeeded = Math.ceil(this.lastWindowWidth / contentWidth) + 1;
+    let duration = contentWidth * copiesNeeded / pixelsPerSecond;
+
+    this.track.innerHTML = "";
+
+    for (let i = 0; i < 2; i++) {
+      let scrollTrack = document.createElement("div");
+      scrollTrack.className = 'banner-scroll-track';
+
+      let content = "";
+      for (let c = 0; c < copiesNeeded; c++) {
+        content += this.blueprint.innerHTML;
+      }
+
+      scrollTrack.innerHTML = content;
+      scrollTrack.style.animationDuration = `${duration}s`;
+      this.track.appendChild(scrollTrack);
+    }
+  }
+
+  update() {
+    if (this.banner.classList.contains("active")) {
+      this.banner.classList.remove("active");
+    }
+
+    this.renderScrollTracks();
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.banner.classList.add("active");
+      });
+    });
+  }
+}
+
+const BANNER_ELEMENTS = Array.from(document.querySelectorAll(".banner"));
+const BANNERS = BANNER_ELEMENTS.map((element) => new Banner({
+  banner: element,
 }));

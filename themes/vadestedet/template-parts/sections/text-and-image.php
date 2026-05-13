@@ -17,9 +17,16 @@ $images         = [
 ];
 $image_ratios   = [
   'desktop' => get_field( $block_relation . 'image_ratio_desktop' ),
-  'mobile'  => get_field( $block_relation . 'image_ratio_mobile'  ),
+  'mobile'  => get_field( $block_relation . 'image_ratio_mobile' ),
 ];
-$image_first    = get_field( $block_relation . 'image_first'          );
+$image_first    = get_field( $block_relation . 'image_first' );
+
+$block_relation = $relation . 'option_2_block_';
+$layout         = get_field( $block_relation . 'layout' );
+
+if ( $images['desktop'] && $layout === '3' ) {
+  $layout = '1';
+}
 
 
 // @@ OPTION: SET THE IMAGE CONTAINER AS THE FIRST ELEMENT IN THE GRID
@@ -36,10 +43,10 @@ if ( $image_first ) {
 
 if ( ! $heading && ! $text && ! $button && ! $images[ 'desktop' ] ) return; ?>
 
-<section class="section-text-and-image section">
+<section class="section-text-and-image section <?= $layout . ':layout'; ?>">
   <div class="grid pw:wrapper">
     <?php if ( $heading || $text || $button ) : ?>
-      <div class="clmns-12/12 laptop:clmns-6/12">
+      <div class="section-text-and-image-text-wrapper">
         <div class="top:sticky">
           <?php if ( $heading ) : ?> 
             <h2 class="h2">
@@ -63,7 +70,7 @@ if ( ! $heading && ! $text && ! $button && ! $images[ 'desktop' ] ) return; ?>
     <?php endif; ?>
 
     <?php if ( $images[ 'desktop' ] ) : ?>
-      <div class="clmns-12/12 laptop:clmns-6/12<?= esc_attr( $image_first_classes ); ?>">
+      <div class="section-text-and-image-image-wrapper<?= esc_attr( $image_first_classes ); ?>">
         <div class="top:sticky">
           <?php render_acf_img( $images[ 'desktop' ], $images[ 'mobile' ], $image_ratios, '1/2' ); ?>
         </div>

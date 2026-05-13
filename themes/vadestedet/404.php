@@ -1,7 +1,7 @@
 <?php 
 get_header();
 
-echo '<section class="section-404">';
+echo '<section class="section-404 bg:section">';
   echo '<div class="pw:wrapper">';
     echo '<div class="grid">';
       echo '<div class="section-404__content clmns-12/12 laptop:clmns-6/12">';

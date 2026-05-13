@@ -35,7 +35,7 @@ $desktop_clmns_class = 12 / min( $posts_found, 4 ); ?>
   <div class="pw:wrapper">
     <div class="spaced:row pb-2">
       <h2 class="h2"><?= get_theme_string( 'Kommende event(s)' ); ?></h2>
-      <a class="txt-btn" href="<?= esc_url( get_post_type_archive_link( 'event' ) ); ?>">
+      <a class="txt:btn" href="<?= esc_url( get_post_type_archive_link( 'event' ) ); ?>">
         <?= get_theme_string( 'Se alle' ); ?>
       </a>
     </div>

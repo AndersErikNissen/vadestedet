@@ -43,8 +43,8 @@ if ( $is_event ) {
 <section class="section-post-description">
   <div class="pw:wrapper">
     <div class="py-1">
-      <a class="txt-btn" href="<?= esc_url( get_post_type_archive_link( 'event' ) ); ?>">
-        <?= sts_option( 'ui.buttons.back_to_archive' ); ?>
+      <a class="txt:btn" href="<?= esc_url( get_post_type_archive_link( 'event' ) ); ?>">
+        <?= get_theme_string( 'Tilbage' ); ?>
       </a>
     </div>
   </div>

@@ -132,17 +132,6 @@ function sts_get_fields_definition() {
     ]
   ];
 
-  $header = [
-    [
-      'group' 			=> 'header',
-      'key'					=> 'logo',
-      'label'				=> 'Logo',
-      'type'				=>'textarea',
-      'placeholder' => 'Indsæt <svg> kode her...',
-      'translate'   => false
-    ]
-  ];
-
   $footer = [
     [
       'group' 			=> 'footer',
@@ -150,35 +139,6 @@ function sts_get_fields_definition() {
       'label'				=> 'Beskrivelse',
       'type'				=> 'textarea',
       'placeholder' => 'Beskriv virksomheden...'
-    ],
-    [
-      'group' 			=> 'footer',
-      'key'					=> 'logo',
-      'label'				=> 'Logo',
-      'type'				=>'textarea',
-      'placeholder' => 'Indsæt <svg> kode her...',
-      'translate'   => false
-    ]
-  ];
-
-  $ui = [
-    [
-      'group'  => 'ui',
-      'key'		 => 'buttons',
-      'label'	 => 'Knapper',
-      'type'	 => 'group',
-      'fields' => [
-        [
-          'key'   => 'back',
-          'label' => 'Tilbage',
-          'type'  => 'text',
-        ],
-        [
-          'key'   => 'back_to_archive',
-          'label' => 'Tilbage til',
-          'type'  => 'text',
-        ]
-      ]
     ]
   ];
 
@@ -461,5 +421,5 @@ function sts_get_fields_definition() {
   //   ],
   // ],
 
-  return array_merge( $company, $contact, $hours, $header, $footer, $ui, $pages, $archive, $inject );
+  return array_merge( $company, $contact, $hours, $footer, $pages, $archive, $inject );
 }
