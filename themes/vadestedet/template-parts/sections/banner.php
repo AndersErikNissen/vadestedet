@@ -15,7 +15,7 @@ $strings = explode( '//', $text ); ?>
 
 <section class="section-banner bg:section <?= $color_theme . ':color-theme'; ?>">
   <div class="banner">
-    <div class="banner-track h1">
+    <div class="banner-track">
       <!-- JS Injects HTML here... -->
     </div>
 

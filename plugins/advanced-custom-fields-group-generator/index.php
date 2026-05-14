@@ -504,20 +504,23 @@ function acfgg_block( $relation, $type ):array {
       acfgg_accordion( $block_relation . 'tab_', 'Indstillinger'                     ),
       acfgg_field(     $block_relation,          'Layout',         'layout',            'button_group', [
         'choices' => [
-          '1'  => 'Layout 1',
-          '2'  => 'Layout 2',
-          '3'  => 'Layout 3',
+          'one'   => 'Layout 1',
+          'two'   => 'Layout 2',
+          'three' => 'Layout 3',
         ],
-        'default_value' => '1',
-        'instructions'  => 'Det valgte layout ser forskelligt ud alt efter om et billede er valgt eller ej.'
+        'default_value' => 'one',
+        'instructions'  => 'Det valgte layout kan se forskelligt ud, alt efter om et billede er valgt eller ej.'
       ] ),
       acfgg_field(     $block_relation,          'Farvetema',      'color_theme',       'button_group', [
         'choices' => [
           'black-white'    => 'Sort på hvid',
           'blue-brown'     => 'Blå på brun',
+          'blue-green'     => 'Blå på grøn',
           'brown-blue'     => 'Brun på blå',
-          'green-yellow'   => 'Grøn på gul',
+          'brown-yellow'   => 'Brun på gul',
           'yellow-green'   => 'Gul på grøn',
+          'yellow-brown'   => 'Gul på brun',
+          'green-yellow'   => 'Grøn på gul',
           'green-blue'     => 'Grøn på blå',
         ],
         'default_value' => 'black-white'
@@ -709,7 +712,7 @@ function acfgg_sections() {
 
   acfgg_group( 
     $relation, 
-    'Sektion: Tekst & billede', 
+    'Sektion: Tekst & billede (1)', 
     'text-and-image',
     array_merge(
       acfgg_block( $relation, 'text' ),
@@ -727,14 +730,14 @@ function acfgg_sections() {
 
   acfgg_group( 
     $relation, 
-    'Sektion: Tekst & billede', 
+    'Sektion: Tekst & billede (2)', 
     'text-and-image',
     array_merge(
       acfgg_block( $relation, 'text' ),
       acfgg_block( $relation, 'image' ),
       acfgg_block( $relation, 'option_2' ),
     ), [
-      acfgg_location( [ 'page' ] )
+      acfgg_location( [ 'page', 'not_frontpage' ] ),
     ],
     6
   );

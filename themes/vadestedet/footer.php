@@ -59,7 +59,7 @@
       ];
     } ?>
 
-    <footer class="the-footer">
+    <footer class="the-footer blue-brown:color-theme">
       <div class="pw:wrapper">
         <div class="the-footer-main">
           <?php if ( ! empty( $some_links ) ) : ?>
@@ -74,14 +74,14 @@
 
           <?php if ( $description ) : ?>
             <div class="the-footer-description">
-              <p class="h5 mb-1"><?= get_theme_string( 'Om Vadestedet' ); ?></p>
+              <p class="h4 mb-1"><?= get_theme_string( 'Om Vadestedet' ); ?></p>
               <p><?= $description; ?></p>
             </div> 
           <?php endif; ?>
           
           <div class="the-footer-aside">  
             <div class="the-footer-navigation">
-              <p class="h5 mb-1"><?= get_theme_string( 'Navigation' ); ?></p>
+              <p class="h4 mb-1"><?= get_theme_string( 'Navigation' ); ?></p>
               <?php wp_nav_menu( [
                 'menu'       => 'footer',
                 'container'  => 'ul',
@@ -90,10 +90,10 @@
             </div>
 
             <div class="the-footer-opening-hours">
-              <p class="h5 mb-1"><?= get_theme_string( 'Åbningstider' ); ?></p>
-              <ul class="column gap-0.5">
+              <p class="h4 mb-1"><?= get_theme_string( 'Åbningstider' ); ?></p>
+              <ul class="column gap-0.2">
                 <?php foreach ( $this_weeks_opening_hours as $weekday ) : ?>
-                  <li class="row spaced:row">
+                  <li class="row spaced:row gap-2">
                     <span><?= $weekday[ 'name' ]; ?></span>
                     <span><?= $weekday[ 'hours' ]; ?></span>
                   </li>

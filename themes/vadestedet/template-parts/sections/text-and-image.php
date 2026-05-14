@@ -10,71 +10,80 @@ $heading        = get_field( $block_relation . 'heading'              );
 $text           = get_field( $block_relation . 'text'                 );
 $button         = get_field( $block_relation . 'button'               );
 
-$block_relation = $relation . 'image_block_';
-$images         = [
-  'desktop' => get_field( $block_relation . 'image_desktop' ),
-  'mobile'  => get_field( $block_relation . 'image_mobile'  ),
-];
-$image_ratios   = [
+$block_relation      = $relation . 'image_block_';
+$image_desktop       = get_field( $block_relation . 'image_desktop' );
+$image_mobile        = get_field( $block_relation . 'image_mobile' );
+$image_ratios        = [
   'desktop' => get_field( $block_relation . 'image_ratio_desktop' ),
   'mobile'  => get_field( $block_relation . 'image_ratio_mobile' ),
 ];
-$image_first    = get_field( $block_relation . 'image_first' );
-
-$block_relation = $relation . 'option_2_block_';
-$layout         = get_field( $block_relation . 'layout' );
-
-if ( $images['desktop'] && $layout === '3' ) {
-  $layout = '1';
-}
-
-
-// @@ OPTION: SET THE IMAGE CONTAINER AS THE FIRST ELEMENT IN THE GRID
-$image_first_classes = "";
+$image_first         = get_field( $block_relation . 'image_first' );
+$has_image           = $image_desktop ?? null;
+$image_class = 'text-and-image-layout-image';
 if ( $image_first ) {
   if ( str_contains( $image_first, 'mobile' ) ) {
-    $image_first_classes .= " mobile:clmns-first";
+    $image_class .= " mobile:image-first";
   }
   
   if ( str_contains( $image_first, 'desktop' ) ) {
-    $image_first_classes .= " laptop:clmns-first";
+    $image_class .= " laptop:image-first";
   } 
 }; 
 
-if ( ! $heading && ! $text && ! $button && ! $images[ 'desktop' ] ) return; ?>
+$block_relation = $relation . 'option_2_block_';
+$color_theme    = get_field( $block_relation . 'color_theme' );
+$layout         = get_field( $block_relation . 'layout' );
+$layout_class   = $layout . ':text-and-image-layout';
+$layout_wrapper_class = '';
 
-<section class="section-text-and-image section <?= $layout . ':layout'; ?>">
-  <div class="grid pw:wrapper">
-    <?php if ( $heading || $text || $button ) : ?>
-      <div class="section-text-and-image-text-wrapper">
+$h_class = 'h2';
+
+if ( $layout !== 'one' ) {
+  $h_class = 'h1';
+}
+
+if ( $layout === 'three' ) {
+  $layout_wrapper_class = ' pw:wrapper';
+}
+
+if ( $has_image ) {
+  $layout_class = 'image:' . $layout_class;
+}
+
+if ( ! $heading && ! $text && ! $button && ! $images['desktop'] ) return; ?>
+
+<section class="section-text-and-image <?= $color_theme . ':color-theme ' . $layout_class; ?>">
+  <div class="text-and-image-layout-wrapper<?= $layout_wrapper_class; ?>">
+    <?php if ( $heading || $text || $button ) { ?>
+      <div class="text-and-image-layout-text">
         <div class="top:sticky">
-          <?php if ( $heading ) : ?> 
-            <h2 class="h2">
-              <?= $heading ;?>
+          <?php if ( $heading ) { ?> 
+            <h2 class="text-and-image-heading <?= $h_class; ?>">
+              <?= $heading; ?>
             </h2>
-          <?php endif; ?>
+          <?php } ?>
   
-          <?php if ( $text ) : ?> 
-            <p class="rte">
-              <?= $text ;?>
+          <?php if ( $text ) { ?> 
+            <p class="text-and-image-description rte">
+              <?= $text; ?>
             </p>
-          <?php endif; ?>      
+          <?php } ?>      
   
-          <?php if ( $button ) : ?> 
-            <a class="btn" href="<?= esc_url( $button['url'] ?? '' ); ?>" target="<?= $button['target'] ?? '_self'; ?>">
+          <?php if ( $button ) { ?> 
+            <a class="text-and-image-button btn mt-15" href="<?= esc_url( $button['url'] ?? '' ); ?>" target="<?= $button['target'] ?? '_self'; ?>">
               <?= $button[ 'title' ]; ?>
             </a>
-          <?php endif; ?>      
+          <?php } ?>      
         </div>
       </div>
-    <?php endif; ?>
+    <?php } ?>
 
-    <?php if ( $images[ 'desktop' ] ) : ?>
-      <div class="section-text-and-image-image-wrapper<?= esc_attr( $image_first_classes ); ?>">
+    <?php if ( $image_desktop ) { ?>
+      <div class="<?= esc_attr( $image_class ); ?>">
         <div class="top:sticky">
-          <?php render_acf_img( $images[ 'desktop' ], $images[ 'mobile' ], $image_ratios, '1/2' ); ?>
+          <?php render_acf_img( $image_desktop, $image_mobile, $image_ratios, '1/2' ); ?>
         </div>
       </div>
-    <?php endif; ?>
+    <?php } ?>
   </div>
 </section>
