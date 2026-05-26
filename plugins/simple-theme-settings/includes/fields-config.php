@@ -132,6 +132,29 @@ function sts_get_fields_definition() {
     ]
   ];
 
+  $header = [
+    [
+      'group'       => 'header',
+      'key'		      => 'banner',
+      'label'	      => 'Banner',
+      'type'	      => 'group',
+      'fields'      => [
+        [
+          'key'   => 'text',
+          'label' => 'Tekst',
+          'type'  => 'text',
+        ],
+        [
+          'key'         => 'link',
+          'label'       => 'Link',
+          'type'        => 'text',
+          'description' => 'Udfyld kun hvis nødvendigt.',
+          'translate'   => false
+        ]
+      ]
+    ],
+  ];
+
   $footer = [
     [
       'group' 			=> 'footer',
@@ -421,5 +444,5 @@ function sts_get_fields_definition() {
   //   ],
   // ],
 
-  return array_merge( $company, $contact, $hours, $footer, $pages, $archive, $inject );
+  return array_merge( $company, $contact, $hours, $header, $footer, $pages, $archive, $inject );
 }

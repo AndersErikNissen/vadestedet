@@ -455,7 +455,16 @@ class Banner {
   }
 }
 
-const BANNER_ELEMENTS = Array.from(document.querySelectorAll(".banner"));
+const BANNER_ELEMENTS = Array.from(document.querySelectorAll('.banner, .small\\:banner'));
 const BANNERS = BANNER_ELEMENTS.map((element) => new Banner({
   banner: element,
 }));
+
+(function() {
+  const HEADER_BANNER = document.querySelector(".the-header-banner");
+  const HEADER_BANNER_BTN = document.querySelector(".the-header-banner-btn");
+
+  if (HEADER_BANNER && HEADER_BANNER_BTN) {
+    HEADER_BANNER_BTN.addEventListener("click", () => HEADER_BANNER.remove());
+  }
+})();

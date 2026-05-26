@@ -79,20 +79,20 @@ function render_badges( $badges ) {
 }
 
 
-// @@ RENDER BTN VIA LINK
+// @@ RENDER ADVANCED BUTTON VIA LINK
 function render_btn( $link, $class = 'btn' ) {
-  if ( ! is_array( $link ) || empty( $link['url'] ) ) {
-    return;
-  }
+  $url = $link['url'];
 
-  printf(
-    '<a class="%s" href="%s" target="%s">%s</a>',
-    esc_attr( $class ),
-    esc_url( $link[ 'url' ] ),
-    esc_attr( isset( $link[ 'target' ] ) ? $link[ 'target' ] : '_self' ),
-    esc_html( $link[ 'title' ] )
-  );
-}
+  if ( ! is_array( $link ) || empty( $url ) ) return;
+
+  $target = isset( $link['target'] ) ? $link['target'] : '_self'; ?>
+
+  <a class="<?= esc_attr( $class ); ?>" href="<?= esc_url( $url ); ?>" target="<?= esc_attr( $target ); ?>">
+    <span class="btn-label">
+      <?= esc_html( $link['title'] ); ?>
+    </span>
+  </a>
+<?php }
 
 
 // @@ GET LOCALIZED DATE FROM ACF FIELD
@@ -117,8 +117,14 @@ function get_theme_string( $string ) {
 // @@ GET AN ICON FROM THE CATALOGUE
 function get_icon( $name ) {
   $catalogue = [
-    'hamburger' => '<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M28 11V13H4V11H28Z" fill="currentColor"/><path d="M28 19V21H4V19H28Z" fill="currentColor"/></svg>',
-    'x'         => '<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23.9706 7.02944L25.3848 8.44365L8.41421 25.4142L7 24L23.9706 7.02944Z" fill="currentColor"/><path d="M24.9706 23.9706L23.5563 25.3848L6.58579 8.41421L8 7L24.9706 23.9706Z" fill="currentColor"/></svg>',
+    'hamburger' => '<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">' .
+                     '<path d="M28 25H5V23H28V25Z" fill="currentColor"/>' .
+                     '<path d="M28 17H5V15H28V17Z" fill="currentColor"/>' .
+                     '<path d="M28 9H5V7H28V9Z" fill="currentColor"/>' .
+                   '</svg>',
+    'x'         => '<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">' .
+                     '<path d="M24.8379 8.5752L17.4141 15.998L24.8418 23.4258L23.4277 24.8398L16 17.4121L8.57422 24.8389L7.16016 23.4248L14.5859 15.998L7.16406 8.57715L8.57812 7.16211L16 14.584L23.4238 7.16113L24.8379 8.5752Z" fill="currentColor"/>' .
+                   '</svg>',
   ];
 
   return $catalogue[ $name ] ?? null;

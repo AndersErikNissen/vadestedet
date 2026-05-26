@@ -59,13 +59,13 @@
       ];
     } ?>
 
-    <footer class="the-footer blue-brown:color-theme">
+    <footer class="the-footer color-theme-section" data-color-theme="blue-brown">
       <div class="pw:wrapper">
         <div class="the-footer-main">
           <?php if ( ! empty( $some_links ) ) : ?>
-            <ul class="the-footer-some">
+            <ul class="the-footer-some wp-nav-menu">
               <?php foreach ( $some_links as $some ) : ?>
-                <li>
+                <li class="menu-item">
                   <a href="<?= esc_attr( $some[ 'url' ] ); ?>"><?= esc_html( $some[ 'name' ] ); ?></a>
                 </li>
               <?php endforeach; ?>
@@ -94,7 +94,7 @@
               <ul class="column gap-0.2">
                 <?php foreach ( $this_weeks_opening_hours as $weekday ) : ?>
                   <li class="row spaced:row gap-2">
-                    <span><?= $weekday[ 'name' ]; ?></span>
+                    <span class="the-footer-weekday-name"><?= $weekday[ 'name' ]; ?></span>
                     <span><?= $weekday[ 'hours' ]; ?></span>
                   </li>
                 <?php endforeach; ?>

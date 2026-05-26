@@ -132,10 +132,11 @@ function acfgg_block( $relation, $type ):array {
 
   if ( $type === 'text' ) {
     return [
-      acfgg_accordion( $block_relation . 'tab_', 'Tekst indhold'                     ),
-      acfgg_field(     $block_relation,          'Overskrift', 'heading', 'text'     ),
-      acfgg_field(     $block_relation,          'Tekst',      'text',    'textarea' ),
-      acfgg_field(     $block_relation,          'Knap',       'button',  'link'     )
+      acfgg_accordion( $block_relation . 'tab_', 'Tekst indhold' ),
+      acfgg_field(     $block_relation,          'Overskrift',  'heading',     'text' ),
+      acfgg_field(     $block_relation,          'Underrubrik', 'sub_heading', 'text' ),
+      acfgg_field(     $block_relation,          'Tekst',       'text',        'textarea' ),
+      acfgg_field(     $block_relation,          'Knap',        'button',      'link' )
     ];
   };
 
@@ -423,11 +424,6 @@ function acfgg_block( $relation, $type ):array {
     $return_array[] = acfgg_field(     $block_relation,          'Overskrift',           'heading',       'text', [
       'required' => true
     ]                                                                                                                 );
-    $return_array[] = acfgg_accordion( $block_relation . 'tab_', 'Indstillinger'                                      );
-    $return_array[] = acfgg_field(     $block_relation,          'Sorteringsrækkefølge', 'sorting_order', 'number', [
-      'default' => 8,
-      'instructions' => 'Angiv et tal for at styre rækkefølgen menuen vises i. Lavere tal vises først (f.eks. vil 1 blive vist før 2 og 3).'
-    ]                                                                                                                 );
     $return_array[] = acfgg_accordion( $block_relation . 'tab_', 'Menu punkter'                                       );
     
     $sub_field_relation = $block_relation . 'sub_field_';
@@ -479,22 +475,36 @@ function acfgg_block( $relation, $type ):array {
       'sub_fields' => $sub_fields,
     ] );
 
+    $return_array[] = acfgg_accordion( $block_relation . 'tab_', 'Indstillinger'                                      );
+    $return_array[] = acfgg_field(     $block_relation,          'Sorteringsrækkefølge', 'sorting_order', 'number', [
+      'default' => 8,
+      'instructions' => 'Angiv et tal for at styre rækkefølgen menuen vises i. Lavere tal vises først (f.eks. vil 1 blive vist før 2 og 3).'
+    ]                                                                                                                 );
+
     return $return_array;
   };
+
+  $color_choices = [
+    'white-brown'  => 'Hvid på brun',
+    'white-green'  => 'Hvid på grøn',
+    'yellow-brown' => 'Gul på brun',
+    'yellow-green' => 'Gul på grøn',
+    'blue-brown'   => 'Blå på brun',
+    'brown-white'  => 'Brun på hvid',
+    'brown-yellow' => 'Brun på gul',
+    'brown-blue'   => 'Brun på blå',
+    'green-white'  => 'Grøn på hvid',
+    'green-yellow' => 'Grøn på gul',
+  ];
+
+  $color_choices_default = 'brown-white';
 
   if ( $type === 'option_1' ) {
     return [
       acfgg_accordion( $block_relation . 'tab_', 'Indstillinger'                     ),
       acfgg_field(     $block_relation,          'Farvetema',      'color_theme',       'button_group', [
-        'choices' => [
-          'black-white'    => 'Sort på hvid',
-          'blue-brown'     => 'Blå på brun',
-          'brown-blue'     => 'Brun på blå',
-          'green-yellow'   => 'Grøn på gul',
-          'yellow-green'   => 'Gul på grøn',
-          'green-blue'     => 'Grøn på blå',
-        ],
-        'default_value' => 'black-white'
+        'choices'       => $color_choices,
+        'default_value' => $color_choices_default
       ] ),
     ];
   };
@@ -512,18 +522,8 @@ function acfgg_block( $relation, $type ):array {
         'instructions'  => 'Det valgte layout kan se forskelligt ud, alt efter om et billede er valgt eller ej.'
       ] ),
       acfgg_field(     $block_relation,          'Farvetema',      'color_theme',       'button_group', [
-        'choices' => [
-          'black-white'    => 'Sort på hvid',
-          'blue-brown'     => 'Blå på brun',
-          'blue-green'     => 'Blå på grøn',
-          'brown-blue'     => 'Brun på blå',
-          'brown-yellow'   => 'Brun på gul',
-          'yellow-green'   => 'Gul på grøn',
-          'yellow-brown'   => 'Gul på brun',
-          'green-yellow'   => 'Grøn på gul',
-          'green-blue'     => 'Grøn på blå',
-        ],
-        'default_value' => 'black-white'
+        'choices'       => $color_choices,
+        'default_value' => $color_choices_default
       ] ),
     ];
   };

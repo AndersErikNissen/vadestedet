@@ -20,6 +20,7 @@ function sts_get_sections_definition() {
     'company'    => 'Virksomheds information',
     'contact'    => 'Kontakt information',
     'hours'      => 'Åbningstidpuntker',
+    'header'     => 'Header indhold',
     'footer'     => 'Footer indhold',
     'archive'    => 'Arkiv sider',
     'page'       => 'Sider',
