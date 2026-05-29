@@ -1228,67 +1228,6 @@
   }
 
 
-  /* ## carousel */
-  .carousel {
-    overflow: hidden;
-    width: 100%;
-    min-height: 100vh;
-    position: relative;
-  }
-
-  .carousel-item {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-end;
-    padding: var(--pw-spacing);
-  }
-
-  .carousel-item,
-  .carousel-item .ratio-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-  }
-
-  .carousel-item-content {
-    opacity: 0;
-  }
-
-  .carousel-item-content {
-    position: relative;
-    max-width: 30rem;
-  }
-
-  .carousel-item.active .carousel-item-content {
-    transition: all 300ms 500ms ease-in;
-  }
-
-  .carousel.is-animating .carousel-item.active {
-    animation: carouselItemActive 500ms forwards;
-    z-index: 2;
-  }
-
-  .carousel-item.active {
-    transform: translateY(0%);
-    z-index: 2;
-  }
-
-  @keyframes carouselItemActive {
-    from { transform: translateY(101%); }
-    to { transform: translateY(0%); }
-  }
-
-  .carousel-item.inactive {
-    z-index: 1;
-  }
-
-  .carousel-item.active .carousel-item-content {
-    opacity: 1;
-  }
-
-
   /* ## post description */
   .section-post-description-items {
     display: flex;
