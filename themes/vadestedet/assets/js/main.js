@@ -12,43 +12,81 @@
  */
 
 class Header {
-  constructor({header, observerZone}) {
+  constructor({header}) {
     this.header = header;
-    this.observerZone = observerZone;
+
+    this.colorSwaps = {
+      'white-brown': 'white-green',
+      'white-green': 'white-brown',
+      'yellow-brown': 'yellow-green',
+      'yellow-green': 'yellow-brown',
+      'blue-brown': 'brown-white',
+      'brown-white': 'brown-yellow',
+      'brown-yellow': 'brown-white',
+      'brown-blue': 'green-white',
+      'green-white': 'green-yellow',
+      'green-yellow': 'green-white',
+    };
 
     if (!this.header) return; 
+    
+    this.wrappers = document.querySelectorAll(".color-theme-trigger-wrapper");
 
-    this.observeElement(this.observerZone, {
-      root: null,
-      rootMargin: `0px 0px 0px 0px`, 
-      threshold: 0,
+    if (this.wrappers.length === 0) return; 
+
+    this.triggers = this.wrappers;
+    
+    if (this.triggers.length === 0) return;
+
+    console.log("triggers", this.triggers);
+    this.triggers.forEach((trigger) => this.observeTrigger(trigger));
+  }
+
+  get triggers() {
+    return this._triggers || [];
+  }
+
+  set triggers(parents) { 
+    this._triggers = [];
+
+    parents.forEach((parent) => {
+      let children = parent.querySelectorAll("[data-color-theme-trigger]");
+      console.log(children);
+
+      if (children.length === 0) return;
+
+      children.forEach((child) => {
+        const TRIGGER = {
+          parent: parent,
+          element: child,
+          color: this.colorSwaps[parent.dataset.colorTheme || 'white-brown'],
+        };
+
+        this._triggers.push(TRIGGER);
+      });
     });
   }
 
-  observeElement(element, options) {
+  observeTrigger(trigger) {
     const observer = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
-        if (!this.header.classList.contains("allow-animation")) {
-          this.header.classList.add("allow-animation");
-        }
-
-        if (!entry.isIntersecting) {
-          this.header.classList.add('animate');
+        if (entry.isIntersecting) {
+          console.log("new color is:" + trigger.color, trigger.element);
         } else {
-          this.header.classList.remove('animate');
         }
       });
-    }, options);
+    }, {
+      root: null,
+      rootMargin: "0px 0px 0px 0px", 
+      threshold: 0,
+    });
 
-    observer.observe(element);
+    observer.observe(trigger.element);
   }
-  
-
 }
 
 const THE_HEADER = new Header({
   header: document.querySelector(".the-header"),
-  observerZone: document.querySelector(".observer-zone-the-header"),
 })
 
 

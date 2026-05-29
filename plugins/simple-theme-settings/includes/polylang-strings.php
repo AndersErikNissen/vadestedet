@@ -32,9 +32,9 @@ add_action( 'init', function() use ( $register_strings ) {
     'Lukket',
     'Åbningstider',
     'Virksomheden',
-    'Menu',
     'Tilbage',
     'Tilbage til arkiv',
+    'Har du spørgsmål?'
   ];
     
   $footer_strings = [
