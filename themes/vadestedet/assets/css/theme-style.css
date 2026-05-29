@@ -226,11 +226,12 @@
     font-size: 1rem;
   }
 
+
   /* ## labels */
   .l1 {
     font-size: 1.75rem;
   }
-
+  
   .l2 {
     font-size: 1.25rem;
   }
@@ -397,8 +398,28 @@
   }
   
   .the-header-logo svg {
-    width: 8rem;
+    width: 12rem;
     height: auto;
+  }
+  
+  .the-header .logo-mark {
+    transform-origin: top center;
+  }
+  
+  .the-header.animate .logo-mark {
+    transform: scale(2);
+  }
+
+  .the-header.allow-animation .logo-mark {
+    transition: transform var(--transition-hover);
+  }
+  
+  .the-header.animate .the-header-logo g:not(.logo-mark) {
+    opacity: 0;
+  }
+  
+  .the-header.allow-animation .the-header-logo g:not(.logo-mark) {
+    transition: opacity var(--transition-hover);
   }
 
   .the-header__select select {
@@ -418,7 +439,7 @@
     flex: 1 1 100%;
   }
 
-  .observe-zone-the-header {
+  .observer-zone-the-header {
     position: absolute;
     top: 0;
     left: 0;
@@ -443,36 +464,67 @@
   /* ## the footer */
   .the-footer {
     padding-top: 2rem;
+    padding-bottom: 2rem;
   }
 
-  .the-footer-main {
-    display: flex;
-    padding-bottom: 5rem;
-  }
-
-  .the-footer-some,
-  .the-footer-description {
-    flex: 0 0 auto;
+  .the-footer-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
   }
 
   .the-footer-some {
+    grid-area: 1 / 3 / 6 / 4;
+    align-self: center;
     display: flex;
-    gap: 1rem;
-    padding-right: var(--pw-spacing);
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 0 0 0 2rem;
   }
 
-  .the-footer-description {
-    max-width: 24rem;
-  }
-
-  .the-footer-aside {
-    display: flex;
-    gap: 5rem;
+  .the-footer-logo {
+    grid-area: 1 / 2 / 2 / 3;
   }
 
   .the-footer-logo svg {
-    width: 100%;
+    width: 6rem;
     height: auto;
+    margin-bottom: 4rem;
+  }
+
+  .the-footer-row {
+    grid-area: 2 / 2 / 3 / 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 4rem;
+    gap: 6rem;
+  }
+  
+  .the-footer-row-row {
+    display: flex;
+    gap: 3rem 6rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .the-footer-description {
+    flex-shrink: 1;
+    max-width: 32rem;
+    font-size: 1.25rem;
+  }
+
+  .the-footer-navigation,
+  .the-footer-opening-hours {
+    flex-shrink: 0;
+  }
+
+  .the-footer-copyright {
+    grid-area: 5 / 2 / 6 / 5;
+    font-size: 0.75rem;
+    display: flex;
+    justify-content: flex-end;
   }
 
   .the-footer-menu {
@@ -481,70 +533,42 @@
 
   .the-footer-some a {
     text-transform: capitalize;
-  }
-
-  .the-footer-copyright {
-    font-size: 0.75rem;
+    writing-mode: sideways-rl;
   }
 
   .the-footer-weekday-name {
     text-transform: capitalize;
   }
   
-  @media (max-width: 979px) {
-    .the-footer-main {
-      flex-direction: column;
-    }
-
-    .the-footer-aside {
-      gap: 2rem;
-    }
-
+  @media (min-width: 480px) {
     .the-footer-some {
-      margin-top: 3rem;
-      order: 1;
+      grid-area: 1 / 1 / 6 / 2;
+      padding: 0 4rem 0 0;
     }
 
-    .the-footer-aside {
-      margin-top: 2rem;
-      flex-direction: column;
+    .the-footer-some a {
+      writing-mode: sideways-lr;
+    }
+  }
+
+  @media (max-width: 979px) {
+    .the-footer-row {
+      flex-wrap: wrap;
+    }
+
+    .the-footer-description,
+    .the-footer-row-row {
+      flex: 0 0 100%;
+    }
+
+    .the-footer-row-row {
+      justify-content: space-between;
     }
   }
   
   @media (min-width: 980px) {
     .the-footer {
       padding-top: 6rem;
-    }
-
-    .the-footer-main {
-      padding-bottom: 4rem;
-    }
-
-    .the-footer-aside {
-      padding-left: 1rem;
-    }
-
-    .the-footer-some {
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .the-footer-some + .the-footer-description {
-      padding-left: 4rem;
-    }
-
-    .the-footer-main > *:last-child {
-      padding-right: 4rem;
-    }
-
-    .the-footer-some a {
-      writing-mode: sideways-lr;
-    }
-
-    .the-footer-aside {
-      flex: 1 1 100%;
-      flex-wrap: wrap;
-      justify-content: flex-end;
     }
   }
 }

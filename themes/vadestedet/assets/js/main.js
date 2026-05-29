@@ -1,42 +1,56 @@
 "use strict";
-// @@ UTILILTY
-const OBSERVE = (callback, target, options = {}) => {
-  const OBSERVE_CALLBACK = (entries) => {
-    entries.forEach((entry) => {
-      callback.apply(entry);
+
+/**
+ * IDEAS FOR BETTER AND MORE CLEAR CODE
+ * 1. Is .display needed?
+ * 2. Consider using [data-*] more, for things like the state of the carousel
+ * 3. Would it be more clean to have Class for the Carousel-Item itself (with maybe methods like: set active, handleClasses)
+ * 4. Rename the methods of the carousel to things like: next(), prev()...
+ * 5. Rethink the loop / pause mechanic
+ * 6. Read article: https://www.wiktorwisniewski.dev/blog/build-simple-javascript-slider
+ * 7. Use RAF() instead of setTimeout() + Date.now() ?
+ */
+
+class Header {
+  constructor({header, observerZone}) {
+    this.header = header;
+    this.observerZone = observerZone;
+
+    if (!this.header) return; 
+
+    this.observeElement(this.observerZone, {
+      root: null,
+      rootMargin: `0px 0px 0px 0px`, 
+      threshold: 0,
     });
-  };
+  }
 
-  const OBSERVER = new IntersectionObserver(OBSERVE_CALLBACK, options);
+  observeElement(element, options) {
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (!this.header.classList.contains("allow-animation")) {
+          this.header.classList.add("allow-animation");
+        }
 
-  OBSERVER.observe(target);
+        if (!entry.isIntersecting) {
+          this.header.classList.add('animate');
+        } else {
+          this.header.classList.remove('animate');
+        }
+      });
+    }, options);
+
+    observer.observe(element);
+  }
+  
+
 }
 
-// @@ TOGGLE THE HEADER
-(function(d) {
-  const THE_HEADER = d.querySelector(".the-header");
-  const OBSERVER_ZONE = d.querySelector(".observe-zone-the-header");
-  const CLASS = "animate";
-  const TRANSITION_CLASS = "allow-transition";
+const THE_HEADER = new Header({
+  header: document.querySelector(".the-header"),
+  observerZone: document.querySelector(".observer-zone-the-header"),
+})
 
-  if (!THE_HEADER || !OBSERVER_ZONE) return;
-
-  OBSERVE(() => {
-    if (!THE_HEADER.classList.contains(TRANSITION_CLASS)) {
-      THE_HEADER.classList.add(TRANSITION_CLASS)
-    }
-
-    if (this.isIntersecting) {
-      if (!THE_HEADER.classList.contains(CLASS)) {
-        THE_HEADER.classList.add(CLASS);
-      } 
-    } else {
-      if (THE_HEADER.classList.contains(CLASS)) {
-        THE_HEADER.classList.remove(CLASS);        
-      } 
-    }
-  }, OBSERVER_ZONE);
-})(document);
 
 // @@ MODALS
 class Modal {
@@ -299,17 +313,6 @@ class Carousel {
     this.loopStart();
   }
 };
-
-/**
- * IDEAS FOR BETTER AND MORE CLEAR CODE
- * 1. Is .display needed?
- * 2. Consider using [data-*] more, for things like the state of the carousel
- * 3. Would it be more clean to have Class for the Carousel-Item itself (with maybe methods like: set active, handleClasses)
- * 4. Rename the methods of the carousel to things like: next(), prev()...
- * 5. Rethink the loop / pause mechanic
- * 6. Read article: https://www.wiktorwisniewski.dev/blog/build-simple-javascript-slider
- * 7. Use RAF() instead of setTimeout() + Date.now() ?
- */
 
 const CAROUSELS = document.querySelectorAll(".carousel").forEach((element) => {
   return new Carousel({

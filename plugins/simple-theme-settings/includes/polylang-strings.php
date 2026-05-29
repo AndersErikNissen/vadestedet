@@ -39,7 +39,6 @@ add_action( 'init', function() use ( $register_strings ) {
     
   $footer_strings = [
     'Navigation',
-    'Om Vadestedet',
   ];
 
   
