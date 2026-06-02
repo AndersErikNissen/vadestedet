@@ -65,20 +65,6 @@ function render_acf_img( $desktop_img, $mobile_img = null, $ratios = [ 'desktop'
 };
 
 
-// @@ RENDER BADGES
-function render_badges( $badges ) {
-  if ( ! is_array( $badges ) || is_array( $badges ) && empty( $badges ) ) {
-    return;
-  }
-
-  echo '<div class="badges">';
-    foreach( $badges as $badge ) {
-      echo '<span class="badge">' . $badge . '</span>';
-    }
-  echo '</div>';
-}
-
-
 // @@ RENDER ADVANCED BUTTON VIA LINK
 function render_btn( $link, $class = 'btn' ) {
   $url = $link['url'];

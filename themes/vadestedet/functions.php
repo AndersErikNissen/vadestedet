@@ -97,24 +97,31 @@ add_action( 'wp_body_open', function() {
 // @@ POLYLANG FIX FOR ARCHIVE-PAGE REDIRECTS
 if ( function_exists( 'pll_the_languages' ) ) {
   add_filter( 'pll_translation_url', 'fix_archive_translation_url', 10, 2 );
-  
+
   function fix_archive_translation_url( $url, $slug ) {
-      if ( is_post_type_archive() ) {
-          $post_type    = get_queried_object()->name;
-          $current_lang = pll_current_language();
-          $archive_link = get_post_type_archive_link( $post_type );
-  
-          if ( $archive_link && $current_lang ) {
-              // Swap the current language segment for the target language
-              return str_replace(
-                  '/' . $current_lang . '/',
-                  '/' . $slug . '/',
-                  $archive_link
-              );
-          }
-      }
-  
+    if ( ! is_post_type_archive() ) {
       return $url;
+    }
+
+    $post_type       = get_queried_object()->name;
+    $archive_link    = get_post_type_archive_link( $post_type );
+    $default_lang    = pll_default_language();
+    $current_lang    = pll_current_language();
+
+    // Find den "rene" arkiv-slug (relative del af URL'en)
+    // ved at trække hjem-URL for default-sproget fra
+    $default_home = trailingslashit( pll_home_url( $default_lang ) );
+    $current_home = trailingslashit( pll_home_url( $current_lang ) );
+
+    // Normaliser arkiv-linket til relativ sti
+    $relative = ltrim( str_replace(
+      [ $current_home, $default_home ],
+      '',
+      $archive_link
+    ), '/' );
+
+    // Sæt målsprogets home-URL + relativ sti sammen
+    return trailingslashit( pll_home_url( $slug ) ) . $relative;
   }
 }
 

@@ -31,7 +31,7 @@ if ( ! $next_events_query->have_posts() ) return;
 $posts_found = $next_events_query->found_posts ?? 2;
 $desktop_clmns_class = 12 / min( $posts_found, 4 ); ?>
 
-<section class="section-next-events section">
+<section class="section-next-events section color-theme-swap-trigger">
   <div class="pw:wrapper">
     <div class="spaced:row pb-2">
       <h2 class="h2"><?= get_theme_string( 'Kommende event(s)' ); ?></h2>

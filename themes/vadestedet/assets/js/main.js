@@ -12,76 +12,111 @@
  */
 
 class Header {
+  _colorSwaps = {
+    'white-brown': 'white-green',
+    'white-green': 'white-brown',
+    'yellow-brown': 'yellow-green',
+    'yellow-green': 'yellow-brown',
+    'blue-brown': 'brown-white',
+    'brown-white': 'brown-yellow',
+    'brown-yellow': 'brown-white',
+    'brown-blue': 'green-white',
+    'green-white': 'green-yellow',
+    'green-yellow': 'green-white',
+  };
+
   constructor({header}) {
     this.header = header;
 
-    this.colorSwaps = {
-      'white-brown': 'white-green',
-      'white-green': 'white-brown',
-      'yellow-brown': 'yellow-green',
-      'yellow-green': 'yellow-brown',
-      'blue-brown': 'brown-white',
-      'brown-white': 'brown-yellow',
-      'brown-yellow': 'brown-white',
-      'brown-blue': 'green-white',
-      'green-white': 'green-yellow',
-      'green-yellow': 'green-white',
-    };
-
-    if (!this.header) return; 
-    
-    this.wrappers = document.querySelectorAll(".color-theme-trigger-wrapper");
-
-    if (this.wrappers.length === 0) return; 
-
-    this.triggers = this.wrappers;
+    if (!this.header.element) return; 
+     
+    this.triggers = document.querySelectorAll(".color-theme-swap-trigger");
     
     if (this.triggers.length === 0) return;
 
-    console.log("triggers", this.triggers);
-    this.triggers.forEach((trigger) => this.observeTrigger(trigger));
-  }
+    this.window = window;
+    this.observer = this.options;
 
-  get triggers() {
-    return this._triggers || [];
-  }
+    this.startObserving();
 
-  set triggers(parents) { 
-    this._triggers = [];
+    window.addEventListener("resize", () => {
+      if (window.innerWidth !== this.window.width) {
+        this.triggers.forEach((trigger) => {
+          this.observer.unobserve(trigger);
+        });
+        
+        this.observer.disconnect();
 
-    parents.forEach((parent) => {
-      let children = parent.querySelectorAll("[data-color-theme-trigger]");
-      console.log(children);
+        this.window = window;
+        this.observer = this.options;
 
-      if (children.length === 0) return;
-
-      children.forEach((child) => {
-        const TRIGGER = {
-          parent: parent,
-          element: child,
-          color: this.colorSwaps[parent.dataset.colorTheme || 'white-brown'],
-        };
-
-        this._triggers.push(TRIGGER);
-      });
+        this.startObserving();
+      }
     });
   }
 
-  observeTrigger(trigger) {
-    const observer = new IntersectionObserver((entries, observer) => {
+  get header() {
+    return this._header || {
+      element: null,
+      height: 0,
+    };
+  }
+
+  set header(element) {
+    this._header = {
+      element: element,
+      height: element.getBoundingClientRect().height,
+    };
+  }
+
+  get window() {
+    return this._window || {
+      height: 0,
+    }
+  }
+
+  set window(currentWindow) {
+    this._window = {
+      height: currentWindow.innerHeight,
+      width: currentWindow.innerWidth,
+    }
+  }
+
+  get options() {
+    const TOP_OFFSET = this.header.height / 2;
+    const BOTTOM_OFFSET = this.window.height - TOP_OFFSET + 5;
+
+    return {
+      root: null,
+      threshold: 0,
+      rootMargin: `-${TOP_OFFSET}px 0px -${BOTTOM_OFFSET}px 0px`,
+    };
+  }
+
+  get observer() {
+    return this._observer;
+  }
+
+  set observer(options) {
+    this._observer = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
+        const COLOR = this._colorSwaps[entry.target.dataset.colorTheme || 'white-brown'];
+
         if (entry.isIntersecting) {
-          console.log("new color is:" + trigger.color, trigger.element);
-        } else {
+          this.header.element.setAttribute("data-color-theme", COLOR);
         }
       });
-    }, {
-      root: null,
-      rootMargin: "0px 0px 0px 0px", 
-      threshold: 0,
-    });
+    }, options);
+  }
 
-    observer.observe(trigger.element);
+  observeCallback(trigger) {
+
+  }
+
+  startObserving() {
+    this.triggers.forEach((trigger) => {
+      this.observer.observe(trigger);
+    });
   }
 }
 
@@ -174,6 +209,8 @@ class Modal {
 
       this.modal.classList.add(this.options.classes.open);
 
+      this.btns.forEach((btn) => btn.setAttribute("aria-expanded", true));
+
       this.state.timeout = setTimeout(() => {
         this.state.timeout = false;
       }, this.options.timing.open);
@@ -190,6 +227,8 @@ class Modal {
     }
 
     this.modal.classList.add(this.options.classes.close);
+
+    this.btns.forEach((btn) => btn.setAttribute("aria-expanded", false));
     
     this.state.timeout = setTimeout(() => {
       document.body.classList.remove(this.options.classes.disableScroll);
@@ -509,3 +548,107 @@ const BANNERS = BANNER_ELEMENTS.map((element) => new Banner({
     HEADER_BANNER_BTN.addEventListener("click", () => HEADER_BANNER.remove());
   }
 })();
+
+const OBSERVE = (callback, target, options = {}) => {
+  const OBSERVE_CALLBACK = (entries) => {
+    entries.forEach((entry) => {
+      callback.apply(entry);
+    });
+  };
+
+  const OBSERVER = new IntersectionObserver(OBSERVE_CALLBACK, options);
+
+  OBSERVER.observe(target);
+}
+
+const CLAMP = (value, min = 0, max = 1) => {
+  return Math.min(max, Math.max(min, value));
+};
+
+const LERP = (from, to, ease) => {
+  return from * (1 - ease) + to * ease;
+};
+
+class ScrollProgressSection {
+  state = {
+    ticking: false,
+    looping: false,
+  };
+  
+  progress = {
+    cache: 0,
+    current: 0,
+    scroll: 0,
+  }
+
+  constructor({section, observe, startFromDivider}) {
+    this.section = section;
+    this.observe = observe || section;
+    this.startFromDivider = startFromDivider;
+
+    if (this.section) {
+      this.bindEvents();
+    }
+  }
+
+  loop() {
+    const RECT = this.observe.getBoundingClientRect();
+    const EASE = 0.2;
+    const START_PROGRESS_FROM = window.innerHeight * this.startFromDivider;
+    const TOTAL_DISTANCE = (window.innerHeight - START_PROGRESS_FROM) + RECT.height;
+    const DISTANCE_TRAVELED = window.innerHeight - RECT.bottom + RECT.height;
+    
+    let targetScroll = DISTANCE_TRAVELED / TOTAL_DISTANCE;
+
+    // Guard Rails: Handle hard document boundaries cleanly
+    if (window.scrollY === 0) {
+      targetScroll = 0;
+    } else if (RECT.bottom < 0) {
+      targetScroll = 1;
+    }
+
+    this.progress.scroll = CLAMP(targetScroll, 0, 1);
+    
+    this.progress.current = CLAMP(LERP(this.progress.cache, this.progress.scroll, EASE));
+
+    if (Math.abs(this.progress.current - this.progress.scroll) < 0.0001) {
+      this.progress.current = this.progress.scroll;
+    }
+
+    if (this.progress.cache === this.progress.current) {
+      this.state.looping = false;
+      return;
+    } 
+
+    if (this.progress.cache !== this.progress.current) {
+      this.section.style.setProperty("--progress", this.progress.current.toFixed(5));
+      this.progress.cache = this.progress.current;
+
+      window.requestAnimationFrame(() => this.loop());
+    } 
+  }
+
+
+  bindEvents() {
+    window.addEventListener("scroll", () => {
+      if (!this.state.ticking) {
+        window.requestAnimationFrame(() => {
+          if (!this.state.looping) {
+            this.state.looping = true;
+            this.loop();
+          }
+
+          this.state.ticking = false;
+        });
+
+        this.state.ticking = true;
+      }
+    });
+  }
+}
+
+const INTRODUCTION = new ScrollProgressSection({
+  section: document.querySelector(".section-introduction"),
+  observe: document.querySelector(".section-introduction-background-slide"),
+  startFromDivider: 1,
+});

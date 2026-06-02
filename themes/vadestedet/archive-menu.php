@@ -14,7 +14,9 @@ $menu_query = new WP_Query( [
 
 echo '<section class="section-menu section">';
   echo '<div class="pw:wrapper">';
-    get_template_part( 'template-parts/snippets/archive-header' );
+    get_template_part( 'template-parts/snippets/archive-header', null, [
+      'post_type' => 'menu'
+    ] );
     if ( $menu_query->have_posts() ) {
       echo '<div class="column gap-2">';
         while ( $menu_query->have_posts() ) {

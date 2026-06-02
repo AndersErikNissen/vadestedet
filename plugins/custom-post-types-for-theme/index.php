@@ -15,14 +15,20 @@ add_action( 'init', function() {
       'singular_name' => __( 'Event', 'textdomain' ),
     ],
     'public'             => true,
-    'has_archive'        => true,
+    'has_archive'        => _x( 'events', 'URL slug', 'textdomain' ), 
     'publicly_queryable' => true,
     'show_ui'            => true,
     'show_in_menu'       => true,
     'show_in_rest'       => false,
     'menu_icon'          => 'dashicons-heart',
     'supports'           => [ 'title', 'custom-fields' ],
-    'rewrite'            => [ 'slug' => 'events' ],
+    'rewrite'            => [
+      'slug'       => _x( 'events', 'URL slug', 'textdomain' ),
+      'with_front' => false,
+      'feeds'      => false,
+      'pages'      => true
+    ],
+    'query_var'          => true,
   ] );
 
   register_post_type( 'menu', [
@@ -38,32 +44,24 @@ add_action( 'init', function() {
     'show_in_rest'       => false,
     'menu_icon'          => 'dashicons-food',
     'supports'           => [ 'title', 'custom-fields' ],
-    'rewrite'            => [ 'slug' => 'menu' ],
+    'rewrite'            => [
+      'slug'       => 'menu',
+      'with_front' => false,
+      'feeds'      => false,
+      'pages'      => true
+    ],
+    'query_var'          => true,
   ] );
-
-  // register_post_type( 'arrangement', 
-  //   array(
-  //     'labels' => array(
-  //       'name'          => __( 'Arrangementer', 'textdomain' ),
-  //       'singular_name' => __( 'Arrangement', 'textdomain' ),
-  //     ),
-  //     'public'       => true,
-  //     'has_archive'  => false,
-  //     'show_ui'      => true,
-  //     'show_in_menu' => true,
-  //     'show_in_rest' => false,
-  //     'menu_icon'    => 'dashicons-buddicons-groups',
-  //     'supports'     => array( 'title', 'custom-fields' ),
-  //     'rewrite'      => [
-  //       'slug' => 'arrangementer',
-  //     ],
-  //   )   
-  // );
 } );
 
 
 // @@ BLOCK SHOWING A SINGLE MENU POST
 add_action( 'template_redirect', function () {
+  if ( is_singular( 'event' ) ) {
+    wp_redirect( get_post_type_archive_link( 'event' ), 301 );
+    exit;
+  }
+
   if ( is_singular( 'menu' ) ) {
     wp_redirect( get_post_type_archive_link( 'menu' ), 301 );
     exit;

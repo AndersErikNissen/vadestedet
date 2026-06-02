@@ -135,7 +135,19 @@ function acfgg_block( $relation, $type ):array {
       acfgg_accordion( $block_relation . 'tab_', 'Tekst indhold' ),
       acfgg_field(     $block_relation,          'Overskrift',  'heading',     'text' ),
       acfgg_field(     $block_relation,          'Underrubrik', 'sub_heading', 'text' ),
-      acfgg_field(     $block_relation,          'Tekst',       'text',        'textarea' ),
+      acfgg_field(     $block_relation,          'Tekst',       'text',        'textarea', [
+        'new_lines' => 'br',
+      ] ),
+      acfgg_field(     $block_relation,          'Knap',        'button',      'link' )
+    ];
+  };
+
+  if ( $type === 'introduction' ) {
+    return [
+      acfgg_accordion( $block_relation . 'tab_', 'Tekst indhold' ),
+      acfgg_field(     $block_relation,          'Tekst', 'text', 'textarea', [
+        'new_lines' => 'br',
+      ] ),
       acfgg_field(     $block_relation,          'Knap',        'button',      'link' )
     ];
   };
@@ -168,7 +180,7 @@ function acfgg_block( $relation, $type ):array {
           'width' => '50'
         ] 
       ]                                                                                                                                   ),
-      acfgg_field(     $block_relation,          'Vælg billede (Mobile)',        'image_mobile',        'image', [ 
+      acfgg_field(     $block_relation,          'Vælg billede (Mobil)',        'image_mobile',        'image', [ 
         'wrapper' => [
           'width' => '50'
         ] 
@@ -194,7 +206,8 @@ function acfgg_block( $relation, $type ):array {
         'required' => true
       ]                                                                                                ),
       acfgg_field(     $block_relation,          'Kort beskrivelse', 'short_description', 'textarea', [
-        'required'     => true
+        'new_lines' => 'br',
+        'required'  => true
       ]                                                                                                ),
       acfgg_field(     $block_relation,          'Billede',          'image',             'image', [
         'required'     => true
@@ -216,7 +229,8 @@ function acfgg_block( $relation, $type ):array {
         'required' => true
       ] ),
       acfgg_field(     $block_relation,          'Kort beskrivelse', 'short_description', 'textarea', [
-        'required'     => true
+        'new_lines' => 'br',
+        'required'  => true
       ] ),
       acfgg_field(     $block_relation,          'Billede',          'image',             'image' ),
       acfgg_field(     $block_relation,          'Indhold',          'content',           'wysiwyg', [
@@ -240,29 +254,37 @@ function acfgg_block( $relation, $type ):array {
   if ( $type === 'event_information' ) {
     return [
       acfgg_accordion( $block_relation . 'tab_', 'Event information' ),
-      acfgg_field(     $block_relation,          'Event navn',          'event_name',     'text', [
+      acfgg_field(     $block_relation,          'Event navn',          'event_name',        'text', [
         'required' => true
       ] ),
-      acfgg_field(     $block_relation,          'Event dato',          'date',           'date_picker', [
+      acfgg_field(     $block_relation,          'Event beskrivelse',   'event_description', 'textarea', [
+        'new_lines' => 'br'
+      ] ),
+      acfgg_field(     $block_relation,          'Event billede',       'event_image',        'image', [ 
+        'wrapper' => [
+          'width' => '50'
+        ] 
+      ] ),
+      acfgg_field(     $block_relation,          'Event dato',          'date',               'date_picker', [
         'display_format' => 'd/m/Y',
         'return_format'  => 'Ymd',
         'required' => true
       ] ),
-      acfgg_field(     $block_relation,          'Sæt start tidspunkt', 'start_time',     'time_picker', [
+      acfgg_field(     $block_relation,          'Sæt start tidspunkt', 'start_time',         'time_picker', [
         'display_format' => 'H:i:s',
         'return_format'  => 'H:i:s',
         'required'       => true
       ] ),
-      acfgg_field(     $block_relation,          'Sæt slut tidspunkt',  'end_time',       'time_picker', [
+      acfgg_field(     $block_relation,          'Sæt slut tidspunkt',  'end_time',           'time_picker', [
         'display_format' => 'H:i:s',
         'return_format'  => 'H:i:s',
         'required'       => true
       ] ),
-      acfgg_field(     $block_relation,          'Billet pris',         'price',          'number', [
+      acfgg_field(     $block_relation,          'Billet pris',         'price',              'number', [
         'instructions'  => 'Sæt prisen til 0, hvis eventet er gratis.',
         'default_value' => '0'
       ] ),
-      acfgg_field(     $block_relation,          'Billet status',       'ticket_status',  'button_group', [
+      acfgg_field(     $block_relation,          'Billet status',       'ticket_status',      'button_group', [
         'choices' => [
           'InStock'        => 'På lager',
           'SoldOut'        => 'Udsolgt',
@@ -270,8 +292,8 @@ function acfgg_block( $relation, $type ):array {
         ],
         'default_value'    => 'InStock'
       ] ),
-      acfgg_field(     $block_relation,          'Bestillingslink',     'ticket_url',     'url' ),
-      acfgg_field(     $block_relation,          'Optrædende type',     'performer_type', 'button_group', [
+      acfgg_field(     $block_relation,          'Bestillingslink',     'ticket_url',         'url' ),
+      acfgg_field(     $block_relation,          'Optrædende type',     'performer_type',     'button_group', [
         'choices' => [
           'default'         => 'Os selv',
           'Person'          => 'Person',
@@ -281,20 +303,9 @@ function acfgg_block( $relation, $type ):array {
         ],
         'default_value'    => 'default'
       ] ),
-      acfgg_field(     $block_relation,          'Optrædende navn',     'performer_name',  'text', [
+      acfgg_field(     $block_relation,          'Optrædende navn',     'performer_name',     'text', [
         'instructions' => 'Udfyld kun dette felt, hvis det ikke er Vadestedet som eventet omhandler.'
       ] ),
-    ];
-  };
-
-  if ( $type === 'event_relationship' ) {
-    return [
-      acfgg_accordion( $block_relation . 'tab_', 'Relation(er)',             [ 'instructions' => 'Relevant hvis dette event har en relation til 1 eller flere events' ] ),
-      acfgg_field(     $block_relation,          'Vælg relaterede event(s)', 'event_relationship',                                                'relationship', [
-        'post_type' => 'event',
-        'filters'   => '',
-        'elements'  => [ 'featured_image' ]
-      ]                                                                                                                                                           )
     ];
   };
 
@@ -314,7 +325,9 @@ function acfgg_block( $relation, $type ):array {
       $sub_field_relation_extention = $sub_field_relation . $i . '_';
       
       $question = acfgg_field( $sub_field_relation_extention, 'Spørgsmål', 'question', 'text'     );
-      $answer   = acfgg_field( $sub_field_relation_extention, 'Svar',      'answer',   'textarea' );
+      $answer   = acfgg_field( $sub_field_relation_extention, 'Svar',      'answer',   'textarea', [
+        'new_lines' => 'br',
+      ] );
 
       $keys = [
         $question[ 'key' ],
@@ -372,7 +385,9 @@ function acfgg_block( $relation, $type ):array {
       $sub_field_relation_extention = $sub_field_relation . $i . '_';
       
       $name        = acfgg_field( $sub_field_relation_extention, 'Navn',        'name',        'text'     );
-      $description = acfgg_field( $sub_field_relation_extention, 'Beskrivelse', 'description', 'textarea' );
+      $description = acfgg_field( $sub_field_relation_extention, 'Beskrivelse', 'description', 'textarea', [
+        'new_lines' => 'br',
+      ] );
       $price       = acfgg_field( $sub_field_relation_extention, 'Pris',        'price',       'text'     );
 
       $keys = [
@@ -557,9 +572,7 @@ function acfgg_sections() {
     'Event information', 
     'post-description',
     array_merge(
-      acfgg_block( $relation, 'post_description'   ), 
-      acfgg_block( $relation, 'event_information'  ),
-      acfgg_block( $relation, 'event_relationship' )
+      acfgg_block( $relation, 'event_information'  )
     ), [
       acfgg_location( [ 'event' ] )
     ]
@@ -619,7 +632,8 @@ function acfgg_sections() {
     'Sektion: Ofte stillede spørgsmål', 
     'faq',
     array_merge(
-      acfgg_block( $relation, 'faq' )
+      acfgg_block( $relation, 'faq' ),
+      acfgg_block( $relation, 'option_1' ),
     ), [
       acfgg_location( [ 'frontpage' ] ),
       acfgg_location( [ 'page' ]      )
@@ -661,6 +675,23 @@ function acfgg_sections() {
       acfgg_location( [ 'page', 'not_frontpage' ] ),
     ],
     6
+  );
+
+
+  // ## introduction
+  $relation = 'section_introduction_';
+
+  acfgg_group( 
+    $relation, 
+    'Sektion: Introduktion', 
+    'introduction',
+    array_merge(
+      acfgg_block( $relation, 'introduction' ),
+      acfgg_block( $relation, 'option_1' ),
+    ), [
+      acfgg_location( [ 'page', 'frontpage' ] ),
+    ],
+    1
   );
 }
 

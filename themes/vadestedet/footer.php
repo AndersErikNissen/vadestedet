@@ -59,7 +59,7 @@ foreach ( $this_week as $weekday ) {
 
     </main>
 
-    <footer class="the-footer color-theme-section" data-color-theme="blue-brown">
+    <footer class="the-footer color-theme-section color-theme-swap-trigger" data-color-theme="blue-brown">
       <div class="the-footer-grid pw:wrapper">
         <?php if ( ! empty( $some_links ) ) : ?>
           <ul class="the-footer-some wp-nav-menu">

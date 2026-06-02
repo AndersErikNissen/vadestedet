@@ -64,7 +64,7 @@ if ( $has_image ) {
 
 if ( ! $heading && ! $text && ! $button && ! $images['desktop'] ) return; ?>
 
-<section class="section-text-and-image color-theme-section <?= $layout_class; ?>" data-color-theme="<?= $color_theme; ?>">
+<section class="section-text-and-image color-theme-section color-theme-swap-trigger <?= $layout_class; ?>" data-color-theme="<?= $color_theme; ?>">
   <div class="<?= $layout_wrapper_class; ?>">
     <?php if ( $heading || $text || $button ) { ?>
       <div class="text-and-image-layout-text">

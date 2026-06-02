@@ -12,7 +12,7 @@ $short_description = get_field( $block_relation . 'short_description' );
 $image             = get_field( $block_relation . 'image' );
 $content           = get_field( $block_relation . 'content' ); ?>
 
-<section class="section-page-description section">
+<section class="section-page-description section color-theme-swap-trigger">
   <div class="pw:wrapper">
     <h1 class="h1"><?= $heading; ?></h1>
 

@@ -226,10 +226,9 @@ function sts_schema_event( $post = null ): array {
     $timezone = new DateTimeZone( 'Europe/Copenhagen' );
 
     $relation = 'section_event_information_';
-    $desc     = $relation . 'post_description_block_';
     $info     = $relation . 'event_information_block_';
 
-    $image    = get_field( $desc . 'image', $post_id );
+    $image    = get_field( $info . 'event_image', $post_id );
     $raw_date = get_field( $info . 'date',  $post_id, false, false );
     $times    = [
         'start' => DateTime::createFromFormat(
@@ -247,7 +246,7 @@ function sts_schema_event( $post = null ): array {
     $schema = [
         '@type'               => 'Event',
         'name'                => get_field( $info . 'event_name',        $post_id ),
-        'description'         => get_field( $desc . 'short_description', $post_id ),
+        'description'         => get_field( $info . 'event_description', $post_id ),
         'url'                 => get_permalink( $post_id ),
         'startDate'           => $times['start'] ? $times['start']->format( 'c' ) : '',
         'endDate'             => $times['end']   ? $times['end']->format( 'c' )   : '',

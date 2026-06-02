@@ -19,6 +19,7 @@ add_action( 'init', function() use ( $register_strings ) {
     'Bestil billet',
     'Pris',
     'Gratis',
+    'Se event',
   ];
 
   $general_strings = [
@@ -34,7 +35,10 @@ add_action( 'init', function() use ( $register_strings ) {
     'Virksomheden',
     'Tilbage',
     'Tilbage til arkiv',
-    'Har du spørgsmål?'
+    'Har du spørgsmål?',
+    'Scroll',
+    'Åben hjemmeside-menu',
+    'Luk hjemmeside-menu'
   ];
     
   $footer_strings = [

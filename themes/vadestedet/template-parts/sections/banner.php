@@ -13,10 +13,7 @@ if ( empty( $text ) ) return;
 
 $strings = explode( '//', $text ); ?>
 
-<section class="section-banner color-theme-trigger-wrapper" data-color-theme="<?= $color_theme; ?>">
-  <div data-color-theme-trigger="top"></div>
-  <div data-color-theme-trigger="bottom"></div>
-
+<section class="section-banner color-theme-swap-trigger" data-color-theme="<?= $color_theme; ?>">
   <div class="banner">
     <div class="banner-track">
       <!-- JS Injects HTML here... -->
