@@ -9,11 +9,16 @@ $raw_times         = [
   'end'   => get_field( $block_relation . 'end_time' )
 ];
 $ticket_url        = get_field( $block_relation . 'ticket_url' );
+$btn_label         = get_theme_string( 'Bestil billet' );
 $price             = get_field( $block_relation . 'price' );
 
 if ( $price === '0' || $price === 0 ) {
-  $price = get_theme_string( 'Gratis' );
+  $price     = get_theme_string( 'Gratis' );
+} else {
+  $price = $price . ' kr';
 }
+ 
+$btn_label = $btn_label . ' (' . $price . ')';
 
 $dom_times = [
   'start' => new DateTime( $raw_times[ 'start' ] ),
@@ -26,13 +31,16 @@ if ( ! $event_name ) return; ?>
   <div class="pw:wrapper">
     <div class="block-event-card-inner">
       <div class="block-event-card-meta">
-        <?php if ( $price ) : ?>
-          <span class="block-event-card-price">
-            <?= $price; ?>
-          </span>
-        <?php endif; ?>
+        <span class="block-event-card-time">
+          <?= $dom_times[ 'start' ]->format( 'H:i' ) . '-' . $dom_times[ 'end' ]->format( 'H:i' ); ?>
+        </span>
 
         <span class="block-event-card-date">
+            <?= get_localized_acf_date( $raw_date, 'j. F' ); ?>
+        </span>
+
+
+        <!-- <span class="block-event-card-date">
           <span class="block-event-card-weekday l1">
             <?= get_localized_acf_date( $raw_date, 'l' ); ?>
           </span>
@@ -40,38 +48,37 @@ if ( ! $event_name ) return; ?>
           <span class="block-event-card-month l2">
             <?= get_localized_acf_date( $raw_date, 'j. F' ); ?>
           </span>
-        </span>
-
-        <span class="block-event-card-time">
-          <?= $dom_times[ 'start' ]->format( 'H:i' ) . '-' . $dom_times[ 'end' ]->format( 'H:i' ); ?>
-        </span>
+        </span> -->
       </div>
 
-      <div class="block-event-card-name">
+      <div class="block-event-card-text">
         <h3 class="h3">
           <?= $event_name; ?>
         </h3>
+
+        <?php if ( $event_description ) { ?>
+          <p class="block-event-card-description">
+            <?= $event_description; ?>
+          </p>
+        <?php } ?>
+
+        <?php if ( $ticket_url ) { ?>
+          <div class="block-event-card-btn">
+            <?php render_btn( [ 
+              'title'  => $btn_label, 
+              'url'    => $ticket_url,
+              'target' => '_blank'
+            ] ); ?>
+          </div>
+        <?php } ?>
       </div>
-
-      <?php if ( $event_description ) { ?>
-        <p class="block-event-card-description">
-          <?= $event_description; ?>
-        </p>
-      <?php } ?>
-
-        <!-- <?php if ( $ticket_url ) {
-          render_btn( [ 
-            'title' => get_theme_string( 'Bestil billet' ), 
-            'url' => $ticket_url 
-          ] );
-        } ?> -->
       
       <div class="block-event-card-image">
         <?= render_acf_img( 
           $event_image, 
           null, 
           [ 
-            'desktop' => '1:1', 
+            'desktop' => '4:5', 
             'mobile'  => '1:1' 
           ], 
           '1/4' 

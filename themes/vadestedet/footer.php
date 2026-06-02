@@ -115,7 +115,15 @@ foreach ( $this_week as $weekday ) {
           </div>
         </div>
 
-        <p class="the-footer-copyright"><?= '© ' . date( 'Y' ) . ' ' . sts_option( 'company.name' ); ?></p>
+        <div class="the-footer-bottom">
+          <button class="small:btn">
+            <?php pll_the_languages( [ 
+              'dropdown' => 1
+            ] ); ?>
+          </button>
+
+          <p class="the-footer-copyright"><?= '© ' . date( 'Y' ) . ' ' . sts_option( 'company.name' ); ?></p>
+        </div>
       </div>
     </footer>
     

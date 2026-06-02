@@ -31,7 +31,7 @@ $future_query = new WP_Query( [
   ]
 ] ); ?>
 
-<section class="section-events bg:section color-theme-swap-trigger color-theme-section" data-color-theme="brown-yellow">
+<section class="section-events bg:section color-theme-swap-trigger color-theme-section" data-color-theme="yellow-green">
   <div class="pw:wrapper">
     <?php get_template_part( 'template-parts/snippets/archive-header', null, [
       'post_type' => 'event'
@@ -55,7 +55,7 @@ $future_query = new WP_Query( [
     ) ); 
 
     if ( $links ) { ?>
-      <nav class="pagination" aria-label="Pagination">
+      <nav class="pagination pw:wrapper" aria-label="Pagination">
         <?= $links; ?>
       </nav>
     <?php } 

@@ -53,17 +53,3 @@ add_action( 'init', function() {
     'query_var'          => true,
   ] );
 } );
-
-
-// @@ BLOCK SHOWING A SINGLE MENU POST
-add_action( 'template_redirect', function () {
-  if ( is_singular( 'event' ) ) {
-    wp_redirect( get_post_type_archive_link( 'event' ), 301 );
-    exit;
-  }
-
-  if ( is_singular( 'menu' ) ) {
-    wp_redirect( get_post_type_archive_link( 'menu' ), 301 );
-    exit;
-  }
-} );

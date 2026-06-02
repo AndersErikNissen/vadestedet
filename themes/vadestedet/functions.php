@@ -141,3 +141,48 @@ function disable_wp_search( $query, $error = true ) {
 
 add_action( 'parse_query', 'disable_wp_search' );
 add_filter( 'get_search_form', '__return_false' );
+
+
+// @@ DISABLE PAGES
+add_action( 'template_redirect', function () {
+  if ( is_singular( 'event' ) ) {
+    wp_redirect( get_post_type_archive_link( 'event' ), 301 );
+    exit;
+  }
+
+  if ( is_singular( 'menu' ) ) {
+    wp_redirect( get_post_type_archive_link( 'menu' ), 301 );
+    exit;
+  }
+
+  if ( is_singular( 'post' ) || is_home() || is_category() || is_tag() ) {
+    wp_redirect( home_url(), 301 );
+    exit;
+  }
+} );
+
+
+// @@ REMOVE POSTS FROM ADMIN
+add_action( 'admin_menu', function() {
+  remove_menu_page( 'edit.php' );
+} );
+
+add_action( 'wp_before_admin_bar_render', function() {
+  global $wp_admin_bar;
+  $wp_admin_bar->remove_menu( 'new-post' );
+} );
+
+
+// @@ DISABLE FEEDS
+add_action( 'do_feed', 'disable_feeds', 1 );
+add_action( 'do_feed_rdf', 'disable_feeds', 1 );
+add_action( 'do_feed_rss', 'disable_feeds', 1 );
+add_action( 'do_feed_rss2', 'disable_feeds', 1 );
+add_action( 'do_feed_atom', 'disable_feeds', 1 );
+add_action( 'do_feed_rss2_comments', 'disable_feeds', 1 );
+add_action( 'do_feed_atom_comments', 'disable_feeds', 1 );
+
+function disable_feeds() {
+  wp_redirect( home_url(), 301 );
+  exit;
+}

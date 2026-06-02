@@ -75,7 +75,9 @@ $color_theme    = get_field( $block_relation . 'color_theme' ); ?>
     </div>
   </div>
 
-  <div class="section-introduction-background-slide"></div>
+  <div class="section-introduction-background-slide">
+    <div class="section-introduction-background-slide-background"></div>
+  </div>
 
   <div class="section-introduction-text-slide">
     <div class="pw:wrapper">

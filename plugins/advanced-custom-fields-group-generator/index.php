@@ -59,45 +59,6 @@ add_filter('acf/fields/relationship/query', function( $args, $field, $post_id ) 
 }, 10, 3);
 
 
-// @@ SYNC IMAGE FIELD TO FEATURED IMAGE
-function sync_acf_list_to_featured_image( $post_id, $field_names ) {
-  $new_thumb_id = null;
-
-  // ## look for the first matching field in the list
-  foreach ( $field_names as $field_name ) {
-    $value = get_field($field_name, $post_id);
-    
-    if ( $value ) {
-      $new_thumb_id = is_array( $value ) ? $value[ 'ID' ] : $value;
-      break;
-    }
-  }
-
-  $current_thumb_id = get_post_thumbnail_id( $post_id );
-
-  if ( $new_thumb_id !== $current_thumb_id ) {
-    if ( $new_thumb_id ) {
-      update_post_meta( $post_id, '_thumbnail_id', $new_thumb_id );
-    } else {
-      delete_post_meta( $post_id, '_thumbnail_id' );
-    };
-  };
-}
-
-add_action('acf/save_post', function( $post_id ) {
-  // ## bail if this is an autosave or a revision
-  if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
-  if ( wp_is_post_revision( $post_id ) ) return;
-
-  // ## first matching field wins
-  $fields_to_check = [
-    'section_event_information_post_description_block_image'
-  ];
-
-  sync_acf_list_to_featured_image( $post_id, $fields_to_check );
-}, 20);
-
-
 // @@ GENERATE UNIQUE KEY
 function acfgg_key( $relation, $name, $context = 'field_' ):string {
   return $context . substr( md5( $relation . '_' . $name ), 0, 12);
@@ -196,29 +157,6 @@ function acfgg_block( $relation, $type ):array {
         ],
         'default_value'    => 'default'                                                                                                     
       ]                                                                                                                                   )
-    ];
-  };
-
-  if ( $type === 'post_description' ) {
-    return [
-      acfgg_accordion( $block_relation . 'tab_', 'Beskrivelse'                                         ),
-      acfgg_field(     $block_relation,          'Overskrift',       'heading',           'text', [
-        'required' => true
-      ]                                                                                                ),
-      acfgg_field(     $block_relation,          'Kort beskrivelse', 'short_description', 'textarea', [
-        'new_lines' => 'br',
-        'required'  => true
-      ]                                                                                                ),
-      acfgg_field(     $block_relation,          'Billede',          'image',             'image', [
-        'required'     => true
-      ]                                                                                                ),
-      acfgg_field(     $block_relation,          'Beskrivelse',      'description',       'wysiwyg', [
-        'tabs'         => 'visual',
-        'media_upload' => 1,
-        'delay'        => 0,
-        'required'     => true                                                             
-      ]                                                                                                ),
-      acfgg_field(     $block_relation,          'Knap',             'button',            'link'       )
     ];
   };
 
@@ -496,11 +434,6 @@ function acfgg_location( $locations ):array {
       "operator" => "!=",
       "value"    => "front_page"
     ],
-    'post' => [
-      'param'    => 'post_type',
-      'operator' => '==',
-      'value'    => 'post',
-    ],
     'page' => [
       'param'    => 'post_type',
       'operator' => '==',
@@ -549,21 +482,6 @@ function acfgg_group( $relation, $name, $section, $fields, $location, $menu_orde
 
 // @@ CREATE ALL SECTIONS
 function acfgg_sections() {
-  // ## post
-  $relation = 'section_post_information_';
-  
-  acfgg_group( 
-    $relation, 
-    'Indlægs information', 
-    'post-description',
-    array_merge(
-      acfgg_block( $relation, 'post_description' ), 
-    ), [
-      acfgg_location( [ 'post' ] )
-    ]
-  );
-
-
   // ## event (cpt)
   $relation = 'section_event_information_';
   
