@@ -227,6 +227,7 @@ function sts_schema_event( $post = null ): array {
 
     $relation = 'section_event_information_';
     $info     = $relation . 'event_information_block_';
+    $name     = get_field( $info . 'event_name', $post_id );
 
     $image    = get_field( $info . 'event_image', $post_id );
     $raw_date = get_field( $info . 'date',  $post_id, false, false );
@@ -245,9 +246,9 @@ function sts_schema_event( $post = null ): array {
 
     $schema = [
         '@type'               => 'Event',
-        'name'                => get_field( $info . 'event_name',        $post_id ),
+        'name'                => $name,
         'description'         => get_field( $info . 'event_description', $post_id ),
-        'url'                 => get_permalink( $post_id ),
+        'url'                 => get_post_type_archive_link( 'event' ) . '#' . sanitize_title( $name ),
         'startDate'           => $times['start'] ? $times['start']->format( 'c' ) : '',
         'endDate'             => $times['end']   ? $times['end']->format( 'c' )   : '',
         'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',

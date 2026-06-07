@@ -652,3 +652,101 @@ const INTRODUCTION = new ScrollProgressSection({
   observe: document.querySelector(".section-introduction-background-slide"),
   startFromDivider: 1,
 });
+
+class Filter {
+  _state = {
+    filters: [],
+    items: [],
+  }
+
+  constructor({wrapper, btns, clearBtns}) {
+    this.wrapper = wrapper;
+    this.items = btns;
+    this.clearBtns = clearBtns;
+
+    if ( ! this.wrapper || this.items.length === 0 ) return;
+
+    this.items.forEach((item) => {
+      item.btn.addEventListener("click", () => {
+        this.filters = item;
+      });
+    });
+
+    this.clearBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        this.clearFilters();
+      });
+    });
+  }
+
+  get items() {
+    return this._state.items;
+  }
+
+  set items(btns) {
+    let items = [];
+
+    btns.forEach((btn) => {
+      const ITEM = this.wrapper.querySelector(`#${btn.dataset.filterFor}`);
+
+      if (!ITEM) return;
+
+      items.push({
+        btn: btn,
+        element: ITEM,
+      });
+    });
+
+    this._state.items = items;
+  }
+
+  get active() {
+    return JSON.parse(this.wrapper.dataset.hasFilters || false);
+  }
+
+  set active(bool) {
+    return this.wrapper.setAttribute('data-has-filters', JSON.stringify(!!bool));
+  }
+
+  get filters() {
+    return this._state.filters;
+  }
+
+  set filters(item) {
+    let index = this.filters.indexOf(item);
+
+    if (index > -1) {
+      this.removeItem(item, index);
+    } else {
+      this.addItem(item, index);
+    }
+
+    this.active = this.filters.length > 0;
+  }
+
+  clearFilters() {
+    while(this.filters.length > 0) {
+      this.removeItem(this.filters[0], 0);
+    }
+    
+    this.active = false;
+  }
+
+  removeItem(item, index) {
+    item.btn.classList.remove("active");
+    item.element.classList.remove("active");
+    this.filters.splice(index, 1);
+  }
+
+  addItem(item) {
+    item.btn.classList.add("active");
+    item.element.classList.add("active");
+    this.filters.push(item);
+  }
+}
+
+const BOARDGAME_FILTER = new Filter({
+  wrapper: document.querySelector(".section-boardgames"),
+  btns: document.querySelectorAll(".section-boardgames-filter-btn"),
+  clearBtns: document.querySelectorAll(".section-boardgames-clear-filter-btn"),
+});

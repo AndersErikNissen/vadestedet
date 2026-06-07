@@ -38,7 +38,10 @@ add_action( 'init', function() use ( $register_strings ) {
     'Har du spørgsmål?',
     'Scroll',
     'Åben hjemmeside-menu',
-    'Luk hjemmeside-menu'
+    'Luk hjemmeside-menu',
+    'Kontakt',
+    'Filtrer',
+    'Fjern filtre',
   ];
     
   $footer_strings = [

@@ -1,6 +1,5 @@
 <?php 
 get_header(); 
-
 $acf_key        = 'section_event_information_event_information_block_date';
 $current_date   = date( 'Ymd' );
 $posts_per_page = get_option( 'posts_per_page' ) ?? 12;

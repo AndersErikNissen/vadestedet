@@ -55,7 +55,10 @@ foreach ( $this_week as $weekday ) {
     'name'  => $weekday[ 'name' ],
     'hours'  => $opening_hours
   ];
-} ?>
+} 
+
+$phone_number = sts_option( 'contact.phone' ) ?? null;
+$email = sts_option( 'contact.email' ) ?? null; ?>
 
     </main>
 
@@ -86,7 +89,7 @@ foreach ( $this_week as $weekday ) {
               <p><?= $description; ?></p>
             </div> 
           <?php endif; ?>
-
+            
           <div class="the-footer-row-row">
             <div class="the-footer-navigation">
               <p class="h4 mb-1">
@@ -99,6 +102,32 @@ foreach ( $this_week as $weekday ) {
                 'menu_class' => 'wp-nav-menu the-footer-menu column'
               ] ); ?>
             </div>
+
+            <?php if ( $phone_number || $email ) { ?>
+              <div class="the-footer-contact">
+                <p class="h4 mb-1">
+                  <?= get_theme_string( 'Kontakt' ); ?>
+                </p>
+
+                <ul class="wp-nav-menu column gap-0.2">
+                  <?php if ( $phone_number ) { ?>
+                    <li class="menu-item">
+                      <a href="tel:<?= esc_attr( $phone_number ); ?>">
+                        <?= esc_html( $phone_number ); ?> 
+                      </a>
+                    </li>
+                  <?php } 
+
+                  if ( $email ) { ?>
+                    <li class="menu-item">
+                      <a href="mailto:<?= esc_attr( $email ); ?>">
+                        <?= esc_html( $email ); ?>
+                      </a>
+                    </li>
+                  <?php } ?>
+                </ul>
+              </div>
+            <?php } ?>
 
             <div class="the-footer-opening-hours">
               <p class="h4 mb-1"><?= get_theme_string( 'Åbningstider' ); ?></p>
@@ -116,10 +145,16 @@ foreach ( $this_week as $weekday ) {
         </div>
 
         <div class="the-footer-bottom">
-          <button class="small:btn">
-            <?php pll_the_languages( [ 
-              'dropdown' => 1
-            ] ); ?>
+          <button class="language-picker handheld:hidden">
+            <svg class="language-picker-icon" width="152" height="152" viewBox="0 0 152 152" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M129.025 22.1377L151.163 75.582L129.025 129.026L75.5811 151.164L22.1367 129.026L0 75.582L22.1367 22.1377L75.5811 0L129.025 22.1377ZM51.3291 112.625L71.0811 134.774V80.082H44.1787L51.3291 112.625ZM80.0811 134.774L99.834 112.625L106.984 80.082H80.0811V134.774ZM29.0244 122.138L58.7227 134.438L43.0439 116.857L34.9629 80.082H11.6055L29.0244 122.138ZM108.12 116.857L92.4404 134.438L122.137 122.138L139.558 80.082H116.201L108.12 116.857ZM29.0244 29.0254L11.6055 71.082H34.9629L43.0439 34.3066L58.7236 16.7227L29.0244 29.0254ZM51.3291 38.5381L44.1777 71.082H71.0811V16.3887L51.3291 38.5381ZM80.0811 71.082H106.985L99.834 38.5381L80.0811 16.3887V71.082ZM108.12 34.3066L116.201 71.082H139.558L122.137 29.0254L92.4385 16.7236L108.12 34.3066Z" fill="currentColor"/>
+            </svg>
+
+            <div class="language-picker-select">
+              <?php pll_the_languages( [ 
+                'dropdown' => 1
+              ] );  ?>
+            </div>
           </button>
 
           <p class="the-footer-copyright"><?= '© ' . date( 'Y' ) . ' ' . sts_option( 'company.name' ); ?></p>

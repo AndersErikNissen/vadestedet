@@ -168,6 +168,24 @@ function sts_get_fields_definition() {
   $archive = [
     [
       'group'  => 'archive',
+      'key'		 => 'boardgame',
+      'label'	 => 'Brætspil',
+      'type'	 => 'group',
+      'fields' => [
+        [
+          'key'   => 'heading',
+          'label' => 'Overskrift',
+          'type'  => 'text',
+        ],
+        [
+          'key'   => 'description',
+          'label' => 'Beskrivelse',
+          'type'  => 'textarea',
+        ]
+      ]
+    ],
+    [
+      'group'  => 'archive',
       'key'		 => 'event',
       'label'	 => 'Event',
       'type'	 => 'group',

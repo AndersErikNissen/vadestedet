@@ -128,15 +128,15 @@ if ( function_exists( 'pll_the_languages' ) ) {
 
 // @@ REMOVE SEARCH PAGE
 function disable_wp_search( $query, $error = true ) {
-    if ( is_search() && ! is_admin() ) {
-        $query->is_search = false;
-        $query->query_vars['s'] = false;
-        $query->query['s'] = false;
+  if ( is_search() && ! is_admin() ) {
+    $query->is_search = false;
+    $query->query_vars['s'] = false;
+    $query->query['s'] = false;
 
-        if ( $error ) {
-            $query->is_404 = true;
-        }
+    if ( $error ) {
+        $query->is_404 = true;
     }
+  }
 }
 
 add_action( 'parse_query', 'disable_wp_search' );
@@ -151,6 +151,11 @@ add_action( 'template_redirect', function () {
   }
 
   if ( is_singular( 'menu' ) ) {
+    wp_redirect( get_post_type_archive_link( 'menu' ), 301 );
+    exit;
+  }
+
+  if ( is_singular( 'boardgame' ) ) {
     wp_redirect( get_post_type_archive_link( 'menu' ), 301 );
     exit;
   }

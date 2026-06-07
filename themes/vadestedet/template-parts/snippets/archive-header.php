@@ -8,7 +8,7 @@ if ( ! $heading && ! $description ) return; ?>
 
 <div class="archive-header">
   <?php if ( $heading ) { ?>
-    <h1 class="h1 mb-1">
+    <h1 class="h1 mb-2">
       <?= $heading; ?>
     </h1>
   <?php }

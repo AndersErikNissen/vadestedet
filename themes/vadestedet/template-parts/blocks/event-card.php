@@ -27,7 +27,7 @@ $dom_times = [
 
 if ( ! $event_name ) return; ?>
 
-<div class="block-event-card">
+<div class="block-event-card" id="<?= sanitize_title( $event_name ); ?>">
   <div class="pw:wrapper">
     <div class="block-event-card-inner">
       <div class="block-event-card-meta">

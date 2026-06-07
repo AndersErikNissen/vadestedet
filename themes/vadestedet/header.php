@@ -83,21 +83,17 @@
           </nav>
 
           <?php if ( function_exists( 'pll_the_languages' ) ) { ?>
-          <div class="the-header-language-picker handheld:hidden">
-            <!-- <svg class="the-header-language-picker-icon" width="156" height="156" viewBox="0 0 156 156" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M155.564 77.7822L77.7822 155.563L0 77.7822L77.7822 0L155.564 77.7822ZM77.7344 133.078L94.8047 82.7812H60.3057L77.7344 133.078ZM89.4092 129.794L136.423 82.7812H105.366L89.4092 129.794ZM65.9365 129.576L49.7236 82.7812H19.1416L65.9365 129.576ZM105.366 72.7822H136.423L89.4092 25.7686L105.366 72.7822ZM60.3057 72.7822H94.8057L77.7344 22.4844L60.3057 72.7822ZM19.1416 72.7822H49.7236L65.9355 25.9873L19.1416 72.7822Z" fill="currentColor"/>
-            </svg> -->
-            
-            <svg class="the-header-language-picker-icon" width="152" height="152" viewBox="0 0 152 152" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M129.025 22.1377L151.163 75.582L129.025 129.026L75.5811 151.164L22.1367 129.026L0 75.582L22.1367 22.1377L75.5811 0L129.025 22.1377ZM51.3291 112.625L71.0811 134.774V80.082H44.1787L51.3291 112.625ZM80.0811 134.774L99.834 112.625L106.984 80.082H80.0811V134.774ZM29.0244 122.138L58.7227 134.438L43.0439 116.857L34.9629 80.082H11.6055L29.0244 122.138ZM108.12 116.857L92.4404 134.438L122.137 122.138L139.558 80.082H116.201L108.12 116.857ZM29.0244 29.0254L11.6055 71.082H34.9629L43.0439 34.3066L58.7236 16.7227L29.0244 29.0254ZM51.3291 38.5381L44.1777 71.082H71.0811V16.3887L51.3291 38.5381ZM80.0811 71.082H106.985L99.834 38.5381L80.0811 16.3887V71.082ZM108.12 34.3066L116.201 71.082H139.558L122.137 29.0254L92.4385 16.7236L108.12 34.3066Z" fill="currentColor"/>
-            </svg>
+            <button class="language-picker handheld:hidden">
+              <svg class="language-picker-icon" width="152" height="152" viewBox="0 0 152 152" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M129.025 22.1377L151.163 75.582L129.025 129.026L75.5811 151.164L22.1367 129.026L0 75.582L22.1367 22.1377L75.5811 0L129.025 22.1377ZM51.3291 112.625L71.0811 134.774V80.082H44.1787L51.3291 112.625ZM80.0811 134.774L99.834 112.625L106.984 80.082H80.0811V134.774ZM29.0244 122.138L58.7227 134.438L43.0439 116.857L34.9629 80.082H11.6055L29.0244 122.138ZM108.12 116.857L92.4404 134.438L122.137 122.138L139.558 80.082H116.201L108.12 116.857ZM29.0244 29.0254L11.6055 71.082H34.9629L43.0439 34.3066L58.7236 16.7227L29.0244 29.0254ZM51.3291 38.5381L44.1777 71.082H71.0811V16.3887L51.3291 38.5381ZM80.0811 71.082H106.985L99.834 38.5381L80.0811 16.3887V71.082ZM108.12 34.3066L116.201 71.082H139.558L122.137 29.0254L92.4385 16.7236L108.12 34.3066Z" fill="currentColor"/>
+              </svg>
 
-            <button class="the-header-language-picker-select">
-              <?php pll_the_languages( [ 
-                'dropdown' => 1
-              ] );  ?>
+              <div class="language-picker-select">
+                <?php pll_the_languages( [ 
+                  'dropdown' => 1
+                ] );  ?>
+              </div>
             </button>
-          </div>
           <?php }; ?>
 
           <div class="the-header-menu-btn mobile:only">
@@ -123,7 +119,7 @@
               </svg>
             </div>
 
-            <button aria-label="<?= get_theme_string( 'Luk hjemmeside-menu' ); ?>" class="icon:btn" data-modal-toggle="the-menu">
+            <button aria-label="<?= get_theme_string( 'Luk hjemmeside-menu' ); ?>" class="icon:btn the-menu-close-btn" data-modal-toggle="the-menu">
               <?= get_icon( 'x' ); ?>
             </button> 
           </div>
@@ -145,10 +141,10 @@
                     <?= get_theme_string( 'Har du spørgsmål?' ); ?>
                   </p>
                   
-                  <ul class="wp-nav-menu">
+                  <ul>
                     <?php if ( $phone_number ) { ?>
                       <li>
-                        <a href="tel:<?= esc_attr( $phone_number ); ?>">
+                        <a class="small:btn" href="tel:<?= esc_attr( $phone_number ); ?>">
                           <?= esc_html( get_theme_string( 'Ring til os' ) ); ?> 
                         </a>
                       </li>
@@ -156,7 +152,7 @@
 
                     if ( $email ) { ?>
                       <li>
-                        <a href="mailto:<?= esc_attr( $email ); ?>">
+                        <a class="small:btn" href="mailto:<?= esc_attr( $email ); ?>">
                           <?= esc_html( get_theme_string( 'Send os en e-mail' ) ); ?>
                         </a>
                       </li>

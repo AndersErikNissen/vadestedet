@@ -52,4 +52,26 @@ add_action( 'init', function() {
     ],
     'query_var'          => true,
   ] );
+  
+  register_post_type( 'boardgame', [
+    'labels'             => [
+        'name'          => __( 'Brætspil', 'textdomain' ),
+        'singular_name' => __( 'Brætspil',   'textdomain' ),
+    ],
+    'public'             => true,
+    'publicly_queryable' => true,
+    'has_archive'        => true, 
+    'show_ui'            => true,
+    'show_in_menu'       => true,
+    'show_in_rest'       => false,
+    'menu_icon'          => 'dashicons-buddicons-activity',
+    'supports'           => [ 'title', 'custom-fields' ],
+    'rewrite'            => [
+      'slug'       => 'braetspil',
+      'with_front' => false,
+      'feeds'      => false,
+      'pages'      => true
+    ],
+    'query_var'          => true,
+  ] );
 } );
