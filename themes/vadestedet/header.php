@@ -141,7 +141,7 @@
                     <?= get_theme_string( 'Har du spørgsmål?' ); ?>
                   </p>
                   
-                  <ul>
+                  <ul class="the-menu-contact-btns">
                     <?php if ( $phone_number ) { ?>
                       <li>
                         <a class="small:btn" href="tel:<?= esc_attr( $phone_number ); ?>">

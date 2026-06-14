@@ -13,16 +13,16 @@
 
 class Header {
   _colorSwaps = {
-    'white-brown': 'white-green',
-    'white-green': 'white-brown',
-    'yellow-brown': 'yellow-green',
-    'yellow-green': 'yellow-brown',
-    'blue-brown': 'brown-white',
-    'brown-white': 'brown-yellow',
-    'brown-yellow': 'brown-white',
+    'white-brown': 'blue-brown',
+    'white-green': 'yellow-brown',
+    'yellow-brown': 'white-green',
+    'yellow-green': 'blue-brown',
+    'blue-brown': 'white-brown',
+    'brown-white': 'green-yellow',
+    'brown-yellow': 'green-white',
     'brown-blue': 'green-white',
-    'green-white': 'green-yellow',
-    'green-yellow': 'green-white',
+    'green-white': 'brown-yellow',
+    'green-yellow': 'brown-white',
   };
 
   constructor({header}) {

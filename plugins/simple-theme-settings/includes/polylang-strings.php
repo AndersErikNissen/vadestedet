@@ -42,6 +42,7 @@ add_action( 'init', function() use ( $register_strings ) {
     'Kontakt',
     'Filtrer',
     'Fjern filtre',
+    'Menu',
   ];
     
   $footer_strings = [

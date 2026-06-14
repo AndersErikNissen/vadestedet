@@ -3,14 +3,11 @@ $relation = $args[ 'relation' ] ?? null;
 
 if ( empty( $relation ) ) return;
 
-$block_relation = $relation . 'introduction_block_';
-$text           = get_field( $block_relation . 'text' );
-
 $block_relation = $relation . 'option_1_block_';
 $color_theme    = get_field( $block_relation . 'color_theme' ); ?>
 
 <section class="section-introduction color-theme-swap-trigger color-theme-section" data-color-theme="<?= $color_theme; ?>">
-  <div class="section-introduction-logo-slide color-theme-section">
+  <div class="section-introduction-logo-slide color-theme-section contain">
     <div class="pw:wrapper grid">
       <div class="section-introduction-logo">
         <svg width="2951" height="1056" viewBox="0 0 2951 1056" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,8 +53,8 @@ $color_theme    = get_field( $block_relation . 'color_theme' ); ?>
           <path d="M1173.63 389.777C1179.23 389.777 1185.09 391.443 1189.16 394.472L1186.42 402.118C1182.23 399.317 1177.63 397.954 1173.56 397.954C1166.36 397.954 1163.43 401.134 1163.43 405.147C1163.43 416.429 1191.09 409.084 1191.09 428.543C1191.09 437.023 1185.03 444.292 1172.23 444.292C1164.96 444.292 1157.7 441.718 1153.83 437.932L1156.83 430.284C1160.56 433.691 1166.5 436.114 1172.23 436.114C1179.49 436.114 1182.56 433.161 1182.56 429.225C1182.56 417.792 1154.83 425.287 1154.83 405.602C1154.83 397.047 1160.83 389.777 1173.63 389.777Z" fill="currentColor"/>
           <path d="M1133.44 398.788H1108.04V412.568H1130.57V420.669H1108.04V435.282H1134.37V443.535H1099.38V390.535H1133.44V398.788Z" fill="currentColor"/>
         </svg>
-      </div>
 
+      </div>
       
       <div class="section-introduction-aside">
         <div class="section-introduction-scroll">
@@ -77,13 +74,5 @@ $color_theme    = get_field( $block_relation . 'color_theme' ); ?>
 
   <div class="section-introduction-background-slide">
     <div class="section-introduction-background-slide-background"></div>
-  </div>
-
-  <div class="section-introduction-text-slide">
-    <div class="pw:wrapper">
-      <p class="l1">
-        <?= $text; ?>
-      </p>
-    </div>
   </div>
 </section>

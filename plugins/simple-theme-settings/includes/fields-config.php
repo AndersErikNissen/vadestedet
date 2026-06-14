@@ -201,42 +201,6 @@ function sts_get_fields_definition() {
           'type'  => 'textarea',
         ]
       ]
-    ],
-    [
-      'group'  => 'archive',
-      'key'		 => 'post',
-      'label'	 => 'Indlæg',
-      'type'	 => 'group',
-      'fields' => [
-        [
-          'key'   => 'heading',
-          'label' => 'Overskrift',
-          'type'  => 'text',
-        ],
-        [
-          'key'   => 'description',
-          'label' => 'Beskrivelse',
-          'type'  => 'textarea',
-        ]
-      ]
-    ],
-    [
-      'group'  => 'archive',
-      'key'		 => 'menu',
-      'label'	 => 'Menu',
-      'type'	 => 'group',
-      'fields' => [
-        [
-          'key'   => 'heading',
-          'label' => 'Overskrift',
-          'type'  => 'text',
-        ],
-        [
-          'key'   => 'description',
-          'label' => 'Beskrivelse',
-          'type'  => 'textarea',
-        ]
-      ]
     ]
   ];
 

@@ -103,16 +103,6 @@ function acfgg_block( $relation, $type ):array {
     ];
   };
 
-  if ( $type === 'introduction' ) {
-    return [
-      acfgg_accordion( $block_relation . 'tab_', 'Tekst indhold' ),
-      acfgg_field(     $block_relation,          'Tekst', 'text', 'textarea', [
-        'new_lines' => 'br',
-      ] ),
-      acfgg_field(     $block_relation,          'Knap',        'button',      'link' )
-    ];
-  };
-
   if ( $type === 'banner' ) {
     return [
       acfgg_accordion( $block_relation . 'tab_', 'Tekst indhold'                     ),
@@ -306,70 +296,71 @@ function acfgg_block( $relation, $type ):array {
   };
 
   if ( $type === 'menu' ) {
-    $return_array = [];
+    $return_array = [
+      acfgg_field(     $block_relation, 'Overskrift', 'heading', 'text', [
+        'required' => true
+      ] ),
+      acfgg_field(     $block_relation, 'Type', 'type', 'button_group', [
+        'choices'       => [
+          'drink' => 'Drikkelse',
+          'food'  => 'Mad'
+        ],
+        'default_value' => 'drink',
+      ] ),
+    ];
 
-    $return_array[] = acfgg_accordion( $block_relation . 'tab_', 'Tekst indhold'                                      );
-    $return_array[] = acfgg_field(     $block_relation,          'Overskrift',           'heading',       'text', [
-      'required' => true
-    ]                                                                                                                 );
-    $return_array[] = acfgg_accordion( $block_relation . 'tab_', 'Menu punkter'                                       );
-    
-    $sub_field_relation = $block_relation . 'sub_field_';
-    $sub_fields = [];
+    for ( $category_index = 1; $category_index <= 6; $category_index++ ) {
+      $category_relation = $block_relation . 'category_' . $category_index . '_';
 
-    $previous_keys = [];
+      array_push(
+        $return_array,
+        acfgg_accordion( $category_relation . 'tab_', '(' . $category_index . ') Kategori' ),
+        acfgg_field(     $category_relation, 'Overskrift', 'heading', 'text' ),
+      );
 
-    for ( $i = 1; $i <= 20; $i++ ) {
-      $sub_field_relation_extention = $sub_field_relation . $i . '_';
-      
-      $name        = acfgg_field( $sub_field_relation_extention, 'Navn',        'name',        'text'     );
-      $description = acfgg_field( $sub_field_relation_extention, 'Beskrivelse', 'description', 'textarea', [
-        'new_lines' => 'br',
-      ] );
-      $price       = acfgg_field( $sub_field_relation_extention, 'Pris',        'price',       'text'     );
+      $product_sub_fields = [];
 
-      $keys = [
-        $name[ 'key' ],
-        $description[ 'key' ],
-        $price[ 'key' ],
-      ];
+      for ( $product_index = 1; $product_index <= 10; $product_index++ ) {
+        $product_relation = $category_relation . 'product_' . $product_index . '_';
+        array_push(
+          $product_sub_fields,
+          acfgg_accordion( $product_relation . 'tab_', '(' . $product_index . ') Produkt' ),
+          acfgg_field( $product_relation, 'Navn', 'name', 'text' ),
+          acfgg_field( $product_relation, 'Beskrivelse', 'description', 'textarea' ),
+          acfgg_field( $product_relation, 'Pris', 'price', 'number', [
+            'instructions' => 'Dette felt ignores, hvis en eller flere variant felter er udfyldt.',
+          ] ),
+        );
 
-      $conditional_logic = [];
+        $variant_sub_fields = [];
 
-      if ( $i !== 1 ) {
-        $logic_keys = array_merge( $keys, $previous_keys );
-
-        foreach ( $logic_keys as $key ) {
-          $conditional_logic[] = [
-            [
-              'field' => $key,
-              'operator' => '!=empty'
-            ]
-          ];
+        for ( $variant_index = 1; $variant_index <= 5; $variant_index++ ) {
+          $variant_relation = $product_relation . 'variant_' . $variant_index;
+          array_push(
+            $variant_sub_fields,
+            acfgg_field( $variant_relation, '(' . $variant_index . ') Navn', 'name', 'text', [
+              'wrapper' => [
+                'width' => '50'
+              ] 
+            ] ),
+            acfgg_field( $variant_relation, '(' . $variant_index . ') Pris', 'price', 'number', [
+              'wrapper' => [
+                'width' => '50'
+              ]
+            ] ),
+          );
         }
+
+        $product_sub_fields[] = acfgg_field( $product_relation, 'Variant(er)', 'variants', 'group', [
+          'instructions' => 'Udfyld en eller flere af disse hvis produktet f.eks. har flere størrelser 33cl / 50cl.',
+          'sub_fields'   => $variant_sub_fields,
+        ] );
       }
 
-      $tab = acfgg_accordion( $sub_field_relation_extention . 'tab_', '(' . $i . ') Punkt', [
-        'conditional_logic' => $conditional_logic
+      $return_array[] = acfgg_field( $product_relation, '', 'products', 'group', [
+        'sub_fields' => $product_sub_fields,
       ] );
-
-      $sub_fields[] = $tab;
-      $sub_fields[] = $name;
-      $sub_fields[] = $description;
-      $sub_fields[] = $price;
-
-      $previous_keys = $keys;
-    };
-
-    $return_array[] = acfgg_field( $block_relation, 'Punkter', 'items', 'group', [
-      'sub_fields' => $sub_fields,
-    ] );
-
-    $return_array[] = acfgg_accordion( $block_relation . 'tab_', 'Indstillinger'                                      );
-    $return_array[] = acfgg_field(     $block_relation,          'Sorteringsrækkefølge', 'sorting_order', 'number', [
-      'default' => 8,
-      'instructions' => 'Angiv et tal for at styre rækkefølgen menuen vises i. Lavere tal vises først (f.eks. vil 1 blive vist før 2 og 3).'
-    ]                                                                                                                 );
+    }
 
     return $return_array;
   };
@@ -603,10 +594,8 @@ function acfgg_sections() {
     $relation, 
     'Sektion: Introduktion', 
     'introduction',
-    array_merge(
-      acfgg_block( $relation, 'introduction' ),
-      acfgg_block( $relation, 'option_1' ),
-    ), [
+    acfgg_block( $relation, 'option_1' ),
+    [
       acfgg_location( [ 'page', 'frontpage' ] ),
     ],
     1
