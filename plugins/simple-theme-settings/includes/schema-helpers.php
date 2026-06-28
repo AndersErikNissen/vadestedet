@@ -493,65 +493,6 @@ function sts_schema_restaurant(): array {
     return $schema;
 }
 
-function sts_schema_menu( $query ) {
-    if ( ! $query->have_posts() ) return [];
-
-    $sections = [];
-
-    while ( $query->have_posts() ) {
-        $query->the_post();
-        
-        $block_relation = 'section_menu_menu_block_';
-        $acf_items = get_field( $block_relation . 'items' );
-        $items = [];
-
-        for ( $i = 1; $i <= 20; $i++ ) {
-            $prefix = $block_relation . 'sub_field_' . $i . '_';
-
-            $name        = $acf_items[ $prefix . 'name' ]        ?? null;
-            $description = $acf_items[ $prefix . 'description' ] ?? null;
-            $price       = $acf_items[ $prefix . 'price' ]       ?? null;
-
-            if ( ! $name || ! $price ) continue;
-
-            $item = [
-                '@type' => 'MenuItem',
-                'name' => $name,
-                'offers' => [
-                    '@type' => 'Offer',
-                    'price' => $price,
-                    'priceCurrency' => 'DKK'
-                ]
-            ];
-
-            if ( $description ) {
-                $item[ 'description' ] = $description;
-            }
-
-            $items[] = $item;
-        };
-
-        if ( ! empty( $items ) ) {
-            $sections[] = [
-                '@type' => 'MenuSection',
-                'name' => get_field( $block_relation . 'heading' ),
-                'hasMenuItem' => $items
-            ];
-        }
-    }
-
-    wp_reset_postdata();
-
-    if ( empty( $sections ) ) return [];
-
-    return [
-        '@id'            => home_url( '/#menu' ),
-        '@type'          => 'Menu',
-        'name'           => sts_option( 'archive.menu.heading' ),
-        'hasMenuSection' => $sections
-    ];
-}
-
 
 // ============================================================
 // 3. GRAPH OUTPUT

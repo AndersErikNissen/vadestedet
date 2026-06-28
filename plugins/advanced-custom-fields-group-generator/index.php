@@ -318,47 +318,36 @@ function acfgg_block( $relation, $type ):array {
         acfgg_field(     $category_relation, 'Overskrift', 'heading', 'text' ),
       );
 
-      $product_sub_fields = [];
+      $all_products_sub_fields = [];
 
-      for ( $product_index = 1; $product_index <= 10; $product_index++ ) {
-        $product_relation = $category_relation . 'product_' . $product_index . '_';
-        array_push(
-          $product_sub_fields,
-          acfgg_accordion( $product_relation . 'tab_', '(' . $product_index . ') Produkt' ),
-          acfgg_field( $product_relation, 'Navn', 'name', 'text' ),
-          acfgg_field( $product_relation, 'Beskrivelse', 'description', 'textarea' ),
-          acfgg_field( $product_relation, 'Pris', 'price', 'number', [
-            'instructions' => 'Dette felt ignores, hvis en eller flere variant felter er udfyldt.',
+      for ( $product_index = 1; $product_index <= 12; $product_index++ ) {
+        
+        // 1. Opret produktets basisfelter med simple keys
+        $product_sub_fields = [
+          acfgg_field( '', 'Navn', 'name', 'text' ),
+          acfgg_field( '', 'Variant navn(e)', 'variant_names', 'text', [
+            'instructions' => 'Anvend hvis produktet kommer i flere varianter, og opdel med / (f.eks. 33cl/50cl/80cl).',
           ] ),
-        );
+          acfgg_field( '', 'Beskrivelse', 'description', 'textarea' ),
+          acfgg_field( '', 'Pris(er)', 'price', 'text', [
+            'instructions' => 'Hvis produktet har flere priser opdel med / (f.eks. 45/55/80).',
+          ] ),
+        ];
 
-        $variant_sub_fields = [];
+        // 2. Pak alle produktets felter (inkl. de 3 variant-grupper) ind i den overordnede produkt-gruppe
+        $product_relation = $category_relation . 'product_' . $product_index . '_';
 
-        for ( $variant_index = 1; $variant_index <= 5; $variant_index++ ) {
-          $variant_relation = $product_relation . 'variant_' . $variant_index;
-          array_push(
-            $variant_sub_fields,
-            acfgg_field( $variant_relation, '(' . $variant_index . ') Navn', 'name', 'text', [
-              'wrapper' => [
-                'width' => '50'
-              ] 
-            ] ),
-            acfgg_field( $variant_relation, '(' . $variant_index . ') Pris', 'price', 'number', [
-              'wrapper' => [
-                'width' => '50'
-              ]
-            ] ),
-          );
-        }
-
-        $product_sub_fields[] = acfgg_field( $product_relation, 'Variant(er)', 'variants', 'group', [
-          'instructions' => 'Udfyld en eller flere af disse hvis produktet f.eks. har flere størrelser 33cl / 50cl.',
-          'sub_fields'   => $variant_sub_fields,
+        $all_products_sub_fields[] = acfgg_field( $product_relation, '(' .$product_index . ') Produkt', 'information', 'group', [
+          'wrapper' => [
+            'width' => '50'
+          ],
+          'sub_fields'   => $product_sub_fields,
         ] );
       }
 
-      $return_array[] = acfgg_field( $product_relation, '', 'products', 'group', [
-        'sub_fields' => $product_sub_fields,
+      // 4. Hovedgruppen for hele kategoriens produkter
+      $return_array[] = acfgg_field( $category_relation, '', 'products', 'group', [
+        'sub_fields' => $all_products_sub_fields,
       ] );
     }
 

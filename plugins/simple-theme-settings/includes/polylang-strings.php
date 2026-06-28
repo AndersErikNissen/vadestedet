@@ -11,17 +11,6 @@ $register_strings = function ( $name, $strings ) {
 
 add_action( 'init', function() use ( $register_strings ) {
   // ## strings
-  $event_strings = [
-    'Event dato',
-    'Event tidsramme',
-    'Relaterede event(s)',
-    'Kommende event(s)',
-    'Bestil billet',
-    'Pris',
-    'Gratis',
-    'Se event',
-  ];
-
   $general_strings = [
     'Se alle',
     'Tidligere side',
@@ -43,15 +32,11 @@ add_action( 'init', function() use ( $register_strings ) {
     'Filtrer',
     'Fjern filtre',
     'Menu',
-  ];
-    
-  $footer_strings = [
+    'Gratis',
     'Navigation',
+    'Bestil billet'
   ];
-
   
   // ## register strings
   $register_strings( 'General', $general_strings );
-  $register_strings( 'Event', $event_strings );
-  $register_strings( 'Footer', $footer_strings );
 });

@@ -11,12 +11,12 @@
   --color-dark-white: #e7dcc5;
   --color-yellow: #fdf3c6;
   --color-dark-yellow: #efd776;
-  --color-blue: #cbE2Fd;
+  --color-blue: #cbe2fd;
   --color-dark-blue: #93bfef;
   --color-brown: #574635;
   --color-dark-brown: #3c3126;
-  --color-green: #696d51;
-  --color-dark-green: #4f523b;
+  --color-green: #52553e;
+  --color-dark-green: #3b3e27;
 
   /* animation */
   --transition-hover: 800ms cubic-bezier(0.19,1,0.22,1);
@@ -184,6 +184,7 @@
   h4,
   h5,
   h6,
+  .h0,
   .h1,
   .h2,
   .h3,
@@ -203,6 +204,7 @@
   h4:not(:only-child),
   h5:not(:only-child),
   h6:not(:only-child),
+  .h0:not(:only-child),
   .h1:not(:only-child),
   .h2:not(:only-child),
   .h3:not(:only-child),
@@ -210,6 +212,10 @@
   .h5:not(:only-child),
   .h6:not(:only-child) {
     margin-bottom: 0.5em;
+  }
+
+  .h0 {
+    font-size: 4.5rem;
   }
 
   h1,
@@ -244,6 +250,13 @@
 
 
   /* ## labels */
+  .l1,
+  .l2,
+  .l3 {
+    font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 500;
+  }
+
   .l1 {
     font-size: 1.75rem;
   }
@@ -252,7 +265,15 @@
     font-size: 1.25rem;
   }
   
+  .l3 {
+    font-size: 1.1rem;
+  }
+  
   @media (min-width: 980px) {
+    .h0 {
+      font-size: 6rem;
+    }
+
     h1,
     .h1 {
       font-size: 4.5rem;
@@ -274,6 +295,10 @@
 
     .l2 {
       font-size: 1.5rem;
+    }
+
+    .l3 {
+      font-size: 1.25rem;
     }
   }
 
@@ -729,6 +754,14 @@
 
   .mb-1 {
     margin-bottom: 1rem;
+  }
+
+  .mb-15 {
+    margin-bottom: 1.5rem;
+  }
+
+  .mb-2 {
+    margin-bottom: 2rem;
   }
 
   /* ## gap */
@@ -1431,6 +1464,89 @@
 
   .bg\:section {
     padding: var(--section-spacing) 0;
+  }
+
+  /* ## menu */
+  .section-menu-main {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--pw-spacing);
+    align-items: start;
+  }
+
+  .section-menu-header {
+    position: sticky;
+    top: var(--header-height);
+    writing-mode: sideways-lr;
+  }
+
+  .section-menu-types {
+    grid-column-start: 2;
+    grid-row-start: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 12rem;
+    padding-bottom: 4rem;
+  }
+
+  .section-menu-type {
+    column-count: 2;
+    column-gap: calc(var(--pw-spacing) * 3);
+  }
+
+  .section-menu-type-item:not(:first-child) {
+    margin-top: 3rem;
+  }
+
+  .section-menu-category:not(:first-child) {
+    margin-top: 1.5rem;
+  }
+
+  .section-menu-category-heading {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+    font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .section-menu-product-heading,
+  .section-menu-product-price {
+    font-size: 18px;
+  }
+
+  .section-menu-products {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem;
+  }
+
+  .section-menu-product-main {
+    grid-column: 1 / 2;
+    -webkit-column-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .section-menu-product-description {
+    margin-top: 4px;
+    font-size: 14px;
+  }
+
+  .section-menu-product-heading,
+  .section-menu-product-variant-names {
+    line-height: 1.2;
+  }
+
+  .section-menu-product-price {
+    grid-column: 2 / 3;
+    justify-self: end;
+  }
+
+  @media (min-width: 980px) {
+    .section-menu-type {
+      column-gap: calc(var(--pw-spacing) * 2);
+    }
   }
 
   /* ## boardgames */

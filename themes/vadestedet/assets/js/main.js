@@ -11,6 +11,26 @@
  * 7. Use RAF() instead of setTimeout() + Date.now() ?
  */
 
+const OBSERVE = (callback, target, options = {}) => {
+  const OBSERVE_CALLBACK = (entries) => {
+    entries.forEach((entry) => {
+      callback.apply(entry);
+    });
+  };
+
+  const OBSERVER = new IntersectionObserver(OBSERVE_CALLBACK, options);
+
+  OBSERVER.observe(target);
+}
+
+const CLAMP = (value, min = 0, max = 1) => {
+  return Math.min(max, Math.max(min, value));
+};
+
+const LERP = (from, to, ease) => {
+  return from * (1 - ease) + to * ease;
+};
+
 class Header {
   _colorSwaps = {
     'white-brown': 'blue-brown',
@@ -125,7 +145,6 @@ const THE_HEADER = new Header({
 })
 
 
-// @@ MODALS
 class Modal {
   state = {
     displaying: false,
@@ -254,7 +273,6 @@ const THE_MENU = new Modal({
 });
 
 
-// @@ CAROUSEL
 class Carousel {
   constructor({carousel, delay = 4000}) {
     this.carousel = carousel;
@@ -548,26 +566,6 @@ const BANNERS = BANNER_ELEMENTS.map((element) => new Banner({
     HEADER_BANNER_BTN.addEventListener("click", () => HEADER_BANNER.remove());
   }
 })();
-
-const OBSERVE = (callback, target, options = {}) => {
-  const OBSERVE_CALLBACK = (entries) => {
-    entries.forEach((entry) => {
-      callback.apply(entry);
-    });
-  };
-
-  const OBSERVER = new IntersectionObserver(OBSERVE_CALLBACK, options);
-
-  OBSERVER.observe(target);
-}
-
-const CLAMP = (value, min = 0, max = 1) => {
-  return Math.min(max, Math.max(min, value));
-};
-
-const LERP = (from, to, ease) => {
-  return from * (1 - ease) + to * ease;
-};
 
 class ScrollProgressSection {
   state = {
