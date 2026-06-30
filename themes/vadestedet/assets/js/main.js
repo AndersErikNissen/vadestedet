@@ -129,10 +129,6 @@ class Header {
     }, options);
   }
 
-  observeCallback(trigger) {
-
-  }
-
   startObserving() {
     this.triggers.forEach((trigger) => {
       this.observer.observe(trigger);
@@ -273,7 +269,6 @@ const THE_MENU = new Modal({
 });
 
 
-// @@ ACCORDION
 class Accordion {
   constructor({containerReference}) {
     this.container = containerReference;
@@ -605,3 +600,105 @@ const BOARDGAME_FILTER = new Filter({
   btns: document.querySelectorAll(".section-boardgames-filter-btn"),
   clearBtns: document.querySelectorAll(".section-boardgames-clear-filter-btn"),
 });
+
+class MenuSection {
+  _colors = {
+    food: 'yellow',
+    drink: 'blue',
+  };
+
+  constructor({element}) {
+    this.section = element;
+    
+    if (!this.section) return;
+    
+    this.triggers = this.section.querySelectorAll('[data-menu-type]');
+    
+    if (this.triggers === 0) return;
+    
+    this.window = window;
+    this.observer = this.options;
+    this.startObserving();
+
+    window.addEventListener("resize", () => {
+      this.triggers.forEach((trigger) => {
+          this.observer.unobserve(trigger);
+        });
+        
+        this.observer.disconnect();
+
+        this.window = window;
+        this.observer = this.options;
+
+        this.startObserving();
+    });
+  }
+
+  get colors() {
+    return this._colors;
+  }
+
+  get window() {
+    return this._window || {
+      height: 0,
+      width: 0,
+    }
+  }
+
+  set window(currentWindow) {
+    this._window = {
+      height: currentWindow.innerHeight,
+      width: currentWindow.innerWidth,
+    }
+  }
+
+  get options() {
+    const BOTTOM_OFFSET = this.window.height * 0.3;
+    const TOP_OFFSET = this.window.height - BOTTOM_OFFSET + 5;
+
+    return {
+      root: null,
+      threshold: 0,
+      rootMargin: `-${TOP_OFFSET}px 0px -${BOTTOM_OFFSET}px 0px`,
+    };
+  }
+
+  get observer() {
+    return this._observer;
+  }
+  
+
+  set observer(options) {
+    this._observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const TYPE = entry.target.dataset.menuType;
+          
+          console.log(TYPE);
+          this.color = this.colors[TYPE];
+        }
+      });
+    }, options);
+  }
+
+  get color() {
+    return this._color || 'brown-yellow';
+  }
+
+  set color(color) {
+    if (color === this.color) return;
+
+    this._color = color;
+    this.section.setAttribute('data-background-color', color);
+  }
+
+  startObserving() {
+    this.triggers.forEach((trigger) => {
+      this.observer.observe(trigger);
+    });
+  }
+}
+
+const MENU_SECTION = new MenuSection({
+  element: document.querySelector(".section-menu"),
+})

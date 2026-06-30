@@ -518,7 +518,7 @@ function acfgg_sections() {
     [
       acfgg_location( [ 'page', 'not_frontpage' ] )
     ],
-    5
+    1
   );
 
 

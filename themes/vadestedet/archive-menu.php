@@ -118,7 +118,7 @@ if ( have_posts() ) {
 
 if ( count( $data ) === 0 ) return; ?>
 
-<section class="section-menu bg:section">
+<section class="section-menu bg:section color-theme-section color-theme-swap-trigger" data-color-theme="brown-yellow">
   <div class="pw:wrapper section-menu-main">
     <div class="section-menu-header">
       <h1 class="h0">
@@ -128,7 +128,7 @@ if ( count( $data ) === 0 ) return; ?>
 
     <div class="section-menu-types">
       <?php foreach ( $data as $name => $types ) { ?>
-        <div class="section-menu-type" data-menu-color="<?= $name; ?>">
+        <div class="section-menu-type" data-menu-type="<?= $name; ?>">
           <?php foreach ( $types as $type_item ) { ?>
             <div class="section-menu-type-item">
               <?php if ( $type_item['heading'] ) { ?>
@@ -185,7 +185,6 @@ sts_schema_graph( [
   $schema,
   sts_schema_website(),
   sts_schema_webpage( 
-    subtype:     'MenuPage', 
     name:        sts_option( 'archive.menu.heading' ), 
     description: sts_option( 'archive.menu.description' ),
     is_archive:  true
