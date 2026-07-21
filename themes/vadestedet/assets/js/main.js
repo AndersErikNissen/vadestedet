@@ -1,16 +1,5 @@
 "use strict";
 
-/**
- * IDEAS FOR BETTER AND MORE CLEAR CODE
- * 1. Is .display needed?
- * 2. Consider using [data-*] more, for things like the state of the carousel
- * 3. Would it be more clean to have Class for the Carousel-Item itself (with maybe methods like: set active, handleClasses)
- * 4. Rename the methods of the carousel to things like: next(), prev()...
- * 5. Rethink the loop / pause mechanic
- * 6. Read article: https://www.wiktorwisniewski.dev/blog/build-simple-javascript-slider
- * 7. Use RAF() instead of setTimeout() + Date.now() ?
- */
-
 const OBSERVE = (callback, target, options = {}) => {
   const OBSERVE_CALLBACK = (entries) => {
     entries.forEach((entry) => {
@@ -37,7 +26,7 @@ class Header {
     'white-green': 'yellow-brown',
     'yellow-brown': 'white-green',
     'yellow-green': 'blue-brown',
-    'blue-brown': 'white-brown',
+    'blue-brown': 'white-green',
     'brown-white': 'green-yellow',
     'brown-yellow': 'green-white',
     'brown-blue': 'green-white',
@@ -57,7 +46,7 @@ class Header {
     this.window = window;
     this.observer = this.options;
 
-    // this.startObserving();
+    this.startObserving();
 
     window.addEventListener("resize", () => {
       if (window.innerWidth !== this.window.width) {
