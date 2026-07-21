@@ -62,7 +62,7 @@ if ( $has_image ) {
   $layout_wrapper_class .= ' pw:wrapper';
 }
 
-if ( ! $heading && ! $text && ! $button && ! $images['desktop'] ) return; ?>
+if ( ! $heading && ! $text && ! $button && ! $image_desktop ) return; ?>
 
 <section class="section-text-and-image color-theme-section color-theme-swap-trigger <?= $layout_class; ?>" data-color-theme="<?= $color_theme; ?>">
   <div class="<?= $layout_wrapper_class; ?>">

@@ -103,24 +103,30 @@ if ( function_exists( 'pll_the_languages' ) ) {
       return $url;
     }
 
-    $post_type       = get_queried_object()->name;
+    $queried_obj = get_queried_object();
+    if ( ! $queried_obj || empty( $queried_obj->name ) ) {
+      return $url;
+    }
+
+    $post_type       = $queried_obj->name;
     $archive_link    = get_post_type_archive_link( $post_type );
+    
+    if ( ! $archive_link ) {
+      return $url;
+    }
+
     $default_lang    = pll_default_language();
     $current_lang    = pll_current_language();
 
-    // Find den "rene" arkiv-slug (relative del af URL'en)
-    // ved at trække hjem-URL for default-sproget fra
     $default_home = trailingslashit( pll_home_url( $default_lang ) );
     $current_home = trailingslashit( pll_home_url( $current_lang ) );
 
-    // Normaliser arkiv-linket til relativ sti
     $relative = ltrim( str_replace(
       [ $current_home, $default_home ],
       '',
       $archive_link
     ), '/' );
 
-    // Sæt målsprogets home-URL + relativ sti sammen
     return trailingslashit( pll_home_url( $slug ) ) . $relative;
   }
 }
@@ -138,29 +144,32 @@ function disable_wp_search( $query, $error = true ) {
     }
   }
 }
-
 add_action( 'parse_query', 'disable_wp_search' );
 add_filter( 'get_search_form', '__return_false' );
 
 
-// @@ DISABLE PAGES
+// @@ DISABLE PAGES (SIKRET MOD REDIRECT-LOOPS)
 add_action( 'template_redirect', function () {
+  if ( is_front_page() ) {
+    return;
+  }
+
   if ( is_singular( 'event' ) ) {
-    wp_redirect( get_post_type_archive_link( 'event' ), 301 );
-    exit;
+    $link = get_post_type_archive_link( 'event' );
+    if ( $link ) { wp_redirect( $link, 301 ); exit; }
   }
 
   if ( is_singular( 'menu' ) ) {
-    wp_redirect( get_post_type_archive_link( 'menu' ), 301 );
-    exit;
+    $link = get_post_type_archive_link( 'menu' );
+    if ( $link ) { wp_redirect( $link, 301 ); exit; }
   }
 
   if ( is_singular( 'boardgame' ) ) {
-    wp_redirect( get_post_type_archive_link( 'menu' ), 301 );
-    exit;
+    $link = get_post_type_archive_link( 'boardgame' ); 
+    if ( $link ) { wp_redirect( $link, 301 ); exit; }
   }
 
-  if ( is_singular( 'post' ) || is_home() || is_category() || is_tag() ) {
+  if ( is_singular( 'post' ) || is_category() || is_tag() ) {
     wp_redirect( home_url(), 301 );
     exit;
   }

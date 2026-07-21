@@ -41,7 +41,7 @@ ksort( $boardgame_groups );
 
 if ( count( $boardgame_groups ) === 0 ) return; ?>
 
-<section class="section-boardgames bg:section color-theme-swap-trigger color-theme-section" data-color-theme="brown-blue">
+<section class="section-boardgames bg:section color-theme-swap-trigger color-theme-section" data-color-theme="white-brown">
   <div class="pw:wrapper">
     <?php get_template_part( 'template-parts/snippets/archive-header', null, [
       'post_type' => 'boardgame'

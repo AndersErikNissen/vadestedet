@@ -1,17 +1,10 @@
 <?php 
-get_header(); 
+get_header();
+
 $acf_key        = 'section_event_information_event_information_block_date';
 $current_date   = date( 'Ymd' );
-$posts_per_page = get_option( 'posts_per_page' ) ?? 12;
+$posts_per_page = get_option( 'posts_per_page' ) ?: 12;
 $paged          = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
-$schemas        = [
-  sts_schema_website(),
-  sts_schema_webpage(  
-    name:        sts_option( 'archive.event.heading' ), 
-    description: sts_option( 'archive.event.description' ),
-    is_archive:  true
-  )
-];
 
 $future_query = new WP_Query( [
   'post_type'      => 'event',
@@ -41,7 +34,7 @@ $future_query = new WP_Query( [
     <div class="section-events-cards">
       <?php while ( $future_query->have_posts() ) {
         $future_query->the_post();
-        $schemas[] = sts_schema_event( the_post() );
+        $schemas[] = sts_schema_event( get_the_ID() );
         get_template_part( 'template-parts/blocks/event-card' ); 
       } ?>
     </div>

@@ -504,6 +504,7 @@ function acfgg_sections() {
     ), [
       acfgg_location( [ 'frontpage', 'page' ] )
     ],
+    6
   );
 
 
@@ -570,9 +571,9 @@ function acfgg_sections() {
       acfgg_block( $relation, 'image' ),
       acfgg_block( $relation, 'option_2' ),
     ), [
-      acfgg_location( [ 'page', 'not_frontpage' ] ),
+      acfgg_location( [ 'page' ] ),
     ],
-    6
+    7
   );
 
 

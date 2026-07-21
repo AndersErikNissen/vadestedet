@@ -33,7 +33,7 @@ const LERP = (from, to, ease) => {
 
 class Header {
   _colorSwaps = {
-    'white-brown': 'blue-brown',
+    'white-brown': 'yellow-green',
     'white-green': 'yellow-brown',
     'yellow-brown': 'white-green',
     'yellow-green': 'blue-brown',
@@ -41,7 +41,7 @@ class Header {
     'brown-white': 'green-yellow',
     'brown-yellow': 'green-white',
     'brown-blue': 'green-white',
-    'green-white': 'brown-yellow',
+    'green-white': 'blue-brown',
     'green-yellow': 'brown-white',
   };
 
@@ -57,7 +57,7 @@ class Header {
     this.window = window;
     this.observer = this.options;
 
-    this.startObserving();
+    // this.startObserving();
 
     window.addEventListener("resize", () => {
       if (window.innerWidth !== this.window.width) {
@@ -368,7 +368,7 @@ class Banner {
   }
 
   renderScrollTracks() {
-    let pixelsPerSecond = 20;
+    let pixelsPerSecond = 16;
     let contentWidth = this.blueprint.offsetWidth;
     let copiesNeeded = Math.ceil(this.lastWindowWidth / contentWidth) + 1;
     let duration = contentWidth * copiesNeeded / pixelsPerSecond;
