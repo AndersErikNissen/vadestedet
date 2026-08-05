@@ -5,6 +5,7 @@ $acf_key        = 'section_event_information_event_information_block_date';
 $current_date   = date( 'Ymd' );
 $posts_per_page = get_option( 'posts_per_page' ) ?: 12;
 $paged          = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
+$schemas        = [];
 
 $future_query = new WP_Query( [
   'post_type'      => 'event',
@@ -55,9 +56,11 @@ $future_query = new WP_Query( [
   } else { ?>
 
     <div class="arhive-no-results">
-      <p class="h4">
-        <?= get_theme_string( 'Vi kunne desværre ikke finde nogen resultater' ); ?>
-      </p>
+      <div class="pw:wrapper">
+        <p class="h4">
+          <?= get_theme_string( 'Vi kunne desværre ikke finde nogen resultater' ); ?>
+        </p>
+      </div>
     </div>
   <?php } ?>
 </section>

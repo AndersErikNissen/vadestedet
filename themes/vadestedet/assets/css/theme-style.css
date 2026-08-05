@@ -1519,6 +1519,10 @@
     background-color: var(--color-blue);
   }
 
+  .section-menu .h3 {
+    font-weight: 500;
+  }
+
   .section-menu-main {
     display: grid;
     grid-template-columns: 1fr;
@@ -1552,13 +1556,13 @@
   }
 
   .section-menu-category:not(:first-child) {
-    margin-top: 1.5rem;
+    margin-top: 2rem;
   }
 
   .section-menu-category-heading {
     display: inline-block;
     font-weight: 700;
-    font-size: 18px;
+    font-size: 22px;
     line-height: 1.2;
     margin-bottom: 0.75rem;
     font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -1566,7 +1570,7 @@
 
   .section-menu-product-heading,
   .section-menu-product-price {
-    font-size: 18px;
+    font-weight: 700;
   }
 
   .section-menu-products {
@@ -1584,11 +1588,23 @@
   .section-menu-product-description {
     margin-top: 4px;
     font-size: 14px;
+    max-width: 400px;
+  }
+
+  .section-menu-product-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 
   .section-menu-product-heading,
   .section-menu-product-variant-names {
     line-height: 1.2;
+  }
+
+  .section-menu-product-variant-names {
+    font-size: 14px;
+    font-weight: 500;
   }
 
   .section-menu-product-price {

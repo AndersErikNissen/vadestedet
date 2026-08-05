@@ -150,8 +150,15 @@ if ( count( $data ) === 0 ) return; ?>
                       <?php foreach ( $category['products'] as $product ) { ?>
                         <div class="section-menu-product-main">
                           <p class="section-menu-product-heading">
-                            <?= $product['name']; ?>
-                            <?= $product['variant_names'] ? '(' . $product['variant_names'] . ')' : ''; ?>
+                            <span>
+                              <?= $product['name']; ?>
+                            </span>
+
+                            <?php if ( $product['variant_names'] ) { ?>
+                              <span class="section-menu-product-variant-names">
+                                <?= $product['variant_names']; ?>
+                              </span>
+                            <?php } ?>
                           </p>
   
                           <?php if ( $product['description'] ) { ?>
