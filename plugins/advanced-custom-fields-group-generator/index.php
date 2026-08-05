@@ -320,7 +320,7 @@ function acfgg_block( $relation, $type ):array {
 
       $all_products_sub_fields = [];
 
-      for ( $product_index = 1; $product_index <= 12; $product_index++ ) {
+      for ( $product_index = 1; $product_index <= 20; $product_index++ ) {
         
         // 1. Opret produktets basisfelter med simple keys
         $product_sub_fields = [
