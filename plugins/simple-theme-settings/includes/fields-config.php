@@ -201,6 +201,24 @@ function sts_get_fields_definition() {
           'type'  => 'textarea',
         ]
       ]
+    ],
+    [
+      'group'  => 'archive',
+      'key'		 => 'menu',
+      'label'	 => 'Menukort',
+      'type'	 => 'group',
+      'fields' => [
+        [
+          'key'   => 'heading',
+          'label' => 'Overskrift',
+          'type'  => 'text',
+        ],
+        [
+          'key'   => 'description',
+          'label' => 'Beskrivelse',
+          'type'  => 'textarea',
+        ]
+      ]
     ]
   ];
 

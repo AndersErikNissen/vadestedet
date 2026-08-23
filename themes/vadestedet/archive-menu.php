@@ -16,6 +16,8 @@ $schema = [
   'hasMenuSection' => [],
 ];
 
+$menu_heading = sts_option( 'archive.menu.heading' ) ?: get_theme_string( 'Menu' ) ?: '';
+
 if ( have_posts() ) {
   while ( have_posts() ) {
     the_post();
@@ -122,7 +124,7 @@ if ( count( $data ) === 0 ) return; ?>
   <div class="pw:wrapper section-menu-main">
     <div class="section-menu-header">
       <h1 class="h0">
-        <?= get_theme_string( 'Menu' ); ?>
+        <?= $menu_heading; ?>
       </h1>
     </div>
 
@@ -192,8 +194,8 @@ sts_schema_graph( [
   $schema,
   sts_schema_website(),
   sts_schema_webpage( 
-    name:        sts_option( 'archive.menu.heading' ), 
-    description: sts_option( 'archive.menu.description' ),
+    name:        $menu_heading, 
+    description: sts_option( 'archive.menu.description' ) ?: '',
     is_archive:  true
   )
 ] );

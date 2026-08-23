@@ -24,7 +24,7 @@ if ( have_posts() ) {
     $first_sign = mb_strtolower( $first_sign );
 
     if ( ! preg_match( '/^[a-zæøå]/u', $first_sign ) ) {
-      $first_sign = '#';
+      $first_sign = '0';
     }
 
     if ( ! array_key_exists( $first_sign, $boardgame_groups ) ) {

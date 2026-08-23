@@ -2,7 +2,6 @@
 $logo = sts_option( 'footer.logo' ); 
 $description = sts_option( 'footer.description' );
 
-
 // ## get the social media links
 $available_some = [ 'facebook', 'instagram', 'linkedin', 'twitter' ];
 
@@ -57,6 +56,13 @@ foreach ( $this_week as $weekday ) {
   ];
 } 
 
+
+$address = sts_option( 'company.address' ) ?? null;
+
+if ( $address ) {
+  $address .= ', ' . sts_option( 'company.postal_code' ) . ' ' . sts_option( 'company.city' );
+}
+
 $phone_number = sts_option( 'contact.phone' ) ?? null;
 $email = sts_option( 'contact.email' ) ?? null; ?>
 
@@ -103,14 +109,22 @@ $email = sts_option( 'contact.email' ) ?? null; ?>
               ] ); ?>
             </div>
 
-            <?php if ( $phone_number || $email ) { ?>
+            <?php if ( $phone_number || $email || $address ) { ?>
               <div class="the-footer-contact">
                 <p class="h4 mb-1">
                   <?= get_theme_string( 'Kontakt' ); ?>
                 </p>
 
                 <ul class="wp-nav-menu column gap-0.2">
-                  <?php if ( $phone_number ) { ?>
+                  <?php if ( $address ) { ?>
+                    <li class="menu-item">
+                      <span>
+                        <?= $address; ?>
+                      </span>
+                    </li>
+                  <?php } 
+
+                  if ( $phone_number ) { ?>
                     <li class="menu-item">
                       <a href="tel:<?= esc_attr( $phone_number ); ?>">
                         <?= esc_html( $phone_number ); ?> 

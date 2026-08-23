@@ -261,9 +261,9 @@ function sts_schema_event( $post = null ): array {
         'organizer'           => sts_schema_organization(),
         'offers'              => [
             '@type'         => 'Offer',
-            'price'         => get_field( $info . 'price' ) ?? '0',
+            'price'         => get_field( $info . 'price', $post_id ) ?? '0',
             'priceCurrency' => 'DKK',
-            'availability'  => 'https://schema.org/' . get_field( $info . 'ticket_status' )
+            'availability'  => 'https://schema.org/' . get_field( $info . 'ticket_status', $post_id )
         ]
     ];
 
@@ -364,15 +364,40 @@ function sts_schema_webpage(
         ? pll_current_language( 'locale' )
         : 'da_DK';
 
+    function formatDanishSchemaId( string $input ): string {
+        // 1. Lowercase and trim
+        $clean = trim(mb_strtolower($input, 'UTF-8'));
+
+        // 2. Explicitly replace Danish special characters
+        $danishReplacements = [
+            'æ' => 'ae',
+            'ø' => 'oe',
+            'å' => 'aa',
+            'é' => 'e', // Common in borrowed Danish words (e.g., idé, café)
+        ];
+        $clean = strtr($clean, $danishReplacements);
+
+        // 3. Remove remaining accents/diacritics if any
+        $clean = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $clean);
+
+        // 4. Replace non-alphanumeric characters with hyphens
+        $clean = preg_replace('/[^a-z0-9]+/i', '-', $clean);
+
+        // 5. Remove duplicate or trailing hyphens
+        return trim($clean, '-');
+    }
+
     $schema = [
         '@type'         => $type,
         'name'          => $name        ?? get_field( 'section_page_page_description_block_heading', $post_id ), 
+        '@id'           => home_url( '/#' . formatDanishSchemaId( $name ) ),
         'description'   => $description ?? get_field( 'section_page_page_description_block_description', $post_id ),
         'url'           => get_permalink( $post_id ),
         'datePublished' => get_the_date( 'c', $post_id ),
         'dateModified'  => get_the_modified_date( 'c', $post_id ),
         'isPartOf'      => [ '@id' => home_url( '/#website' ) ],
         'inLanguage'    => str_replace( '_', '-', $locale ),
+        'publisher'     => [ '@id' => home_url( '/#cafe' ) ],
     ];
 
     $breadcrumb = sts_schema_breadcrumb( $post_id, $is_archive );
@@ -447,6 +472,7 @@ function sts_schema_restaurant(): array {
     $schema = [
         '@type'                            => 'Restaurant',
         'name'                             => sts_option( 'company.name' ),
+        'alternateName'                    => ['Vadestedet Spilcafé', 'Vadestedet Spilcafe'],
         'image'                            => sts_option( 'company.storefront_image' ),
         '@id'                              => home_url( '/#cafe' ),
         'url'                              => home_url(),
@@ -469,6 +495,19 @@ function sts_schema_restaurant(): array {
           'availableLanguage' => [ 'English', 'Danish', 'German' ]
         ]
     ];
+
+    $available_some = [ 'facebook', 'instagram', 'linkedin', 'twitter' ];
+    foreach ( $available_some as $platform ) {
+        $field = sts_option( 'company.some.' . $platform );
+        
+        if ( ! empty( $field ) ) {
+            if ( ! isset( $schema['sameAs'] ) ) {
+                $schema['sameAs'] = [];
+            }
+
+            $schema['sameAs'][] = $field;
+        }
+    }
 
     // Optional fields — only added when values are configured.
     $optional = [

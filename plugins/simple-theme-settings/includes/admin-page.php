@@ -76,10 +76,12 @@ function sts_sanitize_options( $input, $parent_key = '' ) {
 function sts_process_single_value( $key, $value, $parent_key = '' ) {
   $value = (string) $value;
   
+  // 1. Indsprøjtet kode (Scripts / Raw HTML)
   if ( $parent_key === 'inject' ) {
     return wp_unslash( $value );
   }
 
+  // 2. SVG Logoer
   if ( strpos( $key, 'logo' ) !== false ) {
      $allowed_tags = [
       'svg' => [ 'xmlns' => true, 'viewbox' => true, 'width' => true, 'height' => true, 'fill' => true, 'stroke' => true, 'class' => true, 'id' => true, 'role' => true, 'aria-hidden' => true ],
@@ -91,7 +93,14 @@ function sts_process_single_value( $key, $value, $parent_key = '' ) {
     ];
      return wp_kses( $value, $allowed_tags );
   }
-  return wp_kses_post( $value );
+
+  // 3. URLs (f.eks. Facebook link eller andre links/sociale medier)
+  if ( filter_var( $value, FILTER_VALIDATE_URL ) || strpos( $key, 'url' ) !== false || strpos( $key, 'link' ) !== false || strpos( $key, 'sameAs' ) !== false ) {
+    return esc_url_raw( $value );
+  }
+
+  // 4. Standard felter (ren tekst uden HTML-konvertering af URL-tegn)
+  return sanitize_text_field( $value );
 }
 
 // @@ 4. RENDER PAGE
