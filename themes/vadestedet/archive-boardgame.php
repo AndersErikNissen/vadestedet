@@ -10,17 +10,51 @@ $schemas        = [
   )
 ];
 
+$relation =  'section_boardgame_boardgame_block_';
+$boardgame_meta_categories = [
+  'card-game' => 'Kortspil',
+  'strategy-game' => 'Strategispil',
+  'party-game' => 'Selskabsspil',
+  'tile-laying' => 'Tile-laying',
+  'tile-placement' => 'Tile-placement',
+  'classic' => 'Klassiker',
+  'quiz-game' => 'Quizspil',
+  'game' => 'Spil',
+  'childrens-game' => 'Børnespil',
+  'accessory-expansion' => 'Tilbehør/udvidelse',
+  'euro-game' => 'Eurogame',
+  'coop-detective-game' => 'Coop Detektivspil',
+  'deduction-game' => 'Deduktionsspil',
+  'detective-game' => 'Detektivspil',
+  'coop-game' => 'Samarbejdsspil',
+  'family-game' => 'Familiespil',
+  'engine-building' => 'Engine-building',
+  'racer-strategy-game' => 'Racer-/strategispil',
+  'family' => 'Familie',
+  'mystery-escape-game' => 'Mysterie-/escape-spil',
+  'coop' => 'Coop',
+  'abstract' => 'Abstrakt',
+  'strategy-family-game' => 'Strategi- / familiespil',
+  'abstract-game' => 'Abstrakt spil',
+  'coop-escape-room' => 'Coop Escaperoom',
+];
+$boardgame_meta_difficulties = [
+  'very-easy' => 'Meget let',
+  'easy' => 'Let',
+  'medium' => 'Mellem svær',
+  'hard' => 'Svær',
+  'very-hard' => 'Meget svær',
+];
 $boardgame_groups = [];
-
 
 if ( have_posts() ) {
   while ( have_posts() ) {
     the_post();
-    $title = get_the_title() ?? null;
+    $name = get_field( $relation . 'name' ) ?: get_the_title();
 
-    if ( ! $title ) return;
+    if ( ! $name ) return;
 
-    $first_sign = mb_substr( trim( $title ), 0, 1 );
+    $first_sign = mb_substr( trim( $name ), 0, 1 );
     $first_sign = mb_strtolower( $first_sign );
 
     if ( ! preg_match( '/^[a-zæøå]/u', $first_sign ) ) {
@@ -30,8 +64,20 @@ if ( have_posts() ) {
     if ( ! array_key_exists( $first_sign, $boardgame_groups ) ) {
       $boardgame_groups[$first_sign] = [];
     }
+
+    $boardgame = [
+      'name' => $name,
+      'url' => get_field( $relation . 'url' ) ?? null,
+      'meta' => [
+        'complexity' => get_field( $relation . 'complexity' ),
+        'playtime' => get_field( $relation . 'playtime' ) . ' min.',
+        'players' => get_field( $relation . 'players' ),
+        'difficulty' => get_theme_string( $boardgame_meta_difficulties[get_field( $relation . 'difficulty' )] ),
+        'category' => get_theme_string( $boardgame_meta_categories[get_field( $relation . 'category' )] ),
+      ]
+    ];
     
-    $boardgame_groups[$first_sign][] = $title;
+    $boardgame_groups[$first_sign][] = $boardgame;
   }
 
   wp_reset_postdata();
@@ -48,27 +94,27 @@ if ( count( $boardgame_groups ) === 0 ) return; ?>
     ] ); ?>
 
     <div class="section-boardgames-filter">
-      <span><?= get_theme_string( 'Filtrer' ); ?></span>
+      <span class="section-boardgames-filter-label"><?= get_theme_string( 'Filtrer' ); ?></span>
 
       <ul class="section-boardgames-filter-row">
-        <?php foreach( $boardgame_groups as $group => $boardgames ) { ?>
+        <div class="section-boardgames-filter-row-inner">
+          <?php foreach( $boardgame_groups as $group => $boardgames ) { ?>
+            <li>
+              <button class="section-boardgames-filter-btn" data-filter-for="boardgame-group-<?= $group; ?>">
+                <?= $group; ?>
+              </button>
+            </li>
+          <?php } ?>
+  
           <li>
-            <button class="section-boardgames-filter-btn" data-filter-for="boardgame-group-<?= $group; ?>">
-              <?= $group; ?>
+            <button class="section-boardgames-clear-filter-btn" data-clear-filters>
+              <?= get_theme_string( 'Fjern filtre' ); ?>
             </button>
           </li>
-        <?php } ?>
-
-        <li>
-          <button class="section-boardgames-clear-filter-btn" data-clear-filters>
-            <?= get_theme_string( 'Fjern filtre' ); ?>
-          </button>
-        </li>
+        </div>
       </ul>
     </div>
-  </div>
 
-  <div class="pw:wrapper">
     <ul class="section-boardgames-items">
       <?php foreach( $boardgame_groups as $group => $boardgames ) { ?>
         <li class="section-boardgames-item" id="boardgame-group-<?= $group ?>">
@@ -78,10 +124,24 @@ if ( count( $boardgame_groups ) === 0 ) return; ?>
 
           <ul class="section-boardgames-item-list">
             <?php foreach( $boardgames as $boardgame ) { ?>
-              <li>
-                <span>
-                  <?= $boardgame; ?>
+              <li class="section-boardgames-item-list-item">
+                <span class="section-boardgames-item-list-item-title">
+                  <?= $boardgame['name']; ?>
                 </span>
+
+                <ul class="section-boardgames-item-list-item-meta">
+                  <?php foreach ( $boardgame['meta'] as $name => $meta ) { ?>
+                    <li class="section-boardgames-item-list-item-meta-item">
+                      <div class="section-boardgames-item-list-item-meta-item-icon">
+                        <?= get_icon( $name ); ?>
+                      </div>
+                      
+                      <span class="section-boardgames-item-list-item-meta-item-name">
+                        <?= $meta; ?>
+                      </span>
+                    </li>
+                  <?php } ?>
+                </ul>
               </li>
             <?php } ?>
           </ul>

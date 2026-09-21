@@ -205,6 +205,7 @@ function sts_schema_website(): array {
         '@type' => 'WebSite',
         '@id'   => home_url( '/#website' ),
         'name'  => sts_option( 'company.name' ),
+        'alternateName' => ['Vadestedet Spilcafé', 'Vadestedet Spilcafe'],
         'url'   => home_url(),
     ];
 }

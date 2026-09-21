@@ -82,8 +82,11 @@ add_action( 'after_setup_theme', function() {
 } );
 
 
-// @@ INJECT SCRIPTS (VIA STS PLUGIN)
+// @@ INJECT HEAD (SCRIPTS AND MORE)
 add_action( 'wp_head', function() {
+  $company_name = sts_option( 'company.name' ) ?: 'Vadestedet';
+  echo '<meta property="og:site_name" content="' . $company_name . '" />';
+
   $inject = sts_option( 'inject.head' );
   if ( ! empty( $inject ) ) echo $inject;
 });

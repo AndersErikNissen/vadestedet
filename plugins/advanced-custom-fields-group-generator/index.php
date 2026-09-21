@@ -237,6 +237,107 @@ function acfgg_block( $relation, $type ):array {
     ];
   };
 
+  if ( $type === 'boardgame' ) {
+    return [
+      acfgg_accordion( $block_relation . 'tab_', 'Brætspils information' ),
+      acfgg_field( $block_relation, 'Navn', 'name', 'text', [
+        'required' => true
+      ] ),
+      acfgg_field( $block_relation, 'Link', 'url', 'url' ),
+      acfgg_field( $block_relation, 'Kompleksitet', 'complexity', 'range', [
+        'min' => 0,
+        'max' => 5,
+        'step' => 0.01,
+        'default' => 0,
+      ] ),
+      acfgg_field( $block_relation, 'Kategori', 'category', 'select', [
+        'choices' => [
+          'card-game' => 'Kortspil',
+          'strategy-game' => 'Strategispil',
+          'party-game' => 'Selskabsspil',
+          'tile-laying' => 'Tile-laying',
+          'tile-placement' => 'Tile-placement',
+          'classic' => 'Klassiker',
+          'quiz-game' => 'Quizspil',
+          'game' => 'Spil',
+          'childrens-game' => 'Børnespil',
+          'accessory-expansion' => 'Tilbehør/udvidelse',
+          'euro-game' => 'Eurogame',
+          'coop-detective-game' => 'Coop Detektivspil',
+          'deduction-game' => 'Deduktionsspil',
+          'detective-game' => 'Detektivspil',
+          'coop-game' => 'Samarbejdsspil',
+          'family-game' => 'Familiespil',
+          'engine-building' => 'Engine-building',
+          'racer-strategy-game' => 'Racer-/strategispil',
+          'family' => 'Familie',
+          'mystery-escape-game' => 'Mysterie-/escape-spil',
+          'coop' => 'Coop',
+          'abstract' => 'Abstrakt',
+          'strategy-family-game' => 'Strategi- / familiespil',
+          'abstract-game' => 'Abstrakt spil',
+          'coop-escape-room' => 'Coop Escaperoom',
+        ],
+        'wrapper' => [
+          'width' => '50'
+        ]
+      ] ),
+      acfgg_field( $block_relation, 'Sværhed', 'difficulty', 'select', [
+        'choices' => [
+          'very-easy' => 'Meget let',
+          'easy' => 'Let',
+          'medium' => 'Mellem svær',
+          'hard' => 'Svær',
+          'very-hard' => 'Meget svær',
+        ],
+        'default' => 'null',
+        'wrapper' => [
+          'width' => '50'
+        ] 
+      ] ),
+      acfgg_field( $block_relation, 'Spiltid (i min.)', 'playtime', 'select', [
+        'choices' => [
+          '5-30' => '5-30',
+          '30-60' => '30-60',
+          '60-90' => '60-90',
+          '90-120' => '90-120',
+          '120-180' => '120-180',
+          '180' => '+180',
+        ],
+        'wrapper' => [
+          'width' => '50'
+        ] 
+      ] ),
+      acfgg_field( $block_relation, 'Spillere', 'players', 'select', [
+        'choices' => [
+          '1-4' => '1-4',
+          '1-5' => '1-5',
+          '1-6' => '1-6',
+          '1-8' => '1-8',
+          '2' => '2',
+          '2-4' => '2-4',
+          '2-5' => '2-5',
+          '2-6' => '2-6',
+          '2-8' => '2-8',
+          '2-10' => '2-10',
+          '2-12' => '2-12',
+          '3-4' => '3-4',
+          '3-6' => '3-6',
+          '3-7' => '3-7',
+          '3-8' => '3-8',
+          '3-16' => '3-16',
+          '4-6' => '4-6',
+          '4-8' => '4-8',
+          '4-10' => '4-10',
+          '4-12' => '4-12',
+        ],
+        'wrapper' => [
+          'width' => '50'
+        ] 
+      ] ),
+    ];
+  };
+
   if ( $type === 'faq' ) {
     $return_array = [];
 
@@ -429,6 +530,11 @@ function acfgg_location( $locations ):array {
       'operator' => '==',
       'value'    => 'menu',
     ],
+    'boardgame' => [
+      'param'    => 'post_type',
+      'operator' => '==',
+      'value'    => 'boardgame',
+    ],
   ];
 
   foreach( $locations as $location ) {
@@ -455,7 +561,7 @@ function acfgg_group( $relation, $name, $section, $fields, $location, $menu_orde
     'fields'     => $fields,
     'location'   => $location,
     'menu_order' => $menu_order,
-    // 'style'      => 'seamless',
+    'style'      => 'seamless',
   ] );
 }
 
@@ -472,7 +578,7 @@ function acfgg_sections() {
     array_merge(
       acfgg_block( $relation, 'event_information'  )
     ), [
-      acfgg_location( [ 'event' ] )
+      acfgg_location( [ 'event' ] ),
     ]
   );
 
@@ -487,6 +593,20 @@ function acfgg_sections() {
     acfgg_block( $relation, 'menu' ),
     [
       acfgg_location( [ 'menu' ] )
+    ]
+  );
+
+
+  // ## boardgame (cpt)
+  $relation = 'section_boardgame_';
+  
+  acfgg_group( 
+    $relation, 
+    'Brætspilsinformation', 
+    'boardgame',
+    acfgg_block( $relation, 'boardgame' ),
+    [
+      acfgg_location( [ 'boardgame' ] )
     ]
   );
 

@@ -140,7 +140,7 @@ if ( is_front_page() ) {
                   'url'    => $reservation_url, 
                   'target' => '_blank'
                 ],
-                'small:btn'  
+                'small:btn the-menu-reserve-btn'  
               );
             }; ?>
 

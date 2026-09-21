@@ -34,9 +34,44 @@ add_action( 'init', function() use ( $register_strings ) {
     'Menu',
     'Gratis',
     'Navigation',
-    'Bestil billet'
+    'Bestil billet',
+    'Se mere',
+  ];
+
+  $boardgame_strings = [
+    'Kortspil',
+    'Strategispil',
+    'Selskabsspil',
+    'Tile-laying',
+    'Tile-placement',
+    'Klassiker',
+    'Quizspil',
+    'Spil',
+    'Børnespil',
+    'Tilbehør/udvidelse',
+    'Eurogame',
+    'Coop Detektivspil',
+    'Deduktionsspil',
+    'Detektivspil',
+    'Samarbejdsspil',
+    'Familiespil',
+    'Engine-building',
+    'Racer-/strategispil',
+    'Familie',
+    'Mysterie-/escape-spil',
+    'Coop',
+    'Abstrakt',
+    'Strategi- / familiespil',
+    'Abstrakt spil',
+    'Coop Escaperoom',
+    'Meget let',
+    'Let',
+    'Mellem',
+    'Svær',
+    'Meget svær',
   ];
   
   // ## register strings
   $register_strings( 'General', $general_strings );
+  $register_strings( 'Brætspil', $boardgame_strings );
 });
