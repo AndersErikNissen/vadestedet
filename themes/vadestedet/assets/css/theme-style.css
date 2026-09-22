@@ -44,6 +44,12 @@
     min-height: 0;
   }
 
+  html,
+  body {
+	  width: 100%;
+    overflow-x: clip;	
+  }
+
   body {
     line-height: 1;
     font-weight: 400;
@@ -601,11 +607,12 @@
   .the-footer {
     padding-top: 2rem;
     padding-bottom: 2rem;
+    max-width: 100%;
   }
 
   .the-footer-grid {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 1fr auto;
   }
 
   .the-footer-some {
@@ -617,6 +624,18 @@
     align-items: flex-start;
     gap: 2rem;
     padding: 0 0 0 2rem;
+  }
+
+  @media (max-width: 479px) {
+    .the-footer-grid {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .the-footer-some {
+      padding: 0 0 2rem 0;
+    }
   }
 
   .the-footer-logo {
@@ -668,9 +687,19 @@
     --gap: 0.2rem;
   }
 
+  .the-footer-menu a {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
   .the-footer-some a {
     text-transform: capitalize;
-    writing-mode: sideways-rl;
+  }
+  
+  @media (min-width: 480px) {
+    .the-footer-some a {
+      writing-mode: sideways-rl;
+    }
   }
 
   .the-footer-weekday-name {
@@ -702,16 +731,18 @@
       flex-wrap: wrap;
     }
 
-    .the-footer-description,
-    .the-footer-row-row {
-      flex: 0 0 100%;
-    }
-
     .the-footer-row-row {
       justify-content: space-between;
     }
   }
   
+  @media (min-width: 480px) and (max-width: 979px) {
+    .the-footer-description,
+    .the-footer-row-row {
+      flex: 0 0 100%;
+    }
+  }
+
   @media (min-width: 980px) {
     .the-footer {
       padding-top: 6rem;
@@ -1048,6 +1079,8 @@
   .small\:banner {
     display: flex;
     overflow: hidden;
+    max-width: 100%;
+    width: 100%;
     white-space: nowrap;
     opacity: 0;
     padding-top: 2rem;
@@ -1867,7 +1900,7 @@
 
   .section-introduction-logo-slide {
     overflow: hidden;
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     color: var(--color-secondary);

@@ -9,11 +9,17 @@ add_filter( 'show_admin_bar', '__return_false' );
 
 // @@ LOAD STYLING
 add_action( 'wp_enqueue_scripts', function() {
-  wp_enqueue_style( 
-    'theme-style', 
-    get_theme_file_uri() . '/assets/css/theme-style.css',
-    [],
-    wp_get_theme()->get( 'Version' )
+  $css_path = get_template_directory() . '/assets/css/theme-style.css';
+  $css_uri  = get_template_directory_uri() . '/assets/css/theme-style.css';
+
+  // Use filemtime if the file exists, otherwise fall back to a fixed version string
+  $version = file_exists($css_path) ? filemtime($css_path) : wp_get_theme()->get( 'Version' );
+
+  wp_enqueue_style(
+    'theme-style',
+    $css_uri,
+    array(),
+    $version
   );
 } );
 
