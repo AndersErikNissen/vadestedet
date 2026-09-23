@@ -70,7 +70,7 @@ if ( have_posts() ) {
       'url' => get_field( $relation . 'url' ) ?? null,
       'meta' => [
         'complexity' => get_field( $relation . 'complexity' ),
-        'playtime' => get_field( $relation . 'playtime' ) . ' min.',
+        'playtime' => get_field( $relation . 'playtime' ),
         'players' => get_field( $relation . 'players' ),
         'difficulty' => get_theme_string( $boardgame_meta_difficulties[get_field( $relation . 'difficulty' )] ),
         'category' => get_theme_string( $boardgame_meta_categories[get_field( $relation . 'category' )] ),
@@ -130,14 +130,15 @@ if ( count( $boardgame_groups ) === 0 ) return; ?>
                 </span>
 
                 <ul class="section-boardgames-item-list-item-meta">
-                  <?php foreach ( $boardgame['meta'] as $name => $meta ) { ?>
+                  <?php foreach ( $boardgame['meta'] as $name => $meta ) { 
+                    if ( ! $meta ) continue; ?>
                     <li class="section-boardgames-item-list-item-meta-item">
                       <div class="section-boardgames-item-list-item-meta-item-icon">
                         <?= get_icon( $name ); ?>
                       </div>
                       
                       <span class="section-boardgames-item-list-item-meta-item-name">
-                        <?= $meta; ?>
+                        <?= $name === 'playtime' ? $meta  . ' min.' : $meta; ?>
                       </span>
                     </li>
                   <?php } ?>

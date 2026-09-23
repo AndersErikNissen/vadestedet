@@ -280,7 +280,8 @@ function acfgg_block( $relation, $type ):array {
         ],
         'wrapper' => [
           'width' => '50'
-        ]
+        ],
+        'allow_null' => true,
       ] ),
       acfgg_field( $block_relation, 'Sværhed', 'difficulty', 'select', [
         'choices' => [
@@ -290,10 +291,10 @@ function acfgg_block( $relation, $type ):array {
           'hard' => 'Svær',
           'very-hard' => 'Meget svær',
         ],
-        'default' => 'null',
         'wrapper' => [
           'width' => '50'
-        ] 
+        ],
+        'allow_null' => true,
       ] ),
       acfgg_field( $block_relation, 'Spiltid (i min.)', 'playtime', 'select', [
         'choices' => [
@@ -306,7 +307,8 @@ function acfgg_block( $relation, $type ):array {
         ],
         'wrapper' => [
           'width' => '50'
-        ] 
+        ],
+        'allow_null' => true,
       ] ),
       acfgg_field( $block_relation, 'Spillere', 'players', 'select', [
         'choices' => [
@@ -333,7 +335,8 @@ function acfgg_block( $relation, $type ):array {
         ],
         'wrapper' => [
           'width' => '50'
-        ] 
+        ],
+        'allow_null' => true,
       ] ),
     ];
   };
